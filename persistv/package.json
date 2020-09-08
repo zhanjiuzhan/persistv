@@ -1,8 +1,8 @@
 {
   "name": "persistv",
   "version": "1.0.0",
-  "description": "A Vue.js project",
-  "author": "chenglei <chenglei@4366.com>",
+  "description": "后端管理画面",
+  "author": "chenglei, jiapeng",
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -11,6 +11,8 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "axios": "^0.20.0",
+    "element-ui": "^2.13.2",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },

@@ -1,15 +1,21 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
+import Index from '@/components/Index'
+import Notice from '@/components/Notice'
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      path: '/notice.html',
+      name: 'Notice',
+      component: Notice
+    },
+    {
+      path: '/**',
+      name: 'Index',
+      component: Index
     }
   ]
 })

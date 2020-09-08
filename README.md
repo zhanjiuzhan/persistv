@@ -36,3 +36,24 @@ npm install
 npm run dev  
 npm i element-ui -S  
 ```
+
+### element ui 安装使用
+```
+npm install element-ui -S 
+```
+main.js 添加
+```
+import ElementUI from 'element-ui'
+import 'element-ui/lib/theme-chalk/index.css'
+Vue.use(ElementUI)
+```
+
+### axios使用
+```
+cnpm install axios --save 安装
+```
+main.js 添加
+```
+import axios from 'axios'
+Vue.prototype.$http= axios
+```
