@@ -1,33 +1,23 @@
-import Vue from 'vue'
-import Router from 'vue-router'
+import router from './routers'
+import Config from '@/config'
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
-Vue.use(Router)
+// NProgress.configure({ showSpinner: false })
 
-import Layout from '@/layout/Layout'
+// const whiteList = ['/login']
 
-/**
- * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
- * alwaysShow: true               if set true, will always show the root menu, whatever its child routes length
- *                                if not set alwaysShow, only more than one route under the children
- *                                it will becomes nested mode, otherwise not show the root menu
- * redirect: noRedirect           if `redirect:noRedirect` will no redirect in the breadcrumb
- * name:'router-name'             the name is used by <keep-alive> (must set!!!)
- * meta : {
-    title: 'title'               the name show in submenu and breadcrumb (recommend set)
-    icon: 'svg-name'             the icon show in the sidebar,
-  }
- **/
+router.beforeEach((to, from, next) => {
+  to.meta.title && (document.title = to.meta.title + ' - ' + Config.webName)
 
-export const constantRouterMap = [
-  {
-    path: 'redirect',
-    component: Layout,
-    hidden: true,
-    children: [
-      {
-        path: '/redirect/:path*',
-        compoent: () => import('@/views/features/redirect')
-      }
-    ]
-  }
-]
+  NProgress.start()
+
+  // 权限验证,获取登陆token
+  // 判断是否前往 login 画面
+  // 已经登陆就获取用户权限， 动态显示菜单栏， 创建路由，并更新位置
+  // 没有登陆 就重定向到登陆页面
+})
+
+router.afterEach(() => {
+  NProgress.done()
+})
