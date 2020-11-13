@@ -18,10 +18,14 @@
 <script>
 import { mapState } from 'vuex'
 import ResizeMixin from './mixin/ResizeHandler'
+import { AppMain, Navbar, Settings, Sidebar, TagView } from './components/AppMain'
 export default {
   name: 'Layout',
 
-  components: {},
+  components: {
+    AppMain
+
+  },
 
   mixins: [ResizeMixin],
 
@@ -30,7 +34,7 @@ export default {
       sidebar: state => state.app.sidebar,
       device: state => state.app.device,
       showSettings: state => state.settings.showSettings,
-      needTagView: state => state.settings.tagView,
+      needTagsView: state => state.settings.tagsView,
       fixedHeader: state => state.settings.fixedHeader
     }),
     classObj () {

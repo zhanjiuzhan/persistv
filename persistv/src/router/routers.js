@@ -30,5 +30,17 @@ export const routerMap = [
         component: () => import('@/views/features/redirect')
       }
     ]
+  },
+  {
+    path: '/',
+    component: import('@/layout'),
+    name: '首页',
+    meta: { title: '', icon: '', noCache: true, affix: true }
   }
 ]
+
+export default new Router({
+  mode: 'history',
+  scrollBehavior: () => {{ y: 0 }},
+  routes: routerMap
+})

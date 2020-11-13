@@ -1,12 +1,12 @@
 import variables from '@/assets/styles/element-variables.scss'
 import defaultSettings from '@/settings'
 
-const { tagView, fixedHeader, sidebarLogo, uniqueOpened, showFooter, footerTxt, caseNumber } = defaultSettings
+const { tagsView, fixedHeader, sidebarLogo, uniqueOpened, showFooter, footerTxt, caseNumber } = defaultSettings
 
 const state = {
   theme: variables.theme,
   showSettings: false,
-  tagView,
+  tagsView,
   fixedHeader,
   sidebarLogo,
   uniqueOpened,

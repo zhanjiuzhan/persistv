@@ -5,6 +5,9 @@
         <router-view :key="key" />
       </keep-alive>
     </transition>
+    <div v-if="$store.state.settings.showFooter" id="el-main-foot">
+      <span v-html="$store.state.settings.fotterTxt" />
+    </div>
   </section>
 </template>
 
@@ -17,7 +20,7 @@ export default {
       return this.$store.state.tagView.cachedViews
     },
     key() {
-      return this.$route.path
+      return this.$route.fullPath
     }
   }
 }
