@@ -4,6 +4,10 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 
+const HappyPack  = require('happyPack')
+const os = require('os')
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
+
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -21,9 +25,7 @@ const createLintingRule = () => ({
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
-  entry: {
-    app: './src/main.js'
-  },
+  entry:["babel-polyfill","./src/main.js"],
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
@@ -40,8 +42,7 @@ module.exports = {
   },
   module: {
     rules: [
-      // 关闭Eslint
-      //...(config.dev.useEslint ? [createLintingRule()] : []),
+      ...(config.dev.useEslint ? [createLintingRule()] : []),
       {
         test: /\.vue$/,
         loader: 'vue-loader',
@@ -49,8 +50,8 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        loader: 'babel-loader',
-        include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+        loader: 'happypack/loader?id=happyBabel',
+        exclude: /node_modules/
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
@@ -78,6 +79,15 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new HappyPack({
+      id: 'happyBabel',
+      cache: true,
+      loaders: ['babel-loader?cacheDirectory=true'],
+      threadPool: happyThreadPool,
+      verbose: true
+    })
+  ],
   node: {
     // prevent webpack from injecting useless setImmediate polyfill because Vue
     // source contains it (although only uses it if it's native).
