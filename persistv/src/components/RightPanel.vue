@@ -14,80 +14,80 @@
 </template>
 
 <script>
-  import { addClass, removeClass } from '@/utils'
+import { addClass, removeClass } from '@/utils'
 
-  export default {
-    name: 'RightPanel',
-    props: {
-      clickNotClose: {
-        default: false,
-        type: Boolean
+export default {
+  name: 'RightPanel',
+  props: {
+    clickNotClose: {
+      default: false,
+      type: Boolean
+    },
+    buttonTop: {
+      default: 250,
+      type: Number
+    }
+  },
+  computed: {
+    show: {
+      get() {
+        return this.$store.state.settings.showRightPanel
       },
-      buttonTop: {
-        default: 250,
-        type: Number
+      set(val) {
+        this.$store.dispatch('changeSetting', {
+          key: 'showRightPanel',
+          value: val
+        })
       }
     },
-    computed: {
-      show: {
-        get() {
-          return this.$store.state.settings.showRightPanel
-        },
-        set(val) {
-          this.$store.dispatch('changeSetting', {
-            key: 'showRightPanel',
-            value: val
-          })
-        }
-      },
-      theme: {
-        get() {
-          return this.$store.state.settings.theme
-        }
-      },
-      settingBtn: {
-        get() {
-          return this.$store.state.settings.settingBtn
-        }
+    theme: {
+      get() {
+        return this.$store.state.settings.theme
       }
     },
-    watch: {
-      show(value) {
-        if (value && !this.clickNotClose) {
-          this.addEventClick()
-        }
-        if (value) {
-          addClass(document.body, 'showRightPanel')
-        } else {
-          removeClass(document.body, 'showRightPanel')
-        }
-      }
-    },
-    mounted() {
-      this.insertToBody()
-    },
-    beforeDestroy() {
-      const elx = this.$refs.rightPanel
-      elx.remove()
-    },
-    methods: {
-      addEventClick() {
-        window.addEventListener('click', this.closeSidebar)
-      },
-      closeSidebar(evt) {
-        const parent = evt.target.closest('.rightPanel')
-        if (!parent) {
-          this.show = false
-          window.removeEventListener('click', this.closeSidebar)
-        }
-      },
-      insertToBody() {
-        const elx = this.$refs.rightPanel
-        const body = document.querySelector('body')
-        body.insertBefore(elx, body.firstChild)
+    settingBtn: {
+      get() {
+        return this.$store.state.settings.settingBtn
       }
     }
+  },
+  watch: {
+    show(value) {
+      if (value && !this.clickNotClose) {
+        this.addEventClick()
+      }
+      if (value) {
+        addClass(document.body, 'showRightPanel')
+      } else {
+        removeClass(document.body, 'showRightPanel')
+      }
+    }
+  },
+  mounted() {
+    this.insertToBody()
+  },
+  beforeDestroy() {
+    const elx = this.$refs.rightPanel
+    elx.remove()
+  },
+  methods: {
+    addEventClick() {
+      window.addEventListener('click', this.closeSidebar)
+    },
+    closeSidebar(evt) {
+      const parent = evt.target.closest('.rightPanel')
+      if (!parent) {
+        this.show = false
+        window.removeEventListener('click', this.closeSidebar)
+      }
+    },
+    insertToBody() {
+      const elx = this.$refs.rightPanel
+      const body = document.querySelector('body')
+      body.insertBefore(elx, body.firstChild)
+    }
   }
+}
 </script>
 
 <style>

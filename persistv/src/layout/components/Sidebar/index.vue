@@ -18,8 +18,11 @@
 <script>
 import SidebarItem from './SidebarItem'
 import { mapGetters } from 'vuex'
+import Logo from './Logo'
 export default {
   name: 'Sidebar',
+
+  components: { SidebarItem, Logo },
 
   computed: {
     ...mapGetters([

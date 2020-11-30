@@ -10,16 +10,16 @@ export const routerMap = [
     meta: { title: '登录', noCache: true },
     hidden: true
   },
-  {
-    path: '/404',
-    component: () => import(''),
-    hidden: true
-  },
-  {
-    path: '/401',
-    component: () => import(''),
-    hidden: true
-  },
+  // {
+  //   path: '/404',
+  //   component: () => import(''),
+  //   hidden: true
+  // },
+  // {
+  //   path: '/401',
+  //   component: () => import(''),
+  //   hidden: true
+  // },
   {
     path: '/redirect',
     component: Layout,
@@ -41,6 +41,5 @@ export const routerMap = [
 
 export default new Router({
   mode: 'history',
-  scrollBehavior: () => {{ y: 0 }},
   routes: routerMap
 })

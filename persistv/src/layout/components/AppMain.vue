@@ -6,7 +6,7 @@
       </keep-alive>
     </transition>
     <div v-if="$store.state.settings.showFooter" id="el-main-foot">
-      <span v-html="$store.state.settings.fotterTxt" />
+      <span v-html="$store.state.settings.footerTxt" />
     </div>
   </section>
 </template>

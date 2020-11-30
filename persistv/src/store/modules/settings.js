@@ -1,5 +1,5 @@
 import variables from '@/assets/styles/element-variables.scss'
-import defaultSettings from '@/settings'
+import defaultSettings from '@/config'
 
 const { tagsView, fixedHeader, sidebarLogo, uniqueOpened, showFooter, footerTxt, caseNumber } = defaultSettings
 

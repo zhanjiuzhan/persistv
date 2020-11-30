@@ -1,10 +1,12 @@
 <template>
-    <component v-bind="linkProps(to)">
-      <slot/>
-    </component>
+  <!-- eslint-disable vue/require-component-is-->
+  <component v-bind="linkProps(to)">
+    <slot/>
+  </component>
 </template>
 
 <script>
+import { isExternal } from '@/utils'
 export default {
   name: 'Link',
 

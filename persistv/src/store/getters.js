@@ -18,7 +18,7 @@ const getters = {
   uniqueOpened: state => state.setttings.uniqueOpened,
   showFooter: state => state.settings.showFooter,
   footerTxt: state => state.settings.footerTxt,
-  caseNumber: state => state.settings.caseNumber,
+  caseNumber: state => state.settings.caseNumber
 }
 
 export default getters

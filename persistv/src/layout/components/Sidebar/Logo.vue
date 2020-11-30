@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import logoImg from '@/assets/logp/logo.png'
+import logoImg from '@/assets/logo/logo.png'
 import { mapGetters } from 'vuex'
 export default {
   name: 'Logo',

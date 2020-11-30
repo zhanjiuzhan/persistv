@@ -2,11 +2,12 @@
 const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
-const vueLoaderConfig = require('./vue-loader.conf')
+const { VueLoaderPlugin } = require('vue-loader')
 
 const HappyPack  = require('happyPack')
 const os = require('os')
 const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
+const FriendlyErrorsWebpackPlugin = require('friendly-errors-webpack-plugin')
 
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
@@ -34,6 +35,7 @@ module.exports = {
       : config.dev.assetsPublicPath
   },
   resolve: {
+    modules: [path.resolve(__dirname, '../node_modules')],
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
@@ -43,19 +45,39 @@ module.exports = {
   module: {
     rules: [
       ...(config.dev.useEslint ? [createLintingRule()] : []),
+      // {
+      //   test: /\.html$/,
+      //   loader: 'html-loader'
+      // },
       {
         test: /\.vue$/,
         loader: 'vue-loader',
-        options: vueLoaderConfig
+        options: {
+          loaders: {
+            js: 'happypack/loader?id=happyBabel'
+          }
+        }
       },
       {
         test: /\.js$/,
         loader: 'happypack/loader?id=happyBabel',
-        exclude: /node_modules/
+        include: [
+          resolve('src')
+        ],
+        exclude: [path.resolve('../node_modules')]
+      },
+      {
+        test: /\.svg$/,
+        loader: 'svg-sprite-loader',
+        include: [resolve('src/icons')],
+        options: {
+          symbolId: 'icon-[name]'
+        }
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,
         loader: 'url-loader',
+        exclude: [resolve('src/icons')],
         options: {
           limit: 10000,
           name: utils.assetsPath('img/[name].[hash:7].[ext]')
@@ -80,6 +102,8 @@ module.exports = {
     ]
   },
   plugins: [
+    new FriendlyErrorsWebpackPlugin(),
+    new VueLoaderPlugin(),
     new HappyPack({
       id: 'happyBabel',
       cache: true,
@@ -99,5 +123,6 @@ module.exports = {
     net: 'empty',
     tls: 'empty',
     child_process: 'empty'
-  }
+  },
+  stats: 'verbose'
 }

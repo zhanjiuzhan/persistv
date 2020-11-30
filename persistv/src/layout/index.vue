@@ -1,7 +1,7 @@
 <template>
   <div :class="classObj" class="app-wrapper">
-    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutSide"></div>
-    <sidebar class="sidebar-container"></sidebar>
+    <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutSide"/>
+    <sidebar class="sidebar-container" />
     <div :class="{hasTagView:needTagView}" class="main-container">
       <div :class="{'fix-header':fixedHeader}">
         <navbar/>
@@ -28,7 +28,8 @@ export default {
     Navbar,
     Settings,
     Sidebar,
-    TagsView
+    TagsView,
+    RightPanel
   },
 
   mixins: [ResizeMixin],
@@ -64,7 +65,7 @@ export default {
 @import "~@/styles/variables.scss";
 
 .app-wrapper {
-  @include clearfix;
+  //@include clearfix;
   position: relative;
   height: 100%;
   width: 100%;
