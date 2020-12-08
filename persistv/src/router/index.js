@@ -37,7 +37,7 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       // 回到登陆页面，并在登陆后重定向回要前往的页面
-      next('/login?redirect=${to.path}')
+      next(`/login?redirect=${to.path}`)
       NProgress.done()
     }
   }

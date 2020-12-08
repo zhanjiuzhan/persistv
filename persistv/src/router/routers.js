@@ -8,6 +8,7 @@ export const routerMap = [
   {
     path: '/login',
     meta: { title: '登录', noCache: true },
+    component: () => import('@/views/login'),
     hidden: true
   },
   // {
@@ -33,7 +34,7 @@ export const routerMap = [
   },
   {
     path: '/',
-    component: import('@/layout'),
+    component: () => import('@/layout'),
     name: '首页',
     meta: { title: '', icon: '', noCache: true, affix: true }
   }

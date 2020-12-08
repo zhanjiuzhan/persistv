@@ -1,5 +1,6 @@
 import { getToken } from '@/utils/auth'
 // import { encrypt } from "@/utils/rsaEncrypt";
+import { login } from '@/api/login'
 
 const state = {
   token: getToken(),
@@ -25,9 +26,13 @@ const mutations = {
 
 const actions = {
   login({ commit }, userInfo) {
-    // const username = userInfo.username
-    // const password = encrypt(userInfo.password)
-    // const rememberMe = userInfo.rememberMe
+    // const { userName, password, rememberMe } = userInfo
+    return new Promise((resolve, reject) => {
+      login(userInfo).then(res => {
+        debugger
+        console.log(res)
+      })
+    })
   },
 
   getInfo({ commit }) {

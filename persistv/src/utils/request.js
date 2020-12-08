@@ -1,10 +1,10 @@
 import axios from 'axios'
 import router from '@/router/routers'
-import { Notification, MessageBox} from 'element-ui'
+import { Notification, MessageBox } from 'element-ui'
 import Config from '@/config'
 
 const service = axios.create({
-  baseURL:process['env']['BASE_API'],
+  baseURL: process['env']['BASE_API'],
   timeout: Config.timeout
 })
 
