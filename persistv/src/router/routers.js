@@ -6,6 +6,12 @@ Vue.use(Router)
 
 export const routerMap = [
   {
+    path: '/ums/ppoint',
+    meta: { title: '权限管理', noCache: true },
+    component: () => import('@/views/ums/ppoint'),
+    hidden: true
+  },
+  {
     path: '/login',
     meta: { title: '登录', noCache: true },
     component: () => import('@/views/login'),

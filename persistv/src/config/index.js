@@ -2,6 +2,8 @@
  * @description 系统全局配置
  */
 export default {
+
+  username: '',
   /**
    * @description 记住密码状态下的token在Cookie中存储的天数，默认1天
    */

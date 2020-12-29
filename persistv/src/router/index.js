@@ -4,6 +4,7 @@ import Config from '@/config'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { getToken } from '@/utils/auth'
+import request from '@/utils/request'
 
 NProgress.configure({ showSpinner: false })
 
@@ -11,7 +12,8 @@ const whiteList = ['/login']
 
 router.beforeEach((to, from, next) => {
   to.meta.title && (document.title = to.meta.title + ' - ' + Config.webName)
-
+  next();
+  /*
   NProgress.start()
 
   if (getToken()) {
@@ -40,7 +42,7 @@ router.beforeEach((to, from, next) => {
       next(`/login?redirect=${to.path}`)
       NProgress.done()
     }
-  }
+  }*/
 
   // 判断是否前往 login 画面
   // 已经登陆就获取用户权限， 动态显示菜单栏， 创建路由，并更新位置
