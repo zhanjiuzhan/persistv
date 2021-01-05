@@ -6,9 +6,9 @@ Vue.use(Router)
 
 export const routerMap = [
   {
-    path: '/ums/ppoint',
+    path: '/ums/adm**',
     meta: { title: '权限管理', noCache: true },
-    component: () => import('@/views/ums/ppoint'),
+    component: () => import('@/views/ums/AdmManagement'),
     hidden: true
   },
   {
