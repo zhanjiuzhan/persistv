@@ -3,6 +3,7 @@
     <svg-icon v-if="isCollapse" icon-class="run" />
     <div class="logo-icon">
       <img :src="logoImg">
+      <span slot="title">{{ logoText }}</span>
     </div>
   </el-menu-item>
 </template>
@@ -20,9 +21,10 @@ export default {
     }
   },
 
-  date() {
+  data() {
     return {
-      logoImg: logoImg
+      logoImg,
+      logoText: '『PERSIST』用户管理系统'
     }
   },
 

@@ -76,6 +76,15 @@ export default {
     }
   },
 
+  watch: {
+    $route: {
+      handler: function(route) {
+        this.redirect = route.query && route.query.redirect
+      },
+      immediate: true
+    }
+  },
+
   created() {
     this.getCookie()
   },
@@ -92,7 +101,6 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
-        debugger
         if (valid) {
           const { username, password: plainPwd, rememberMe } = this.loginForm
           let encryptPwd = Cookies.get('password')
@@ -110,7 +118,9 @@ export default {
             password: encryptPwd,
             rememberMe
           }
-          this.$store.dispatch('user/login', userInfo)
+          this.$store.dispatch('user/login', userInfo).then(res => {
+            this.$router.push({ path: this.redirect || '/' })
+          })
         }
       })
     }

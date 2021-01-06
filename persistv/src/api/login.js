@@ -7,3 +7,8 @@ export function login (data) {
     data
   })
 }
+
+export function getUserInfo (username) {
+  debugger
+  return request.get(`/admin/user/get/${username}.do`)
+}

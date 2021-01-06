@@ -20,11 +20,11 @@ router.beforeEach((to, from, next) => {
     } else {
       // 获取用户信息,从而获取用户权限，设置画面组件的可访问性
       if (store.getters.roles.length === 0) {
-        store.dispatch('getInfo').then(res => {
+        store.dispatch('user/getInfo').then(res => {
           next()
         }).catch((err) => {
           console.log(err)
-          store.dispatch('logout').then(() => {
+          store.dispatch('user/logout').then(() => {
             next({ path: '/login' })
           })
         })

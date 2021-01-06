@@ -1,9 +1,6 @@
 'use strict'
 // Template version: 1.3.1
 // see http://vuejs-templates.github.io/webpack for documentation.
-const devEnv = require('./dev.env')
-// 获取接口地址
-const base_url = devEnv.BASE_API.replace(/"/g,'')
 const path = require('path')
 module.exports = {
   dev: {
@@ -12,13 +9,28 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': {
+      '/user': {
         // 测试环境
-        target: base_url,
+        target: 'http://localhost:8000',
         secure: true,
         changeOrigin: true,
         pathRewrite: {
-          '^/api': 'api'
+          '^/user': '/user'
+        },
+        onProxyReq(proxyReq, req) {
+          console.log("原路径：" + req.originalUrl, "代理路径：" + req.path)
+        }
+      },
+      '/admin': {
+        // 测试环境
+        target: 'http://localhost:8012',
+        secure: true,
+        changeOrigin: true,
+        pathRewrite: {
+          '^/admin': '/admin'
+        },
+        onProxyReq(proxyReq, req) {
+          console.log("原路径：" + req.originalUrl, "代理路径：" + req.path)
         }
       }
     },

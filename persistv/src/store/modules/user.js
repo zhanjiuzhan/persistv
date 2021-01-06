@@ -1,6 +1,6 @@
-import { getToken } from '@/utils/auth'
+import { getToken, setToken } from '@/utils/auth'
 // import { encrypt } from "@/utils/rsaEncrypt";
-import { login } from '@/api/login'
+import { login, getUserInfo } from '@/api/login'
 
 const state = {
   token: getToken(),
@@ -29,14 +29,22 @@ const actions = {
     // const { userName, password, rememberMe } = userInfo
     return new Promise((resolve, reject) => {
       login(userInfo).then(res => {
-        debugger
-        console.log(res)
-      })
+        const token = res.data
+        setToken(token)
+        commit('SET_TOKEN', token)
+        commit('SET_USER', userInfo)
+        resolve(token)
+      }).catch(error => reject(error))
     })
   },
 
-  getInfo({ commit }) {
-
+  getInfo({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      getUserInfo(state.user.username).then(res => {
+        commit('SET_USER', res.data)
+        resolve(res.data)
+      }).catch(error => reject(error))
+    })
   },
 
   logout({ commit }) {
