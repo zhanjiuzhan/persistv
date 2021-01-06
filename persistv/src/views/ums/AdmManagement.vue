@@ -1,15 +1,81 @@
 <template>
+
   <div style="padding: 10px 20px">
+    <div>
+      <div style="float: right; margin-left: 50px; margin-right: 50px"><el-link type="primary" href="http://yyums.4366.com/logout.do">注 销</el-link></div>
+      <div style="float: right; margin-left: 50px; color: gray">身份: {{ roleNames }} </div>
+      <div style="float: right; color: gray; margin-left: 50px">用户: {{userInfo.username}}</div>
+
+    </div>
+    <div style="clear: both"></div>
     <el-tabs v-model="active" @tab-click="activeChangeClick">
 
       <!-- 用户信息相关操作 -->
       <el-tab-pane label="用户相关" name="user">
-
+        <div style="margin: 0 10px 10px 10px">
+          <el-button type="primary" @click="addUserDialog=true" icon="el-icon-plus" size="mini">添加用户</el-button>
+        </div>
+        <el-table :data="userData" style="width: 100%" border>
+          <el-table-column prop="userId" label="ID" width="80" align="center"></el-table-column>
+          <el-table-column prop="username" label="用户名" width="200" ></el-table-column>
+          <el-table-column label="是否可用" align="center" width="100">
+            <template slot-scope="scope">
+                <span v-if="scope.row.isEnable === 1">可用</span>
+                <span v-else>不可用</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="拥有项目" >
+            <template slot-scope="scope">
+              <el-tag  v-for="tmp in scope.row.projects"  :key='tmp' size="mini" style="margin-left: 5px">{{ tmp }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="拥有角色" >
+            <template slot-scope="scope">
+              <el-tag type="warning" v-for="tmp in scope.row.roles"  :key='tmp' size="mini" style="margin-left: 5px">{{ tmp }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="updateDate" label="修改时间"  align="center" width="180"></el-table-column>
+          <el-table-column prop="createDate" label="创建时间" align="center" width="180"></el-table-column>
+          <el-table-column label="操作" width="200" align="center">
+            <template slot-scope="scope">
+                <el-button type="primary" @click="" size="mini" icon="el-icon-edit" >修 改</el-button>
+                <el-button type="danger" @click="" size="mini" icon="el-icon-delete" >删 除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-tab-pane>
 
-      <!-- 用户信息相关操作 -->
+      <!-- 项目信息相关操作 -->
       <el-tab-pane label="项目相关" name="project">
-
+        <div style="margin: 0 10px 10px 10px">
+          <el-button type="primary" @click="addUserDialog=true" icon="el-icon-plus" size="mini">添加项目</el-button>
+        </div>
+        <el-table :data="projectData" style="width: 100%" border>
+          <el-table-column prop="project" label="项目代号" width="150" align="center"></el-table-column>
+          <el-table-column label="是否可用" align="center" width="120">
+            <template slot-scope="scope">
+              <span v-if="scope.row.type === 1">后端项目</span>
+              <span v-if="scope.row.type === 2">前端项目</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="domain" label="域名"  align="center" width="180"></el-table-column>
+          <el-table-column prop="prokey" label="KEY"  align="center"></el-table-column>
+          <el-table-column label="URL"  align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.type === 1">-</span>
+              <span v-if="scope.row.type === 2">{{scope.row.url}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="updateDate" label="修改时间"  align="center" width="180"></el-table-column>
+          <el-table-column prop="createDate" label="创建时间" align="center" width="180"></el-table-column>
+          <el-table-column label="操作" width="280" align="center">
+            <template slot-scope="scope">
+              <el-button type="success" @click="projectUserOpen(scope.row)" size="mini" icon="el-icon-edit" >用 户</el-button>
+              <el-button type="primary" @click="" size="mini" icon="el-icon-edit" >修 改</el-button>
+              <el-button type="danger" @click="" size="mini" icon="el-icon-delete" >删 除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-tab-pane>
 
       <!-- 角色信息相关操作 -->
@@ -22,12 +88,12 @@
         <div style="padding: 10px 20px">
           <el-form :inline="true" :model="permForm" class="demo-form-inline" size="mini">
             <el-form-item label="项目">
-              <el-select v-model="permForm.project" placeholder="项目代号" clearable @change="permProjectSelectChange">
+              <el-select v-model="permForm.project" placeholder="项目代号" clearable @change="permProjectSelectChange" filterable>
                 <el-option v-for="proj in projets" :key="proj" :label="proj" :value="proj"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="角色">
-              <el-select v-model="permForm.role" placeholder="角色名" clearable >
+              <el-select v-model="permForm.role" placeholder="角色名" clearable filterable>
                 <el-option v-for="role in permRoles" :key="role.id" :label="role.name" :value="role.name"></el-option>
               </el-select>
             </el-form-item>
@@ -50,15 +116,15 @@
           <el-table-column prop="id" label="ID" width="80" align="center"></el-table-column>
           <el-table-column prop="project" label="项目" width="80" align="center"></el-table-column>
           <el-table-column prop="domain" label="域名" width="160"></el-table-column>
-          <el-table-column prop="name" label="权限名称" width="180"></el-table-column>
+          <el-table-column prop="name" label="权限名称"></el-table-column>
           <el-table-column prop="method" label="请求类型" width="80" align="center"></el-table-column>
-          <el-table-column prop="url" label="请求路径" ></el-table-column>
+          <el-table-column prop="url" label="请求路径"></el-table-column>
           <el-table-column label="角色" width="180"  v-if="permForm.type === '1'">
             <template slot-scope="scope">
               <el-tag type="warning" v-for="tmp in scope.row.roleNames" :key='tmp' size="mini" style="margin-left: 5px">{{ tmp }}</el-tag>
             </template>
           </el-table-column>
-          <el-table-column label="功能点" width="180"  v-if="permForm.type === '1'">
+          <el-table-column label="功能点"  v-if="permForm.type === '1'">
             <template slot-scope="scope">
               <el-tag  v-for="tmp in scope.row.pointNames"  :key='tmp' size="mini" style="margin-left: 5px">{{ tmp }}</el-tag>
             </template>
@@ -77,7 +143,7 @@
             </template>
           </el-table-column>
           <el-table-column prop="rname" label="角色名" width="100" align="center" v-if="permForm.type === '2'"></el-table-column>
-          <el-table-column prop="updateDate" label="修改时间" width="180" align="center">
+          <el-table-column prop="updateDate" label="修改时间" width="170" align="center">
             <template slot-scope="scope">
               <template v-if="permForm.type === '1'">
                 <span>{{scope.row.updateDate}}</span>
@@ -87,7 +153,7 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column prop="createDate" label="创建时间" width="180" align="center">
+          <el-table-column prop="createDate" label="创建时间" width="170" align="center">
             <template slot-scope="scope">
               <template v-if="permForm.type === '1'">
                 <span>{{scope.row.createDate}}</span>
@@ -117,12 +183,12 @@
         <div style="padding: 10px 20px">
           <el-form :inline="true" :model="pointForm" size="mini">
             <el-form-item label="项目" label-width="50px">
-              <el-select v-model="pointForm.project" placeholder="项目代号" clearable @change="pointProjectSelectChange">
+              <el-select v-model="pointForm.project" placeholder="项目代号" clearable @change="pointProjectSelectChange" filterable>
                 <el-option v-for="project in projets" :key="project" :label="project" :value="project"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="角色" label-width="80px">
-              <el-select v-model="pointForm.roleNames" placeholder="角色名" clearable multiple >
+              <el-select v-model="pointForm.roleNames" placeholder="角色名" clearable multiple filterable>
                 <el-option v-for="role in pointRoles" :key="role.id" :label="role.name" :value="role.id"></el-option>
               </el-select>
             </el-form-item>
@@ -154,6 +220,37 @@
       </el-tab-pane>
     </el-tabs>
 
+    <el-dialog title="添加用户" :visible.sync="addUserDialog" width="20%">
+      <div style="height: 100px">
+        <el-form :model="addUserForm" size="mini" label-width="80px">
+          <el-form-item label="用户名">
+            <el-input v-model.number="addUserForm.username" style="width: 200px" clearable></el-input>
+          </el-form-item>
+        </el-form>
+        <div style="float:right; margin: 10px">
+          <el-button type="primary" @click="addUserSubmit" size="mini" icon="el-icon-edit">确 定</el-button>
+        </div>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="用户管理" :visible.sync="projectUserDialog" width="20%">
+      <div style="height: 380px">
+        <div style="margin-bottom: 10px">
+          <el-select v-model="assignPUser" clearable style="width: 250px" size="mini" filterable>
+            <el-option v-for="uname in userList" :key="uname" :label="uname" :value="uname"></el-option>
+          </el-select>
+          <el-button type="primary" @click="" size="mini" icon="el-icon-edit">添 加</el-button>
+        </div>
+        <el-table :data="projectUserInfo" style="width: 100%;" border height="320px">
+          <el-table-column prop="username" label="用户名" ></el-table-column>
+          <el-table-column label="操作" width="120" align="center">
+            <template slot-scope="scope">
+              <el-button type="danger" @click="" size="mini" icon="el-icon-delete">删 除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+    </el-dialog>
 
     <el-dialog title="修改权限信息" :visible.sync="upPermInfoDialog" width="25%">
       <div style="height: 220px">
@@ -168,7 +265,7 @@
             <el-input v-model.number="upForm.name" style="width: 250px"></el-input>
           </el-form-item>
           <el-form-item label="分配角色">
-            <el-select v-model="upForm.roles" multiple clearable style="width: 250px">
+            <el-select v-model="upForm.roles" multiple clearable style="width: 250px" filterable>
               <el-option v-for="role in upRoles" :key="role.id" :label="role.name" :value="role.id"></el-option>
             </el-select>
           </el-form-item>
@@ -182,7 +279,7 @@
     <el-dialog title="功能点添加" :visible.sync="dialogAddPoint" width="480px" :close-on-click-modal="false">
       <el-form ref="form" :model="addPointForm" label-width="80px" size="mini">
         <el-form-item label="项目代号">
-          <el-select v-model="addPointForm.project" @change="addPointProjectSelectChange">
+          <el-select v-model="addPointForm.project" @change="addPointProjectSelectChange" filterable>
             <el-option v-for="project in projets" :key="project" :label="project" :value="project"></el-option>
           </el-select>
         </el-form-item>
@@ -201,14 +298,14 @@
           <el-input v-model="addPointForm.url" style="width: 320px"></el-input>
         </el-form-item>
 
-        <el-form-item label="权限分配" v-else>
-          <el-select v-model="addPointForm.pid" style="width: 320px">
+        <el-form-item label="权限分配" v-else >
+          <el-select v-model="addPointForm.pid" style="width: 320px" filterable>
             <el-option v-for="permission in addPointPp" :key="permission.id" :label="permission.des" :value="permission.id"></el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="父功能点">
-          <el-select v-model="addPointForm.ppid">
+          <el-select v-model="addPointForm.ppid" filterable>
             <el-option label="ROOT" value="0"></el-option>
             <el-option v-for="point in addPointPpp" :key="point.id" :label="point.label" :value="point.id"></el-option>
           </el-select>
@@ -227,7 +324,7 @@
     <el-dialog title="功能点修改" :visible.sync="dialogUpdatePoint" width="480px" :close-on-click-modal="false">
       <el-form ref="form" :model="updatePointForm" label-width="80px" size="mini">
         <el-form-item label="项目代号">
-          <el-select v-model="updatePointForm.project" disabled>
+          <el-select v-model="updatePointForm.project" disabled filterable>
             <el-option v-for="project in projets" :key="project" :label="project" :value="project"></el-option>
           </el-select>
         </el-form-item>
@@ -247,13 +344,13 @@
         </el-form-item>
 
         <el-form-item label="权限分配" v-else>
-          <el-select v-model="updatePointForm.pid" style="width: 320px">
+          <el-select v-model="updatePointForm.pid" style="width: 320px" filterable>
             <el-option v-for="permission in upPointPp" :key="permission.id" :label="permission.des" :value="permission.id"></el-option>
           </el-select>
         </el-form-item>
 
         <el-form-item label="父功能点">
-          <el-select v-model="updatePointForm.ppid">
+          <el-select v-model="updatePointForm.ppid" filterable>
             <el-option label="ROOT" value="0"></el-option>
             <el-option v-for="point in upPointPpp" :key="point.id" :label="point.label" :value="point.id"></el-option>
           </el-select>
@@ -278,13 +375,27 @@ export default {
     name: 'AdmManagement',
     data() {
       return {
+          userInfo: {},
           active: 'user',
           // 初始化信息
           projets: [],
           pmap: {},
           rmap: {},
           ppmap: {},
-          permissions: [],
+          userList: [],
+
+          // 用户相关
+          userData: [],
+          addUserDialog: false,
+          addUserForm: {
+              username: ''
+          },
+          assignPUser: '',
+
+          // 项目相关
+          projectData: [],
+          projectUserDialog: false,
+          projectUserInfo:[],
 
           // 权限相关
           permData: [],
@@ -340,7 +451,6 @@ export default {
           dialogUpdatePoint: false,
 
 
-
           permissionPData: [],
           dialogAssignRole: false,
           assignRoleForm: {
@@ -352,13 +462,24 @@ export default {
       }
     },
     created: function() {
-        API.getPermissionInitInfos().then((ret)=>{
-            this.projets = ret.projects;
-            this.rmap = ret.roleMaps;
-            this.pmap = ret.permissionMaps;
-            this.ppmap = ret.pointMaps;
+        API.getInitInfos().then((ret)=>{
+            this.userInfo = ret.user;
+            this.projets = ret.init.projects;
+            this.rmap = ret.init.roleMaps;
+            this.pmap = ret.init.permissionMaps;
+            this.ppmap = ret.init.pointMaps;
+            this.userList = ret.init.userList;
         });
-        this.activeChangeClick();
+        this.activeChangeClick({name: 'user'});
+    },
+    computed: {
+        roleNames: function() {
+            let roleNames = [];
+            for(let attribute in this.userInfo.roles){
+                roleNames.push(eval('this.userInfo.roles[' + attribute + ']'));
+            }
+            return roleNames.toString();
+        }
     },
     methods: {
         /** tab 变化调用 */
@@ -367,7 +488,7 @@ export default {
                 this.showUser();
             }
             if (tab && tab.name === 'project') {
-
+                this.showProject();
             }
             if (tab && tab.name === 'role') {
 
@@ -379,11 +500,52 @@ export default {
                 this.showPoint();
             }
         },
+        /////////////////////////////////////
         /**
          * 显示用户一榄信息
          */
         showUser: function(){
+            API.getUserInfos().then(data=>{
+                this.userData = data;
+            });
+        },
 
+        /**
+         * 添加一个用户信息
+         */
+        addUserSubmit: function() {
+            if (!this.addUserForm.username) {
+                this.$message.warning("用户名是必须输入的!");
+                return;
+            }
+            API.addUserInfos({username: this.addUserForm.username}).then(data=>{
+                if (data == true) {
+                    this.showUser();
+                    this.addUserForm.username = '';
+                    this.addUserDialog = false;
+                    this.$message.success("添加成功!");
+                } else {
+                    this.$message.error("添加用户失败：" + data);
+                }
+            });
+        },
+        ///////////////////////////////////
+        /**
+         * 显示项目一榄信息
+         */
+        showProject: function(){
+            API.getProjectInfo().then(data=>{
+                this.projectData = data;
+            });
+        },
+        /**
+         * 打开项目的用户信息对话框
+         */
+        projectUserOpen: function(row) {
+            API.getUserByProject({project: row.project}).then(data=>{
+                this.projectUserInfo = data;
+            });
+            this.projectUserDialog = true;
         },
         ////////////////////////////////////
         /**
@@ -402,6 +564,9 @@ export default {
          */
         showPerm: function() {
             let par = {type: Number(this.permForm.type)};
+            if (!this.permForm.project) {
+                return;
+            }
             this.permForm.project ? par.project = this.permForm.project : "";
             this.permForm.role ? par.roleName = this.permForm.role : "";
             API.getPermInfos(par).then(data=>{

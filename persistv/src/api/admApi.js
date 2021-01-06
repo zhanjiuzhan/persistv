@@ -5,8 +5,30 @@ import Qs from 'qs'
  * 初始化相关
  * @param req
  */
-export function getPermissionInitInfos () {
-  return getM('http://yyums.4366.com/admin/p/getInit.do', );
+export function getInitInfos () {
+  return getM('http://yyums.4366.com/admin/getInit.do', );
+}
+
+/**
+ * 用户相关
+ */
+export function getUserInfos (req) {
+  return getM('http://yyums.4366.com/admin/u/gets.do', req);
+}
+
+export function addUserInfos (req) {
+  return postM('http://yyums.4366.com/admin/u/add.do', req);
+}
+
+/**
+ * 项目相关
+ */
+export function getProjectInfo (req) {
+  return getM('http://yyums.4366.com/admin/pr/gets.do', req);
+}
+
+export function getUserByProject (req) {
+  return getM('http://yyums.4366.com/admin/pr/get/user.do', req);
 }
 
 /**

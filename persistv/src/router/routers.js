@@ -47,6 +47,6 @@ export const routerMap = [
 ]
 
 export default new Router({
-  mode: 'history',
+  mode: 'hash',
   routes: routerMap
 })
