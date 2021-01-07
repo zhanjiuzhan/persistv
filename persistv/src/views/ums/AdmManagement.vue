@@ -48,18 +48,28 @@
       <!-- 项目信息相关操作 -->
       <el-tab-pane label="项目相关" name="project">
         <div style="margin: 0 10px 10px 10px">
-          <el-button type="primary" @click="addUserDialog=true" icon="el-icon-plus" size="mini">添加项目</el-button>
+          <el-button type="primary" @click="addProjectDialog=true" icon="el-icon-plus" size="mini">添加项目</el-button>
         </div>
         <el-table :data="projectData" style="width: 100%" border>
           <el-table-column prop="project" label="项目代号" width="150" align="center"></el-table-column>
           <el-table-column label="是否可用" align="center" width="120">
             <template slot-scope="scope">
-              <span v-if="scope.row.type === 1">后端项目</span>
-              <span v-if="scope.row.type === 2">前端项目</span>
+              <span v-if="scope.row.type === 1"><el-tag size="mini">后端项目</el-tag></span>
+              <span v-if="scope.row.type === 2" ><el-tag type="success" size="mini">前端项目</el-tag></span>
             </template>
           </el-table-column>
-          <el-table-column prop="domain" label="域名"  align="center" width="180"></el-table-column>
-          <el-table-column prop="prokey" label="KEY"  align="center"></el-table-column>
+          <el-table-column  label="域名"  align="center" width="180">
+            <template slot-scope="scope">
+              <span v-if="scope.row.type === 2">-</span>
+              <span v-if="scope.row.type === 1">{{scope.row.domain}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="KEY"  align="center">
+            <template slot-scope="scope">
+              <span v-if="scope.row.type === 2">-</span>
+              <span v-if="scope.row.type === 1">{{scope.row.prokey}}</span>
+            </template>
+          </el-table-column>
           <el-table-column label="URL"  align="center">
             <template slot-scope="scope">
               <span v-if="scope.row.type === 1">-</span>
@@ -224,7 +234,7 @@
       <div style="height: 100px">
         <el-form :model="addUserForm" size="mini" label-width="80px">
           <el-form-item label="用户名">
-            <el-input v-model.number="addUserForm.username" style="width: 200px" clearable></el-input>
+            <el-input v-model="addUserForm.username" style="width: 200px" clearable></el-input>
           </el-form-item>
         </el-form>
         <div style="float:right; margin: 10px">
@@ -233,19 +243,51 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="添加项目" :visible.sync="addProjectDialog" width="30%">
+      <div style="height: 300px">
+        <el-form :model="addProjectForm" size="mini" label-width="140px">
+          <el-form-item label="项目代号(英文缩写)">
+            <el-input v-model="addProjectForm.project" style="width: 200px" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="项目类型">
+            <el-select v-model="addProjectForm.type" style="width: 200px" filterable>
+              <el-option label="后端项目" value="1"></el-option>
+              <el-option label="前端项目" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="项目域名" v-if="addProjectForm.type === '1'">
+            <el-input v-model="addProjectForm.domain" style="width: 200px" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="项目 KEY" v-if="addProjectForm.type === '1'">
+            <el-input v-model="addProjectForm.prokey" style="width: 300px" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="项目跳转路径" v-if="addProjectForm.type === '2'">
+            <el-input v-model="addProjectForm.url" style="width: 300px" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="项目描述">
+            <el-input v-model="addProjectForm.description" style="width: 300px" clearable type="textarea":rows="2" :autosize="{ minRows: 2, maxRows: 3}"></el-input>
+          </el-form-item>
+        </el-form>
+        <div style="float:right; margin: 10px">
+          <el-button type="primary" @click="addProjectSubmit" size="mini" icon="el-icon-edit">确 定</el-button>
+        </div>
+      </div>
+    </el-dialog>
+
+
     <el-dialog title="用户管理" :visible.sync="projectUserDialog" width="20%">
       <div style="height: 380px">
         <div style="margin-bottom: 10px">
           <el-select v-model="assignPUser" clearable style="width: 250px" size="mini" filterable>
             <el-option v-for="uname in userList" :key="uname" :label="uname" :value="uname"></el-option>
           </el-select>
-          <el-button type="primary" @click="" size="mini" icon="el-icon-edit">添 加</el-button>
+          <el-button type="primary" @click="assignUserToProject" size="mini" icon="el-icon-edit">添 加</el-button>
         </div>
         <el-table :data="projectUserInfo" style="width: 100%;" border height="320px">
           <el-table-column prop="username" label="用户名" ></el-table-column>
           <el-table-column label="操作" width="120" align="center">
             <template slot-scope="scope">
-              <el-button type="danger" @click="" size="mini" icon="el-icon-delete">删 除</el-button>
+              <el-button type="danger" @click="delUserFromProject(scope.row.username)" size="mini" icon="el-icon-delete">删 除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -256,13 +298,13 @@
       <div style="height: 220px">
         <el-form :model="upForm" size="mini" label-width="80px">
           <el-form-item label="项目">
-            <el-input v-model.number="upForm.project" style="width: 180px" disabled></el-input>
+            <el-input v-model="upForm.project" style="width: 180px" disabled></el-input>
           </el-form-item>
           <el-form-item label="权限ID">
-            <el-input v-model.number="upForm.id" style="width: 180px" disabled></el-input>
+            <el-input v-model="upForm.id" style="width: 180px" disabled></el-input>
           </el-form-item>
           <el-form-item label="权限名">
-            <el-input v-model.number="upForm.name" style="width: 250px"></el-input>
+            <el-input v-model="upForm.name" style="width: 250px"></el-input>
           </el-form-item>
           <el-form-item label="分配角色">
             <el-select v-model="upForm.roles" multiple clearable style="width: 250px" filterable>
@@ -391,11 +433,21 @@ export default {
               username: ''
           },
           assignPUser: '',
+          assignProject: '',
 
           // 项目相关
           projectData: [],
           projectUserDialog: false,
           projectUserInfo:[],
+          addProjectDialog: false,
+          addProjectForm: {
+              project: '',
+              prokey: '',
+              domain: '',
+              description: '',
+              type: '1',
+              url: '',
+          },
 
           // 权限相关
           permData: [],
@@ -545,7 +597,93 @@ export default {
             API.getUserByProject({project: row.project}).then(data=>{
                 this.projectUserInfo = data;
             });
+            this.assignProject = row.project;
             this.projectUserDialog = true;
+        },
+        /**
+         * 分配一个用户给 项目
+         */
+        assignUserToProject: function() {
+            if(!this.assignPUser) {
+                this.$message.warning("请指定一个用户！");
+                return;
+            }
+            API.assignUserToProject({project: this.assignProject, username: this.assignPUser}).then(data=>{
+                if (data == true) {
+                    this.assignPUser = '';
+                    this.$message.success("分配成功!");
+                    API.getUserByProject({project: this.assignProject}).then(data=>{
+                        this.projectUserInfo = data;
+                    });
+                } else {
+                    this.$message.error("分配用户失败：" + data);
+                }
+            });
+        },
+        /**
+         * 从项目中解绑一个用户
+         */
+        delUserFromProject: function(username) {
+            this.$confirm('此操作将删除 [' + username + '], 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                API.delUserFromProject({project: this.assignProject, username: username}).then(data=>{
+                    if (data == true) {
+                        this.$message.success("解除成功!");
+                        API.getUserByProject({project: this.assignProject}).then(data=>{
+                            this.projectUserInfo = data;
+                        });
+                    } else {
+                        this.$message.error("解除失败：" + data);
+                    }
+                });
+            }).catch(() => {
+                this.$message.info('已取消删除');
+            });
+        },
+        /**
+         * 添加一个项目信息
+         */
+        addProjectSubmit: function() {
+            let para = {};
+            if (!this.addProjectForm.project) {
+                this.$message.warning("项目名不能为空!");
+                return;
+            }
+            para.project = this.addProjectForm.project;
+            para.type = Number(this.addProjectForm.type);
+            if (this.addProjectForm.type === '1') {
+                if (!this.addProjectForm.prokey) {
+                    this.$message.warning("KEY 不能为空!");
+                    return;
+                }
+                if (!this.addProjectForm.domain) {
+                    this.$message.warning("域名不能为空!");
+                    return;
+                }
+                para.prokey = this.addProjectForm.prokey;
+                para.domain = this.addProjectForm.domain;
+
+            } else if (this.addProjectForm.type === '2') {
+                if (!this.addProjectForm.url) {
+                    this.$message.warning("跳转路径不能为空!");
+                    return;
+                }
+                para.url = this.addProjectForm.url;
+            }
+
+            para.description = this.addProjectForm.description ? this.addProjectForm.description : '';
+            API.addProject(para).then(data=>{
+                if (data == true) {
+                    this.$message.success("添加成功!");
+                    this.showProject();
+                } else {
+                    this.$message.error("添加失败：" + data);
+                }
+            });
+
         },
         ////////////////////////////////////
         /**

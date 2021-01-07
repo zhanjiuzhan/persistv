@@ -31,6 +31,18 @@ export function getUserByProject (req) {
   return getM('http://yyums.4366.com/admin/pr/get/user.do', req);
 }
 
+export function assignUserToProject (req) {
+  return postM('http://yyums.4366.com/admin/pr/addUser.do', req);
+}
+
+export function delUserFromProject (req) {
+  return postM('http://yyums.4366.com/admin/pr/delUser.do', req);
+}
+
+export function addProject (req) {
+  return postM('http://yyums.4366.com/admin/pr/add.do', req);
+}
+
 /**
  * 权限相关
  * @param req
