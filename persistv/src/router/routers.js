@@ -36,7 +36,7 @@ export const routerMap = [
     path: '/',
     component: () => import('@/layout'),
     name: '首页',
-    meta: { title: '', icon: '', noCache: true, affix: true }
+    meta: { title: '首页', icon: '', noCache: true, affix: true }
   }
 ]
 

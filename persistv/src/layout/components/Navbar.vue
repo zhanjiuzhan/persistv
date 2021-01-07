@@ -1,12 +1,12 @@
 <template>
-  <div calss="navbar">
+  <div class="navbar">
     <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container" />
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
       <template v-if="device!=='mobile'">
         <el-tooltip :content="textFullScreen" effect="dark" placement="bottom">
-          <screenfull class="screenfull right-menu-itme" />
+          <screenfull class="screenfull right-menu-item" />
         </el-tooltip>
       </template>
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
@@ -100,11 +100,14 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 50px;
-  line-height: 50px;
-  border-radius: 0px!important;
+  height: 56px;
+  overflow: hidden;
+  position: relative;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+
   .hamburger-container {
-    line-height: 58px;
+    line-height: 46px;
     height: 50px;
     float: left;
     padding: 0 10px;
@@ -116,7 +119,7 @@ export default {
     dispaly: inline-block;
     vertical-align: top;
   }
-  .rigth-menu {
+  .right-menu {
     float: right;
     height: 100%;
     &:focus {
