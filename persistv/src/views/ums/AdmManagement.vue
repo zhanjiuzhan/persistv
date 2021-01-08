@@ -26,7 +26,9 @@
           </el-table-column>
           <el-table-column label="拥有项目" >
             <template slot-scope="scope">
-              <el-tag  v-for="tmp in scope.row.projects"  :key='tmp' size="mini" style="margin-left: 5px">{{ tmp }}</el-tag>
+              <el-tag  v-for="tmp in scope.row.projects"  :key='tmp' size="mini" style="margin-left: 5px" :type="tmp.substr(0, 1) === '1' ? 'primary' : 'success'">
+                {{ tmp.substr(1) }}
+              </el-tag>
             </template>
           </el-table-column>
           <el-table-column label="拥有角色" >

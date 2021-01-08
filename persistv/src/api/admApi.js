@@ -10,6 +10,21 @@ export function getInitInfos () {
 }
 
 /**
+ * 登出
+ */
+export function logout () {
+  return getM('http://yyums.4366.com/logout.do', );
+}
+
+/**
+ * 取得导航页的信息
+ */
+export function guideInit () {
+  return getM('http://yyums.4366.com/guide/init.do', );
+}
+
+
+/**
  * 用户相关
  */
 export function getUserInfos (req) {

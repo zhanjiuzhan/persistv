@@ -15,7 +15,7 @@ export default {
   /**
    * @description 此处修改网站名称
    */
-  webName: 'PERSISTV 后台管理系统',
+  webName: 'UMS 后台管理系统',
   /**
    * @description 是否只保持一个子菜单的展开
    */
