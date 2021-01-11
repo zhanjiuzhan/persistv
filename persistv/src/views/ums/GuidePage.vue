@@ -14,11 +14,30 @@
       <div>
         <div style="float: left; margin-left: 5px; font-size: small;margin-top: 5px">欢迎您: <span style="color: #66b1ff"> {{username}}</span></div>
         <div style="float: right; margin-right: 3px">
-          <el-button size="mini">修改密码</el-button>
+          <el-button size="mini" @click="upUserPasswordDialog=true">修改密码</el-button>
           <el-button size="mini" @click="logout">退 出</el-button>
         </div>
       </div>
     </div>
+
+    <el-dialog title="添加用户" :visible.sync="upUserPasswordDialog" width="20%">
+      <div style="height: 170px">
+        <el-form :model="form" size="mini" label-width="80px">
+          <el-form-item label="密 码">
+            <el-input v-model="form.password" style="width: 200px" clearable type="password"></el-input>
+          </el-form-item>
+          <el-form-item label="新密码">
+            <el-input v-model="form.password1" style="width: 200px" clearable type="password"></el-input>
+          </el-form-item>
+          <el-form-item label="再确认">
+            <el-input v-model="form.password2" style="width: 200px" clearable type="password"></el-input>
+          </el-form-item>
+        </el-form>
+        <div style="float:right; margin: 10px">
+          <el-button type="primary" @click="upPasswordSubmit" size="mini" icon="el-icon-edit">确 定</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -29,11 +48,13 @@
         data() {
             return {
                 username: '未登录',
-                projects: [{
-                    id: 1,
-                    url: 'http://www.baidu.com',
-                    name: 'Baidu',
-                }],
+                projects: [],
+                upUserPasswordDialog: false,
+                form: {
+                    password: '',
+                    password1: '',
+                    password2: '',
+                }
             }
         },
         created: function() {
@@ -48,16 +69,33 @@
         },
         methods: {
             logout: function () {
-                console.log("close");
                 API.logout().then(()=>{
-                    let userAgent = navigator.userAgent;
-                    if (userAgent.indexOf("Firefox") != -1 || userAgent.indexOf("Chrome") !=-1) {
-                        window.location.href="http://yyums.4366.com/login.do";
-                        window.close();
+                    window.location.href="http://yyums.4366.com/login.do";
+                });
+            },
+            upPasswordSubmit: function () {
+                if (!this.form.password) {
+                    this.$message.warning("请输入原密码!");
+                }
+                if (!this.form.password1) {
+                    this.$message.warning("请输入新密码!");
+                }
+                if (!this.form.password2) {
+                    this.$message.warning("请再次确认!");
+                }
+                if (this.form.password1 !== this.form.password2) {
+                    this.$message.warning("两次输入密码不一致!");
+                }
+                API.upPassword({
+                    password: this.form.password,
+                    password1: this.form.password1,
+                    password2: this.form.password2
+                }).then((data)=>{
+                    if (data == true) {
+                        this.$message.success("密码修改成功, 5秒后将跳转到登录!");
+                        setTimeout(()=>this.logout(), 5000);
                     } else {
-                        window.opener = null;
-                        window.open("", "_self");
-                        window.close();
+                        this.$message.error("密码修改错误: " + data);
                     }
                 });
             }

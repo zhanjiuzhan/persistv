@@ -25,6 +25,13 @@ export function guideInit () {
 
 
 /**
+ * 取得导航页的信息
+ */
+export function upPassword (parameter) {
+  return postM('http://yyums.4366.com/guide/updatePassword.do', parameter);
+}
+
+/**
  * 用户相关
  */
 export function getUserInfos (req) {
@@ -57,6 +64,22 @@ export function delUserFromProject (req) {
 export function addProject (req) {
   return postM('http://yyums.4366.com/admin/pr/add.do', req);
 }
+
+/**
+ * 角色相关
+ */
+export function getRoles (req) {
+  return getM('http://yyums.4366.com/admim/r/gets.do', req);
+}
+
+export function addRole (req) {
+  return postM('http://yyums.4366.com/admim/r/add.do', req);
+}
+
+export function delRole (req) {
+  return postM('http://yyums.4366.com/admim/r/del.do', req);
+}
+
 
 /**
  * 权限相关

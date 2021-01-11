@@ -92,7 +92,64 @@
 
       <!-- 角色信息相关操作 -->
       <el-tab-pane label="角色相关" name="role">
-
+        <div style="padding: 10px 20px">
+          <el-form :inline="true" :model="roleFrom" class="demo-form-inline" size="mini">
+            <el-form-item label="项目">
+              <el-select v-model="roleFrom.project" placeholder="项目代号" clearable @change="roleProjectSelectChange" filterable>
+                <el-option v-for="proj in projets" :key="proj" :label="proj" :value="proj"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="角色">
+              <el-select v-model="roleFrom.roleName" placeholder="角色名" clearable filterable>
+                <el-option v-for="role in roleRoles" :key="role.id" :label="role.name" :value="role.name"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="用户">
+              <el-select v-model="roleFrom.username" placeholder="角色名" clearable filterable>
+                <el-option v-for="user in userList" :key="user" :label="user" :value="user"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="查询类型">
+              <el-select v-model="roleFrom.type" @change="showRole">
+                <el-option label="角色信息" value="1"></el-option>
+                <el-option label="用户角色分配信息" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item>
+              <el-button type="primary" @click="showRole" icon="el-icon-search" style="margin-left: 40px">查 询</el-button>
+              <el-button type="success" @click="" icon="el-icon-check" style="margin-left: 20px">分配用户</el-button>
+              <el-button type="danger" @click="" icon="el-icon-delete" style="margin-left: 20px">解绑关系</el-button>
+              <el-button type="warning" @click="addRoleDialog=true" icon="el-icon-plus" style="margin-left: 20px">添加角色</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+        <el-table :data="roleData" style="width: 100%" border @selection-change="roleTabSelectionChange">
+          <el-table-column type="selection" width="40"></el-table-column>
+          <el-table-column prop="sid" label="角色ID" width="80" align="center"></el-table-column>
+          <el-table-column prop="project" label="项目代号" width="100" align="center"></el-table-column>
+          <el-table-column prop="name" label="角色" width="150" align="center"></el-table-column>
+          <el-table-column prop="description" label="角色描述"></el-table-column>
+          <el-table-column prop="username" label="用户" width="150" align="center" v-if="roleFrom.type === '2'"></el-table-column>
+          <el-table-column prop="id" label="绑定用户" v-if="roleFrom.type === '1'">
+            <template slot-scope="scope">
+              <el-tag  v-for="tmp in scope.row.roleUserList"  :key='tmp' size="mini" style="margin-left: 5px" type="success">{{ tmp }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="id" label="分配权限" v-if="roleFrom.type === '1'">
+            <template slot-scope="scope">
+              <el-tag  v-for="tmp in scope.row.rolePermList"  :key='tmp' size="mini" style="margin-left: 5px">{{ tmp }}</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column prop="updateDate" label="修改时间" width="160" align="center"></el-table-column>
+          <el-table-column prop="createDate" label="创建时间" width="160" align="center"></el-table-column>
+          <el-table-column label="操作" width="200" align="center">
+            <template slot-scope="scope">
+              <el-button type="primary" @click="upRole(scope.row)" size="mini" icon="el-icon-edit" v-if="roleFrom.type === '1'">修 改</el-button>
+              <el-button type="danger" @click="delRole(scope.row.sid)" size="mini" icon="el-icon-delete" v-if="roleFrom.type === '1'">删 除</el-button>
+              <el-button type="danger" @click="" size="mini" icon="el-icon-delete" v-if="roleFrom.type === '2'">解 绑</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
       </el-tab-pane>
 
       <!-- 权限信息相关操作 -->
@@ -276,7 +333,6 @@
       </div>
     </el-dialog>
 
-
     <el-dialog title="用户管理" :visible.sync="projectUserDialog" width="20%">
       <div style="height: 380px">
         <div style="margin-bottom: 10px">
@@ -316,6 +372,59 @@
         </el-form>
         <div style="float:right; margin: 10px">
           <el-button type="primary" @click="upPermAndAssignInfoSubmit" size="mini" icon="el-icon-edit">确 定</el-button>
+        </div>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="添加角色" :visible.sync="addRoleDialog" width="430px">
+      <div style="height: 200px">
+        <el-form :model="addRoleForm" size="mini" label-width="80px">
+          <el-form-item label="项目">
+            <el-select v-model="addRoleForm.project"  filterable>
+              <el-option v-for="project in projets" :key="project" :label="project" :value="project"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="角色名">
+            <el-input v-model="addRoleForm.name" style="width: 200px" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="角色描述">
+            <el-input v-model="addRoleForm.description" style="width: 300px" clearable type="textarea":rows="2" :autosize="{ minRows: 2, maxRows: 3}"></el-input>
+          </el-form-item>
+        </el-form>
+        <div style="float:right; margin: 10px">
+          <el-button type="primary" @click="addRoleSubmit" size="mini" icon="el-icon-edit">确 定</el-button>
+        </div>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="修改角色信息" :visible.sync="upRoleDialog" width="520px">
+      <div style="height: 500px; overflow-y:auto;">
+        <el-form :model="upRoleForm" size="mini" label-width="100px">
+          <el-form-item label="角色名">
+            <el-input v-model="upRoleForm.name" style="width: 200px" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="角色描述">
+            <el-input v-model="upRoleForm.description" style="width: 300px" clearable type="textarea":rows="2" :autosize="{ minRows: 2, maxRows: 3}"></el-input>
+          </el-form-item>
+          <el-form-item label="全部解绑用户">
+            <el-switch v-model="upRoleForm.isClearUser" active-text="是" inactive-text="否"></el-switch>
+          </el-form-item>
+          <el-form-item label="绑定用户">
+            <el-select v-model="upRoleForm.users" clearable style="width: 250px" size="mini" filterable multiple>
+              <el-option v-for="uname in userList" :key="uname" :label="uname" :value="uname"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="全部解绑权限">
+            <el-switch v-model="upRoleForm.isClearPerm" active-text="是" inactive-text="否"></el-switch>
+          </el-form-item>
+          <el-form-item label="绑定权限">
+            <el-select v-model="upRoleForm.perms" style="width: 320px" filterable multiple>
+              <el-option v-for="permission in pmap[upRoleForm.project]" :key="permission.id" :label="permission.des" :value="permission.id"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
+        <div style="float:right; margin: 10px">
+          <el-button type="primary" @click="addRoleSubmit" size="mini" icon="el-icon-edit">确 定</el-button>
         </div>
       </div>
     </el-dialog>
@@ -420,7 +529,7 @@ export default {
     data() {
       return {
           userInfo: {},
-          active: 'user',
+          active: 'role',
           // 初始化信息
           projets: [],
           pmap: {},
@@ -449,6 +558,34 @@ export default {
               description: '',
               type: '1',
               url: '',
+          },
+
+          // 角色相关
+          roleData: [],
+          roleRoles: [],
+          roleFrom: {
+             type: '1',
+             project: '',
+             roleName: '',
+             username: '',
+          },
+          roleSelectionData: [],
+          addRoleDialog: false,
+          addRoleForm: {
+              project: "",
+              name: "",
+              description: ""
+          },
+          upRoleDialog: false,
+          upRoleForm: {
+              rid: '',
+              project: '',
+              name: '',
+              description: '',
+              isClearUser: false,
+              isClearPerm: false,
+              users: [],
+              perms: [],
           },
 
           // 权限相关
@@ -545,7 +682,7 @@ export default {
                 this.showProject();
             }
             if (tab && tab.name === 'role') {
-
+                this.showRole();
             }
             if (tab && tab.name === 'permission') {
                 this.showPerm();
@@ -686,6 +823,96 @@ export default {
                 }
             });
 
+        },
+        ///////////////////////////////////
+        /**
+         * 项目名变化 角色信息变化
+         */
+        roleProjectSelectChange: function(tmp) {
+            let val = this.rmap[tmp];
+            if (val) {
+                this.roleRoles = val;
+            } else {
+                this.roleRoles = [];
+            }
+        },
+        /**
+         * 取得角色的信息
+         */
+        showRole: function() {
+            let parameter = {type: this.roleFrom.type};
+            if (!this.roleFrom.project) {
+                return;
+            }
+            parameter.project = this.roleFrom.project;
+            parameter.roleName = this.roleFrom.roleName ? this.roleFrom.roleName : "";
+            parameter.username = this.roleFrom.username ? this.roleFrom.username : "";
+
+            API.getRoles(parameter).then(d=>this.roleData=d)
+        },
+        /**
+         * table 选择数据
+         */
+        roleTabSelectionChange: function(val) {
+            this.roleSelectionData = val;
+        },
+        /**
+         * 添加一个角色信息
+         */
+        addRoleSubmit: function() {
+            if (!this.addRoleForm.project) {
+                this.$message.info("必须选择一个项目!");
+                return;
+            }
+            if (!this.addRoleForm.name) {
+                this.$message.info("必须填写角色名!");
+                return;
+            }
+            let parameter = {
+                project: this.addRoleForm.project,
+                name: this.addRoleForm.name,
+            };
+            parameter.description = this.addRoleForm.description ? this.addRoleForm.description : "";
+
+            API.addRole(parameter).then(data=>{
+                if (data == true) {
+                    this.$message.success("添加成功!");
+                    this.showRole();
+                    this.addRoleDialog = false;
+                } else {
+                    this.$message.error("添加失败：" + data);
+                }
+            });
+        },
+        delRole: function(sid) {
+            this.$confirm('此操作将删除 [' + sid + '], 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                API.delRole({id: Number(sid)}).then(data=>{
+                    if (data == true) {
+                        this.$message.success("删除成功!");
+                        this.showRole();
+                    } else {
+                        this.$message.error("删除失败：" + data);
+                    }
+                });
+            }).catch(() => {
+                this.$message.info('已取消删除');
+            });
+
+        },
+        upRole: function(row) {
+            this.upRoleForm.rid = row.sid;
+            this.upRoleForm.project = row.project;
+            this.upRoleForm.name = row.name;
+            this.upRoleForm.description = row.description;
+            this.upRoleForm.isClearUser = false;
+            this.upRoleForm.isClearPerm = false;
+            this.upRoleForm.users = [];
+            this.upRoleForm.perms = [];
+            this.upRoleDialog = true;
         },
         ////////////////////////////////////
         /**
