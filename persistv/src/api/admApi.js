@@ -42,6 +42,10 @@ export function addUserInfos (req) {
   return postM('http://yyums.4366.com/admin/u/add.do', req);
 }
 
+export function delUser (req) {
+  return postM('http://yyums.4366.com/admin/u/del.do', req);
+}
+
 /**
  * 项目相关
  */
@@ -64,6 +68,13 @@ export function delUserFromProject (req) {
 export function addProject (req) {
   return postM('http://yyums.4366.com/admin/pr/add.do', req);
 }
+export function upProject (req) {
+  return postM('http://yyums.4366.com/admin/pr/update.do', req);
+}
+export function delProject (req) {
+  return postM('http://yyums.4366.com/admin/pr/del.do', req);
+}
+
 
 /**
  * 角色相关
@@ -80,6 +91,15 @@ export function delRole (req) {
   return postM('http://yyums.4366.com/admim/r/del.do', req);
 }
 
+export function upRole (req) {
+  return postM('http://yyums.4366.com/admim/r/update.do', req);
+}
+export function unBindUr (req) {
+  return postM('http://yyums.4366.com/admim/r/unBindUr.do', req);
+}
+export function bindUr (req) {
+  return postM('http://yyums.4366.com/admim/r/bindUr.do', req);
+}
 
 /**
  * 权限相关

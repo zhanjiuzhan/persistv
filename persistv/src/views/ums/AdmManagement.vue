@@ -40,8 +40,8 @@
           <el-table-column prop="createDate" label="创建时间" align="center" width="180"></el-table-column>
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
-                <el-button type="primary" @click="" size="mini" icon="el-icon-edit" >修 改</el-button>
-                <el-button type="danger" @click="" size="mini" icon="el-icon-delete" >删 除</el-button>
+                <!--<el-button type="primary" @click="" size="mini" icon="el-icon-edit" >修 改</el-button>-->
+                <el-button type="danger" @click="delUser(scope.row)" size="mini" icon="el-icon-delete" >删 除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -83,8 +83,8 @@
           <el-table-column label="操作" width="280" align="center">
             <template slot-scope="scope">
               <el-button type="success" @click="projectUserOpen(scope.row)" size="mini" icon="el-icon-edit" >用 户</el-button>
-              <el-button type="primary" @click="" size="mini" icon="el-icon-edit" >修 改</el-button>
-              <el-button type="danger" @click="" size="mini" icon="el-icon-delete" >删 除</el-button>
+              <el-button type="primary" @click="upProject(scope.row)" size="mini" icon="el-icon-edit" >修 改</el-button>
+              <el-button type="danger" @click="delProject(scope.row)" size="mini" icon="el-icon-delete" >删 除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -117,8 +117,8 @@
             </el-form-item>
             <el-form-item>
               <el-button type="primary" @click="showRole" icon="el-icon-search" style="margin-left: 40px">查 询</el-button>
-              <el-button type="success" @click="" icon="el-icon-check" style="margin-left: 20px">分配用户</el-button>
-              <el-button type="danger" @click="" icon="el-icon-delete" style="margin-left: 20px">解绑关系</el-button>
+              <el-button type="success" @click="bindUserRole" icon="el-icon-check" style="margin-left: 20px">分配用户</el-button>
+              <el-button type="danger" @click="unBindUserRoles" icon="el-icon-delete" style="margin-left: 20px">解绑关系</el-button>
               <el-button type="warning" @click="addRoleDialog=true" icon="el-icon-plus" style="margin-left: 20px">添加角色</el-button>
             </el-form-item>
           </el-form>
@@ -145,8 +145,8 @@
           <el-table-column label="操作" width="200" align="center">
             <template slot-scope="scope">
               <el-button type="primary" @click="upRole(scope.row)" size="mini" icon="el-icon-edit" v-if="roleFrom.type === '1'">修 改</el-button>
-              <el-button type="danger" @click="delRole(scope.row.sid)" size="mini" icon="el-icon-delete" v-if="roleFrom.type === '1'">删 除</el-button>
-              <el-button type="danger" @click="" size="mini" icon="el-icon-delete" v-if="roleFrom.type === '2'">解 绑</el-button>
+              <el-button type="danger" @click="delRole(scope.row)" size="mini" icon="el-icon-delete" v-if="roleFrom.type === '1'">删 除</el-button>
+              <el-button type="danger" @click="unBindUserRole(scope.row)" size="mini" icon="el-icon-delete" v-if="roleFrom.type === '2'">解 绑</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -333,6 +333,37 @@
       </div>
     </el-dialog>
 
+    <el-dialog title="修改项目信息" :visible.sync="upProjectDialog" width="30%">
+      <div style="height: 300px">
+        <el-form :model="upProjectForm" size="mini" label-width="140px">
+          <el-form-item label="项目代号(英文缩写)">
+            <el-input v-model="upProjectForm.project" style="width: 200px" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="项目类型">
+            <el-select v-model="upProjectForm.type" style="width: 200px" filterable>
+              <el-option label="后端项目" value="1"></el-option>
+              <el-option label="前端项目" value="2"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="项目域名" v-if="upProjectForm.type === '1'">
+            <el-input v-model="upProjectForm.domain" style="width: 200px" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="项目 KEY" v-if="upProjectForm.type === '1'">
+            <el-input v-model="upProjectForm.prokey" style="width: 300px" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="项目跳转路径" v-if="upProjectForm.type === '2'">
+            <el-input v-model="upProjectForm.url" style="width: 300px" clearable></el-input>
+          </el-form-item>
+          <el-form-item label="项目描述">
+            <el-input v-model="upProjectForm.description" style="width: 300px" clearable type="textarea":rows="2" :autosize="{ minRows: 2, maxRows: 3}"></el-input>
+          </el-form-item>
+        </el-form>
+        <div style="float:right; margin: 10px">
+          <el-button type="primary" @click="upProjectSubmit" size="mini" icon="el-icon-edit">确 定</el-button>
+        </div>
+      </div>
+    </el-dialog>
+
     <el-dialog title="用户管理" :visible.sync="projectUserDialog" width="20%">
       <div style="height: 380px">
         <div style="margin-bottom: 10px">
@@ -398,7 +429,7 @@
     </el-dialog>
 
     <el-dialog title="修改角色信息" :visible.sync="upRoleDialog" width="520px">
-      <div style="height: 500px; overflow-y:auto;">
+      <div style="height: 400px; overflow-y:auto;">
         <el-form :model="upRoleForm" size="mini" label-width="100px">
           <el-form-item label="角色名">
             <el-input v-model="upRoleForm.name" style="width: 200px" clearable></el-input>
@@ -424,7 +455,7 @@
           </el-form-item>
         </el-form>
         <div style="float:right; margin: 10px">
-          <el-button type="primary" @click="addRoleSubmit" size="mini" icon="el-icon-edit">确 定</el-button>
+          <el-button type="primary" @click="upRoleSubmit" size="mini" icon="el-icon-edit">确 定</el-button>
         </div>
       </div>
     </el-dialog>
@@ -552,6 +583,15 @@ export default {
           projectUserInfo:[],
           addProjectDialog: false,
           addProjectForm: {
+              project: '',
+              prokey: '',
+              domain: '',
+              description: '',
+              type: '1',
+              url: '',
+          },
+          upProjectDialog: false,
+          upProjectForm: {
               project: '',
               prokey: '',
               domain: '',
@@ -700,7 +740,27 @@ export default {
                 this.userData = data;
             });
         },
-
+        /**
+         * 删除用户信息
+         */
+        delUser: function(row) {
+            this.$confirm('此操作将删除 [' + row.username + '], 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                API.delUser({username: row.username}).then(data=>{
+                    if (data == true) {
+                        this.$message.success("删除成功!");
+                        this.showUser();
+                    } else {
+                        this.$message.error("删除失败：" + data);
+                    }
+                });
+            }).catch(() => {
+                this.$message.info('已取消删除');
+            });
+        },
         /**
          * 添加一个用户信息
          */
@@ -738,6 +798,83 @@ export default {
             });
             this.assignProject = row.project;
             this.projectUserDialog = true;
+        },
+        /**
+         * 删除一个项目信息
+         */
+        delProject: function(row) {
+            // 删除该项目的角色 然后删除解绑该项目分配的用户 最后删除该项目
+            this.$confirm('此操作将删除 [' + row.project + '], 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                API.delProject({project: row.project}).then(data=>{
+                    if (data == true) {
+                        this.$message.success("删除成功!");
+                        this.showProject();
+                    } else {
+                        this.$message.error("删除失败：" + data);
+                    }
+                });
+            }).catch(() => {
+                this.$message.info('已取消删除');
+            });
+        },
+        /**
+         * 修改一个项目信息
+         */
+        upProject: function(row) {
+            console.log(row);
+            this.upProjectForm.project = row.project;
+            this.upProjectForm.prokey = row.prokey;
+            this.upProjectForm.domain =  row.domain;
+            this.upProjectForm.description =  row.description;
+            this.upProjectForm.type = row.type + "";
+            this.upProjectForm.url = row.url;
+            this.upProjectDialog = true;
+        },
+        /**
+         * 修改项目信息
+         */
+        upProjectSubmit: function() {
+            let para = {};
+            if (!this.upProjectForm.project) {
+                this.$message.warning("项目名不能为空!");
+                return;
+            }
+            para.project = this.upProjectForm.project;
+            para.type = Number(this.upProjectForm.type);
+            if (this.upProjectForm.type === '1') {
+                if (!this.upProjectForm.prokey) {
+                    this.$message.warning("KEY 不能为空!");
+                    return;
+                }
+                if (!this.upProjectForm.domain) {
+                    this.$message.warning("域名不能为空!");
+                    return;
+                }
+                para.prokey = this.upProjectForm.prokey;
+                para.domain = this.upProjectForm.domain;
+
+            } else if (this.upProjectForm.type === '2') {
+                if (!this.upProjectForm.url) {
+                    this.$message.warning("跳转路径不能为空!");
+                    return;
+                }
+                para.url = this.upProjectForm.url;
+            }
+
+            para.description = this.upProjectForm.description ? this.upProjectForm.description : '';
+            API.upProject(para).then(data=>{
+                if (data == true) {
+                    this.$message.success("修改成功!");
+                    this.showProject();
+                    this.upProjectDialog = false;
+                } else {
+                    this.$message.error("修改失败：" + data);
+                }
+            });
         },
         /**
          * 分配一个用户给 项目
@@ -822,7 +959,6 @@ export default {
                     this.$message.error("添加失败：" + data);
                 }
             });
-
         },
         ///////////////////////////////////
         /**
@@ -884,13 +1020,21 @@ export default {
                 }
             });
         },
-        delRole: function(sid) {
-            this.$confirm('此操作将删除 [' + sid + '], 是否继续?', '提示', {
+        delRole: function(row) {
+            this.$confirm('此操作将删除 [' + row.sid + '], 是否继续?', '提示', {
                 confirmButtonText: '确定',
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                API.delRole({id: Number(sid)}).then(data=>{
+                if (row.roleUserList.length > 0) {
+                    this.$message.info("请解绑关联用户信息!");
+                    return;
+                }
+                if (row.rolePermList.length > 0) {
+                    this.$message.info("请解绑关联权限信息!");
+                    return;
+                }
+                API.delRole({id: Number(row.sid)}).then(data=>{
                     if (data == true) {
                         this.$message.success("删除成功!");
                         this.showRole();
@@ -901,7 +1045,83 @@ export default {
             }).catch(() => {
                 this.$message.info('已取消删除');
             });
+        },
+        bindUserRole: function() {
+            if (!this.roleFrom.project) {
+                this.$message.info("项目代号需要指定!");
+                return;
+            }
+            if (this.roleFrom.type !== '1') {
+                this.$message.info("查询类型为角色信息!");
+                return;
+            }
 
+            if(!this.roleFrom.username) {
+                this.$message.info("请选择要分配的用户!");
+                return;
+            }
+
+            if (this.roleSelectionData.length < 1) {
+                this.$message.info("请选择要分配的角色!");
+                return;
+            }
+
+            let sids = [];
+            this.roleSelectionData.forEach(obj=>{
+                if (obj.project === this.roleFrom.project) {
+                    sids.push(obj.sid);
+                }
+            });
+            API.bindUr({
+                username: this.roleFrom.username,
+                sidList: sids.toString()
+            }).then(data=>{
+                this.$message.success("绑定用户成功!");
+                this.showRole();
+            });
+        },
+        /**
+         * 解绑用户和角色的关系
+         */
+        unBindUserRole(row) {
+            let parameter = {
+                usernameList: row.username,
+                sidList: row.sid
+            };
+            API.unBindUr(parameter).then(data=>{
+                 this.$message.success("解绑成功!");
+                 this.showRole();
+            });
+        },
+        unBindUserRoles: function() {
+            if (!this.roleFrom.project) {
+                this.$message.info("项目代号需要指定!");
+                return;
+            }
+            if (this.roleFrom.type !== '2') {
+                this.$message.info("查询类型为用户角色分配信息!");
+                return;
+            }
+
+            if (this.roleSelectionData.length < 1) {
+                this.$message.info("请选择要解绑的信息!");
+                return;
+            }
+            let users = [];
+            let sids = [];
+            this.roleSelectionData.forEach(obj=>{
+                if (obj.project === this.roleFrom.project) {
+                    users.push(obj.username);
+                    sids.push(obj.sid);
+                }
+            });
+            API.unBindUr({
+                usernameList: users.toString(),
+                sidList: sids.toString()
+            }).then(data=>{
+                 this.$message.success("解绑成功!");
+                 this.showRole();
+            });
         },
         upRole: function(row) {
             this.upRoleForm.rid = row.sid;
@@ -913,6 +1133,27 @@ export default {
             this.upRoleForm.users = [];
             this.upRoleForm.perms = [];
             this.upRoleDialog = true;
+        },
+        upRoleSubmit: function() {
+            let parameter = {
+                sid: this.upRoleForm.rid,
+                project: this.upRoleForm.project,
+                name: this.upRoleForm.name,
+                description: this.upRoleForm.description,
+                isClearUser: this.upRoleForm.isClearUser,
+                isClearPerm: this.upRoleForm.isClearPerm,
+                users: this.upRoleForm.users.toString(),
+                perms: this.upRoleForm.perms.toString()
+            }
+            API.upRole(parameter).then((data)=>{
+                if (data == true) {
+                    this.$message.success("修改成功!");
+                    this.showRole();
+                    this.upRoleDialog = false;
+                } else {
+                    this.$message.error("修改失败：" + data);
+                }
+            });
         },
         ////////////////////////////////////
         /**
