@@ -8,14 +8,13 @@
 
     </div>
     <div style="clear: both"></div>
-    <el-tabs v-model="active" @tab-click="activeChangeClick">
-
+    <el-tabs v-model="active" @tab-click="activeChangeClick" ref="tabs">
       <!-- 用户信息相关操作 -->
       <el-tab-pane label="用户相关" name="user">
-        <div style="margin: 0 10px 10px 10px">
-          <el-button type="primary" @click="addUserDialog=true" icon="el-icon-plus" size="mini">添加用户</el-button>
+        <div style="margin: 0 10px 10px 10px" v-if="btnUserAdd.display">
+          <el-button type="primary" @click="addUserDialog=true" icon="el-icon-plus" size="mini">{{btnUserAdd.label}}</el-button>
         </div>
-        <el-table :data="userData" style="width: 100%" border>
+        <el-table :data="userData" style="width: 100%" border ref="userTab">
           <el-table-column prop="userId" label="ID" width="80" align="center"></el-table-column>
           <el-table-column prop="username" label="用户名" width="200" ></el-table-column>
           <el-table-column label="是否可用" align="center" width="100">
@@ -38,10 +37,10 @@
           </el-table-column>
           <el-table-column prop="updateDate" label="修改时间"  align="center" width="180"></el-table-column>
           <el-table-column prop="createDate" label="创建时间" align="center" width="180"></el-table-column>
-          <el-table-column label="操作" width="200" align="center">
+          <el-table-column label="操作" width="200" align="center" v-if="btnUserDel.display">
             <template slot-scope="scope">
                 <!--<el-button type="primary" @click="" size="mini" icon="el-icon-edit" >修 改</el-button>-->
-                <el-button type="danger" @click="delUser(scope.row)" size="mini" icon="el-icon-delete" >删 除</el-button>
+                <el-button type="danger" @click="delUser(scope.row)" size="mini" icon="el-icon-delete">{{btnUserDel.label}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -49,8 +48,8 @@
 
       <!-- 项目信息相关操作 -->
       <el-tab-pane label="项目相关" name="project">
-        <div style="margin: 0 10px 10px 10px">
-          <el-button type="primary" @click="addProjectDialog=true" icon="el-icon-plus" size="mini">添加项目</el-button>
+        <div style="margin: 0 10px 10px 10px" v-if="btnProjectAdd.display">
+          <el-button type="primary" @click="addProjectDialog=true" icon="el-icon-plus" size="mini">{{btnProjectAdd.label}}</el-button>
         </div>
         <el-table :data="projectData" style="width: 100%" border>
           <el-table-column prop="project" label="项目代号" width="150" align="center"></el-table-column>
@@ -80,11 +79,11 @@
           </el-table-column>
           <el-table-column prop="updateDate" label="修改时间"  align="center" width="180"></el-table-column>
           <el-table-column prop="createDate" label="创建时间" align="center" width="180"></el-table-column>
-          <el-table-column label="操作" width="280" align="center">
+          <el-table-column label="操作" width="280" align="center" v-if="btnShowProjectUser.display || btnProjectUpdate.display || btnProjectDel.display">
             <template slot-scope="scope">
-              <el-button type="success" @click="projectUserOpen(scope.row)" size="mini" icon="el-icon-edit" >用 户</el-button>
-              <el-button type="primary" @click="upProject(scope.row)" size="mini" icon="el-icon-edit" >修 改</el-button>
-              <el-button type="danger" @click="delProject(scope.row)" size="mini" icon="el-icon-delete" >删 除</el-button>
+              <el-button type="success" @click="projectUserOpen(scope.row)" size="mini" icon="el-icon-edit" v-if="btnShowProjectUser.display">{{btnShowProjectUser.label}}</el-button>
+              <el-button type="primary" @click="upProject(scope.row)" size="mini" icon="el-icon-edit" v-if="btnProjectUpdate.display">{{btnProjectUpdate.label}}</el-button>
+              <el-button type="danger" @click="delProject(scope.row)" size="mini" icon="el-icon-delete" v-if="btnProjectDel.display">{{btnProjectDel.label}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -94,32 +93,32 @@
       <el-tab-pane label="角色相关" name="role">
         <div style="padding: 10px 20px">
           <el-form :inline="true" :model="roleFrom" class="demo-form-inline" size="mini">
-            <el-form-item label="项目">
+            <el-form-item label="项目" v-if="btnRoleShow.display">
               <el-select v-model="roleFrom.project" placeholder="项目代号" clearable @change="roleProjectSelectChange" filterable>
                 <el-option v-for="proj in projets" :key="proj" :label="proj" :value="proj"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="角色">
+            <el-form-item label="角色" v-if="btnRoleShow.display">
               <el-select v-model="roleFrom.roleName" placeholder="角色名" clearable filterable>
                 <el-option v-for="role in roleRoles" :key="role.id" :label="role.name" :value="role.name"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="用户">
+            <el-form-item label="用户" v-if="btnRoleShow.display || btnRoleAdd.display">
               <el-select v-model="roleFrom.username" placeholder="角色名" clearable filterable>
                 <el-option v-for="user in userList" :key="user" :label="user" :value="user"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="查询类型">
+            <el-form-item label="查询类型" v-if="btnRoleShow.display || btnRoleDelUsers.display">
               <el-select v-model="roleFrom.type" @change="showRole">
                 <el-option label="角色信息" value="1"></el-option>
                 <el-option label="用户角色分配信息" value="2"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="showRole" icon="el-icon-search" style="margin-left: 40px">查 询</el-button>
-              <el-button type="success" @click="bindUserRole" icon="el-icon-check" style="margin-left: 20px">分配用户</el-button>
-              <el-button type="danger" @click="unBindUserRoles" icon="el-icon-delete" style="margin-left: 20px">解绑关系</el-button>
-              <el-button type="warning" @click="addRoleDialog=true" icon="el-icon-plus" style="margin-left: 20px">添加角色</el-button>
+              <el-button type="primary" @click="showRole" icon="el-icon-search" style="margin-left: 40px" v-if="btnRoleShow.display">{{btnRoleShow.label}}</el-button>
+              <el-button type="success" @click="bindUserRole" icon="el-icon-check" style="margin-left: 20px" v-if="btnRoleAddUser.display">{{btnRoleAddUser.label}}</el-button>
+              <el-button type="danger" @click="unBindUserRoles" icon="el-icon-delete" style="margin-left: 20px" v-if="btnRoleDelUsers.display">{{btnRoleDelUsers.label}}</el-button>
+              <el-button type="warning" @click="addRoleDialog=true" icon="el-icon-plus" style="margin-left: 20px" v-if="btnRoleAdd.display">{{btnRoleAdd.label}}</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -142,11 +141,11 @@
           </el-table-column>
           <el-table-column prop="updateDate" label="修改时间" width="160" align="center"></el-table-column>
           <el-table-column prop="createDate" label="创建时间" width="160" align="center"></el-table-column>
-          <el-table-column label="操作" width="200" align="center">
+          <el-table-column label="操作" width="200" align="center" v-if="(roleFrom.type === '1' && (btnRoleUp.display || btnRoleDel.display)) || (roleFrom.type === '2' && btnRoleDelUser.display)">
             <template slot-scope="scope">
-              <el-button type="primary" @click="upRole(scope.row)" size="mini" icon="el-icon-edit" v-if="roleFrom.type === '1'">修 改</el-button>
-              <el-button type="danger" @click="delRole(scope.row)" size="mini" icon="el-icon-delete" v-if="roleFrom.type === '1'">删 除</el-button>
-              <el-button type="danger" @click="unBindUserRole(scope.row)" size="mini" icon="el-icon-delete" v-if="roleFrom.type === '2'">解 绑</el-button>
+              <el-button type="primary" @click="upRole(scope.row)" size="mini" icon="el-icon-edit" v-if="roleFrom.type === '1' && btnRoleUp.display">{{btnRoleUp.label}}</el-button>
+              <el-button type="danger" @click="delRole(scope.row)" size="mini" icon="el-icon-delete" v-if="roleFrom.type === '1' && btnRoleDel.display">{{btnRoleDel.label}}</el-button>
+              <el-button type="danger" @click="unBindUserRole(scope.row)" size="mini" icon="el-icon-delete" v-if="roleFrom.type === '2' && btnRoleDelUser.display">{{btnRoleDelUser.label}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -156,27 +155,27 @@
       <el-tab-pane label="权限相关" name="permission">
         <div style="padding: 10px 20px">
           <el-form :inline="true" :model="permForm" class="demo-form-inline" size="mini">
-            <el-form-item label="项目">
+            <el-form-item label="项目" v-if="btnPerShow.display || btnPerAssignRoles.display || btnPerUnBindRoles.display">
               <el-select v-model="permForm.project" placeholder="项目代号" clearable @change="permProjectSelectChange" filterable>
                 <el-option v-for="proj in projets" :key="proj" :label="proj" :value="proj"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="角色">
+            <el-form-item label="角色" v-if="btnPerShow.display || btnPerAssignRoles.display || btnPerUnBindRoles.display">
               <el-select v-model="permForm.role" placeholder="角色名" clearable filterable>
                 <el-option v-for="role in permRoles" :key="role.id" :label="role.name" :value="role.name"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="查询类型">
+            <el-form-item label="查询类型" v-if="btnPerShow.display || btnPerAssignRoles.display || btnPerUnBindRoles.display">
               <el-select v-model="permForm.type" @change="showPerm">
                   <el-option label="权限信息" value="1"></el-option>
                   <el-option label="分配信息" value="2"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item>
-              <el-button type="primary" @click="showPerm" icon="el-icon-search" style="margin-left: 40px">查 询</el-button>
-              <el-button type="success" @click="assignRoles" icon="el-icon-check" style="margin-left: 20px">分配角色</el-button>
-              <el-button type="danger" @click="delAssigns" icon="el-icon-delete" style="margin-left: 20px">解绑关系</el-button>
-              <el-button type="warning" @click="refresePerm" icon="el-icon-refresh-right" style="margin-left: 20px">推 送</el-button>
+              <el-button type="primary" @click="showPerm" icon="el-icon-search" style="margin-left: 40px" v-if="btnPerShow.display">{{btnPerShow.label}}</el-button>
+              <el-button type="success" @click="assignRoles" icon="el-icon-check" style="margin-left: 20px" v-if="btnPerAssignRoles.display">{{btnPerAssignRoles.label}}</el-button>
+              <el-button type="danger" @click="delAssigns" icon="el-icon-delete" style="margin-left: 20px" v-if="btnPerUnBindRoles.display">{{btnPerUnBindRoles.label}}</el-button>
+              <el-button type="warning" @click="refresePerm" icon="el-icon-refresh-right" style="margin-left: 20px" v-if="btnPerRefresh.display">{{btnPerRefresh.label}}</el-button>
             </el-form-item>
           </el-form>
         </div>
@@ -232,15 +231,15 @@
               </template>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="200" align="center">
+          <el-table-column label="操作" width="200" align="center" v-if="(permForm.type === '2' && btnPerUnBindRole.display) || (permForm.type === '1' && (btnPerUp.display || btnPerAssignRole.display) || btnPerDel.display)">
             <template slot-scope="scope">
               <template>
 
-                <el-button type="success" @click="assignRole(scope.row)" size="mini"  icon="el-icon-check" v-if="permForm.type === '1' && scope.row.status !== 2">分 配</el-button>
-                <el-button type="danger" @click="delPerm(scope.row)" size="mini" icon="el-icon-delete" v-if="scope.row.status === 2">删 除</el-button>
-                <el-button type="primary" @click="upPermInfo(scope.row)" size="mini" icon="el-icon-edit" v-if="permForm.type === '1'" >修 改</el-button>
+                <el-button type="success" @click="assignRole(scope.row)" size="mini"  icon="el-icon-check" v-if="permForm.type === '1' && scope.row.status !== 2 && btnPerAssignRole.display">{{btnPerAssignRole.label}}</el-button>
+                <el-button type="danger" @click="delPerm(scope.row)" size="mini" icon="el-icon-delete" v-if="permForm.type === '1' && scope.row.status === 2 && btnPerDel.display">{{btnPerDel.label}}</el-button>
+                <el-button type="primary" @click="upPermInfo(scope.row)" size="mini" icon="el-icon-edit" v-if="permForm.type === '1' && btnPerUp.display" >{{btnPerUp.label}}</el-button>
 
-                <el-button type="danger" @click="delAssign(scope.row)" size="mini"  icon="el-icon-delete" v-if="permForm.type === '2'">解 绑</el-button>
+                <el-button type="danger" @click="delAssign(scope.row)" size="mini"  icon="el-icon-delete" v-if="permForm.type === '2' && btnPerUnBindRole.display">{{btnPerUnBindRole.label}}</el-button>
               </template>
             </template>
           </el-table-column>
@@ -251,22 +250,23 @@
       <el-tab-pane label="功能相关" name="point">
         <div style="padding: 10px 20px">
           <el-form :inline="true" :model="pointForm" size="mini">
-            <el-form-item label="项目" label-width="50px">
+            <el-form-item label="项目" label-width="50px" v-if="btnPointShow.display">
               <el-select v-model="pointForm.project" placeholder="项目代号" clearable @change="pointProjectSelectChange" filterable>
                 <el-option v-for="project in projets" :key="project" :label="project" :value="project"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="角色" label-width="80px">
+            <el-form-item label="角色" label-width="80px" v-if="btnPointShow.display">
               <el-select v-model="pointForm.roleNames" placeholder="角色名" clearable multiple filterable>
                 <el-option v-for="role in pointRoles" :key="role.id" :label="role.name" :value="role.id"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="展示" label-width="80px"><el-switch v-model="pointForm.show"></el-switch></el-form-item>
-            <el-form-item><el-button type="primary" @click="showPoint" style="margin-left: 40px" icon="el-icon-search">查 询</el-button></el-form-item>
-            <el-form-item><el-button type="warning" @click="dialogAddPoint = true" style="margin-left: 20px" icon="el-icon-plus">添加功能</el-button></el-form-item>
+            <el-form-item label="展示" label-width="80px"><el-switch v-model="pointForm.show" v-if="btnPointShow.display"></el-switch></el-form-item>
+            <el-form-item><el-button type="primary" @click="showPoint" style="margin-left: 40px" icon="el-icon-search" v-if="btnPointShow.display">{{btnPointShow.label}}</el-button></el-form-item>
+            <el-form-item><el-button type="warning" @click="dialogAddPoint = true" style="margin-left: 20px" icon="el-icon-plus" v-if="btnPointAdd.display">{{btnPointAdd.label}}</el-button></el-form-item>
           </el-form>
         </div>
         <el-table :data="pointInfo" style="width: 100%;" row-key="id" border default-expand-all :tree-props="{children: 'children', hasChildren: 'hasChildren'}" ref="pointTable">
+          <el-table-column prop="id" label="ID" width="120"></el-table-column>
           <el-table-column prop="label" label="名称" width="300"></el-table-column>
           <el-table-column prop="type" label="类型" width="100" align="center"></el-table-column>
           <el-table-column label="是否展示" width="100" align="center">
@@ -279,10 +279,10 @@
           <el-table-column prop="url" label="路径"></el-table-column>
           <el-table-column prop="roles" label="拥有角色"></el-table-column>
           <el-table-column prop="order" label="顺序" width="50px" align="center"></el-table-column>
-          <el-table-column label="操作" width="200" align="center">
+          <el-table-column label="操作" width="200" align="center" v-if="btnPointUp.display || btnPointDel.display">
             <template slot-scope="scope">
-              <el-button type="primary" @click="pointUpdate(scope.row)" size="mini" icon="el-icon-edit">修 改</el-button>
-              <el-button type="danger" @click="pointDelete(scope.row.id, scope.row.label)" size="mini" icon="el-icon-delete">删 除</el-button>
+              <el-button type="primary" @click="pointUpdate(scope.row)" size="mini" icon="el-icon-edit" v-if="btnPointUp.display">{{btnPointUp.label}}</el-button>
+              <el-button type="danger" @click="pointDelete(scope.row.id, scope.row.label)" size="mini" icon="el-icon-delete" v-if="btnPointDel.display">{{btnPointDel.label}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -367,16 +367,16 @@
     <el-dialog title="用户管理" :visible.sync="projectUserDialog" width="20%">
       <div style="height: 380px">
         <div style="margin-bottom: 10px">
-          <el-select v-model="assignPUser" clearable style="width: 250px" size="mini" filterable>
+          <el-select v-model="assignPUser" clearable style="width: 250px" size="mini" filterable v-if="btnProjectAddUser">
             <el-option v-for="uname in userList" :key="uname" :label="uname" :value="uname"></el-option>
           </el-select>
-          <el-button type="primary" @click="assignUserToProject" size="mini" icon="el-icon-edit">添 加</el-button>
+          <el-button type="primary" @click="assignUserToProject" size="mini" icon="el-icon-edit" v-if="btnProjectAddUser.display">{{btnProjectAddUser.label}}</el-button>
         </div>
         <el-table :data="projectUserInfo" style="width: 100%;" border height="320px">
           <el-table-column prop="username" label="用户名" ></el-table-column>
-          <el-table-column label="操作" width="120" align="center">
+          <el-table-column label="操作" width="120" align="center" v-if="btnProjectDelUser.display">
             <template slot-scope="scope">
-              <el-button type="danger" @click="delUserFromProject(scope.row.username)" size="mini" icon="el-icon-delete">删 除</el-button>
+              <el-button type="danger" @click="delUserFromProject(scope.row.username)" size="mini" icon="el-icon-delete">{{btnProjectDelUser.label}}</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -559,8 +559,12 @@ export default {
     name: 'AdmManagement',
     data() {
       return {
+          // 前端布局配置
+          webConfig: {},
+          webConfigEle: {},
+
           userInfo: {},
-          active: 'role',
+          active: 'user',
           // 初始化信息
           projets: [],
           pmap: {},
@@ -690,9 +694,42 @@ export default {
               permission: '',
           },
           ppermissionShow: true,
+
+          // 按钮的显示决定
+          btnUserAdd: {display: true, label: "未初始化", url: "#"},
+          btnUserDel: {display: true, label: "未初始化", url: "#"},
+
+          btnProjectAdd: {display: true, label: "未初始化", url: "#"},
+          btnProjectDel: {display: true, label: "未初始化", url: "#"},
+          btnProjectUpdate: {display: true, label: "未初始化", url: "#"},
+          btnShowProjectUser: {display: true, label: "未初始化", url: "#"},
+          btnProjectDelUser: {display: true, label: "未初始化", url: "#"},
+          btnProjectAddUser: {display: true, label: "未初始化", url: "#"},
+
+          btnRoleShow: {display: true, label: "未初始化", url: "#"},
+          btnRoleAdd: {display: true, label: "未初始化", url: "#"},
+          btnRoleDel: {display: true, label: "未初始化", url: "#"},
+          btnRoleUp: {display: true, label: "未初始化", url: "#"},
+          btnRoleAddUser: {display: true, label: "未初始化", url: "#"},
+          btnRoleDelUser: {display: true, label: "未初始化", url: "#"},
+          btnRoleDelUsers: {display: true, label: "未初始化", url: "#"},
+
+          btnPerShow: {display: true, label: "未初始化", url: "#"},
+          btnPerDel: {display: true, label: "未初始化", url: "#"},
+          btnPerUp: {display: true, label: "未初始化", url: "#"},
+          btnPerRefresh: {display: true, label: "未初始化", url: "#"},
+          btnPerAssignRole: {display: true, label: "未初始化", url: "#"},
+          btnPerAssignRoles: {display: true, label: "未初始化", url: "#"},
+          btnPerUnBindRole: {display: true, label: "未初始化", url: "#"},
+          btnPerUnBindRoles: {display: true, label: "未初始化", url: "#"},
+
+          btnPointShow: {display: true, label: "未初始化", url: "#"},
+          btnPointAdd: {display: true, label: "未初始化", url: "#"},
+          btnPointUp: {display: true, label: "未初始化", url: "#"},
+          btnPointDel: {display: true, label: "未初始化", url: "#"},
       }
     },
-    created: function() {
+    created: async function() {
         API.getInitInfos().then((ret)=>{
             this.userInfo = ret.user;
             this.projets = ret.init.projects;
@@ -701,7 +738,54 @@ export default {
             this.ppmap = ret.init.pointMaps;
             this.userList = ret.init.userList;
         });
+        await API.getAuthInfo().then((info)=> {
+            this.webConfig = JSON.parse(info.menu);
+            this.makeMenuConfig(this.webConfig, this.webConfigEle);
+        });
         this.activeChangeClick({name: 'user'});
+
+        // 菜单的显示和隐藏
+        this.$refs.tabs.$children[0].$refs.tabs[0].style.display = this.convert(this.webConfigEle['I91'].display );
+        this.$refs.tabs.$children[0].$refs.tabs[1].style.display = this.convert(this.webConfigEle['I103'].display );
+        this.$refs.tabs.$children[0].$refs.tabs[2].style.display = this.convert(this.webConfigEle['I127'].display );
+        this.$refs.tabs.$children[0].$refs.tabs[3].style.display = this.convert(this.webConfigEle['I130'].display );
+        this.$refs.tabs.$children[0].$refs.tabs[4].style.display = this.convert(this.webConfigEle['I133'].display );
+        // 按钮的显示
+        // 用户
+        this.btnUserAdd = this.webConfigEle['I94'];
+        this.btnUserDel = this.webConfigEle['I97'];
+
+        // 项目
+        this.btnProjectAdd = this.webConfigEle['I106'];
+        this.btnProjectDel = this.webConfigEle['I109'];
+        this.btnProjectUpdate = this.webConfigEle['I112'];
+        this.btnShowProjectUser = this.webConfigEle['I121'];
+        this.btnProjectDelUser = this.webConfigEle['I115'];
+        this.btnProjectAddUser = this.webConfigEle['I118'];
+
+        // 角色
+        this.btnRoleShow = this.webConfigEle['I136'];
+        this.btnRoleAdd = this.webConfigEle['I166'];
+        this.btnRoleDel = this.webConfigEle['I172'];
+        this.btnRoleUp = this.webConfigEle['I169'];
+        this.btnRoleAddUser = this.webConfigEle['I142'];
+        this.btnRoleDelUser = this.webConfigEle['I163'];
+        this.btnRoleDelUsers = this.webConfigEle['I160'];
+
+
+        this.btnPerShow = this.webConfigEle['I178'];
+        this.btnPerDel = this.webConfigEle['I211'];
+        this.btnPerUp = this.webConfigEle['I187'];
+        this.btnPerRefresh = this.webConfigEle['I233'];
+        this.btnPerAssignRole = this.webConfigEle['I184'];
+        this.btnPerAssignRoles = this.webConfigEle['I181'];
+        this.btnPerUnBindRole = this.webConfigEle['I193'];
+        this.btnPerUnBindRoles = this.webConfigEle['I190'];
+
+        this.btnPointShow = this.webConfigEle['I199'];
+        this.btnPointAdd = this.webConfigEle['I202'];
+        this.btnPointUp = this.webConfigEle['I205'];
+        this.btnPointDel = this.webConfigEle['I208'];
     },
     computed: {
         roleNames: function() {
@@ -710,9 +794,23 @@ export default {
                 roleNames.push(eval('this.userInfo.roles[' + attribute + ']'));
             }
             return roleNames.toString();
-        }
+        },
     },
     methods: {
+        convert: function(display) {
+            return display ? 'auto' : 'none';
+        },
+        makeMenuConfig: function(tmpElement, obj) {
+            if (tmpElement) {
+                let k = "I" + tmpElement.id;;
+                obj[k] = tmpElement;
+                if (tmpElement.children && tmpElement.children.length > 0) {
+                    for (let i = 0; i < tmpElement.children.length; i++ ) {
+                        this.makeMenuConfig(tmpElement.children[i], obj);
+                    }
+                }
+            }
+        },
         /** tab 变化调用 */
         activeChangeClick: function (tab) {
             if (tab && tab.name === 'user') {
@@ -749,7 +847,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                API.delUser({username: row.username}).then(data=>{
+                API.postM(this.btnUserDel.url, {username: row.username}).then(data=>{
                     if (data == true) {
                         this.$message.success("删除成功!");
                         this.showUser();
@@ -769,7 +867,7 @@ export default {
                 this.$message.warning("用户名是必须输入的!");
                 return;
             }
-            API.addUserInfos({username: this.addUserForm.username}).then(data=>{
+            API.postM(this.btnUserAdd.url, {username: this.addUserForm.username}).then(data=>{
                 if (data == true) {
                     this.showUser();
                     this.addUserForm.username = '';
@@ -793,7 +891,7 @@ export default {
          * 打开项目的用户信息对话框
          */
         projectUserOpen: function(row) {
-            API.getUserByProject({project: row.project}).then(data=>{
+            API.getM(this.btnShowProjectUser.url, {project: row.project}).then(data=>{
                 this.projectUserInfo = data;
             });
             this.assignProject = row.project;
@@ -809,7 +907,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                API.delProject({project: row.project}).then(data=>{
+                API.postM(this.btnProjectDel.url, {project: row.project}).then(data=>{
                     if (data == true) {
                         this.$message.success("删除成功!");
                         this.showProject();
@@ -866,7 +964,7 @@ export default {
             }
 
             para.description = this.upProjectForm.description ? this.upProjectForm.description : '';
-            API.upProject(para).then(data=>{
+            API.postM(this.btnProjectUpdate.url, para).then(data=>{
                 if (data == true) {
                     this.$message.success("修改成功!");
                     this.showProject();
@@ -884,7 +982,7 @@ export default {
                 this.$message.warning("请指定一个用户！");
                 return;
             }
-            API.assignUserToProject({project: this.assignProject, username: this.assignPUser}).then(data=>{
+            API.postM(this.btnProjectAddUser.url, {project: this.assignProject, username: this.assignPUser}).then(data=>{
                 if (data == true) {
                     this.assignPUser = '';
                     this.$message.success("分配成功!");
@@ -905,7 +1003,7 @@ export default {
                 cancelButtonText: '取消',
                 type: 'warning'
             }).then(() => {
-                API.delUserFromProject({project: this.assignProject, username: username}).then(data=>{
+                API.postM(this.btnProjectDelUser.url, {project: this.assignProject, username: username}).then(data=>{
                     if (data == true) {
                         this.$message.success("解除成功!");
                         API.getUserByProject({project: this.assignProject}).then(data=>{
@@ -951,7 +1049,7 @@ export default {
             }
 
             para.description = this.addProjectForm.description ? this.addProjectForm.description : '';
-            API.addProject(para).then(data=>{
+            API.postM(this.btnProjectAdd.url, para).then(data=>{
                 if (data == true) {
                     this.$message.success("添加成功!");
                     this.showProject();
@@ -983,8 +1081,7 @@ export default {
             parameter.project = this.roleFrom.project;
             parameter.roleName = this.roleFrom.roleName ? this.roleFrom.roleName : "";
             parameter.username = this.roleFrom.username ? this.roleFrom.username : "";
-
-            API.getRoles(parameter).then(d=>this.roleData=d)
+            API.getM(this.btnRoleShow.url, parameter).then(d=>this.roleData=d)
         },
         /**
          * table 选择数据
@@ -1010,7 +1107,7 @@ export default {
             };
             parameter.description = this.addRoleForm.description ? this.addRoleForm.description : "";
 
-            API.addRole(parameter).then(data=>{
+            API.postM(this.btnRoleAdd.url, parameter).then(data=>{
                 if (data == true) {
                     this.$message.success("添加成功!");
                     this.showRole();
@@ -1034,7 +1131,7 @@ export default {
                     this.$message.info("请解绑关联权限信息!");
                     return;
                 }
-                API.delRole({id: Number(row.sid)}).then(data=>{
+                API.postM(this.btnRoleDel.url, {id: Number(row.sid)}).then(data=>{
                     if (data == true) {
                         this.$message.success("删除成功!");
                         this.showRole();
@@ -1072,7 +1169,7 @@ export default {
                     sids.push(obj.sid);
                 }
             });
-            API.bindUr({
+            API.postM(this.btnRoleAddUser.url, {
                 username: this.roleFrom.username,
                 sidList: sids.toString()
             }).then(data=>{
@@ -1088,7 +1185,7 @@ export default {
                 usernameList: row.username,
                 sidList: row.sid
             };
-            API.unBindUr(parameter).then(data=>{
+            API.postM(this.btnRoleDelUser.url, parameter).then(data=>{
                  this.$message.success("解绑成功!");
                  this.showRole();
             });
@@ -1115,7 +1212,7 @@ export default {
                     sids.push(obj.sid);
                 }
             });
-            API.unBindUr({
+            API.postM(this.btnRoleDelUsers.url, {
                 usernameList: users.toString(),
                 sidList: sids.toString()
             }).then(data=>{
@@ -1145,7 +1242,7 @@ export default {
                 users: this.upRoleForm.users.toString(),
                 perms: this.upRoleForm.perms.toString()
             }
-            API.upRole(parameter).then((data)=>{
+            API.postM(this.btnRoleUp.url, parameter).then((data)=>{
                 if (data == true) {
                     this.$message.success("修改成功!");
                     this.showRole();
@@ -1177,7 +1274,7 @@ export default {
             }
             this.permForm.project ? par.project = this.permForm.project : "";
             this.permForm.role ? par.roleName = this.permForm.role : "";
-            API.getPermInfos(par).then(data=>{
+            API.getM(this.btnPerShow.url, par).then(data=>{
                 this.permData = data;
             });
         },
@@ -1198,7 +1295,7 @@ export default {
                     this.$message.warning("请先解绑角色!");
                     return;
                 }
-                API.delPermInfos({id: Number(row.id)}).then(res=>{
+                API.getM(this.btnPerDel.url, {id: Number(row.id)}).then(res=>{
                     if (res == true) {
                         this.$message.success("权限: " + row.id + ", 删除成功!");
                         this.showPerm();
@@ -1218,7 +1315,7 @@ export default {
                 this.$message.warning("请先指定项目名!");
                 return;
             }
-            API.refreshPerm({project: this.permForm.project}).then(res=>{
+            API.getM(this.btnPerRefresh.url, {project: this.permForm.project}).then(res=>{
                  this.$message.success("项目 " + this.permForm.project + " 权限信息刷新成功!");
             });
         },
@@ -1236,7 +1333,7 @@ export default {
                 this.$message.warning("请先指定角色信息!");
                 return;
             }
-            API.assignPermToRole({project: this.permForm.project, roleName: this.permForm.role, pid: row.id+""}).then(res=>{
+            API.postM(this.btnPerAssignRole.url, {project: this.permForm.project, roleName: this.permForm.role, pid: row.id+""}).then(res=>{
                if (res == true) {
                    this.$message.success("分配成功!");
                    this.showPerm();
@@ -1271,7 +1368,7 @@ export default {
                 this.$message.warning("请先选择要分配的权限信息!");
                 return;
             }
-            API.assignPermToRole({project: this.permForm.project, roleName: this.permForm.role, pid: perms.toString()}).then(res=>{
+            API.postM(this.btnPerAssignRoles.url, {project: this.permForm.project, roleName: this.permForm.role, pid: perms.toString()}).then(res=>{
                 if (res == true) {
                     this.$message.success("分配成功!");
                     this.showPerm();
@@ -1311,7 +1408,7 @@ export default {
             if (this.upForm.roles && this.upForm.roles.length > 0) {
                 para.roles = this.upForm.roles.toString();
             }
-            API.upPermAndAssignInfo(para).then((res)=>{
+            API.postM(this.btnPerUp.url, para).then((res)=>{
                 if (res == true) {
                     this.$message.success("修改成功!");
                     this.showPerm();
@@ -1325,7 +1422,7 @@ export default {
          * 解绑关系
          */
         delAssign: function(row) {
-            API.delAssign({pid: row.id, rid: row.rid}).then(res=>{
+            API.postM(this.btnPerUnBindRole.url, {pid: row.id, rid: row.rid}).then(res=>{
                 if (res == true) {
                     this.$message.success("解绑成功!");
                     this.showPerm();
@@ -1351,7 +1448,7 @@ export default {
                 this.$message.warning("请先选择要分配的权限信息!");
                 return;
             }
-            API.delAssign({pid: pids.toString(), rid: rids.toString()}).then(res=>{
+            API.postM(this.btnPerUnBindRoles.url, {pid: pids.toString(), rid: rids.toString()}).then(res=>{
                 if (res == true) {
                     this.$message.success("解绑成功!");
                     this.showPerm();
@@ -1369,7 +1466,7 @@ export default {
                 let parameters = {show: this.pointForm.show, project: this.pointForm.project};
                 this.pointForm.roleNames ? parameters.roleIds = this.pointForm.roleNames.toString() : null;
                 // 异步查询
-                API.getPointInfo(parameters).then(data=>{
+                API.getM(this.btnPointShow.url, parameters).then(data=>{
                     this.pointInfo = data.children;
                 });
             }
@@ -1440,7 +1537,7 @@ export default {
                 type: 'warning'
             }).then(() => {
                 let parameters = {project: this.pointForm.project, id: Number(id)};
-                API.delPointInfo(parameters).then(data=>{
+                API.getM(this.btnPointDel.url, parameters).then(data=>{
                     if (data) {
                         this.$message.warning(data);
                     } else {
@@ -1496,7 +1593,7 @@ export default {
                 parameter.order = 0;
             }
             console.info(parameter);
-            API.addPoint(parameter).then(res=>{
+            API.postM(this.btnPointAdd.url, parameter).then(res=>{
                 if (res) {
                     this.$message.success("添加成功!");
                     this.showPoint();
@@ -1549,7 +1646,7 @@ export default {
             }
 
             console.info(parameter);
-            API.upPoint(parameter).then(res=>{
+            API.postM(this.btnPointUp.url, parameter).then(res=>{
                 if (res) {
                     this.$message.success("修改成功!");
                     this.showPoint();
@@ -1558,15 +1655,6 @@ export default {
                 }
             })
         },
-        /////////////////////////////////////////////
-
-        delPermissionRelation(pid, rid) {
-            API.delPermissionRelation({"pid": Number(pid), "rid": Number(rid)}).then(ret=>{
-                this.$message.info("删除成功!");
-                this.p1OnSubmit();
-            })
-        },
-
     }
 }
 </script>

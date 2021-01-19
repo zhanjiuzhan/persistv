@@ -1,6 +1,11 @@
 import request from '@/utils/request'
 import Qs from 'qs'
 
+
+export async function getAuthInfo () {
+  return getM('http://yyums.4366.com/authInfo.do', );
+}
+
 /**
  * 初始化相关
  * @param req
@@ -149,12 +154,10 @@ export function upPoint (req) {
   return postM('http://yyums.4366.com/admin/p/p/update.do', req);
 }
 
-
-
-function getM(url, req) {
+export function getM(url, req) {
   return request.get(url, {params: req ? req : {}})
 }
 
-function postM(url, req) {
+export function postM(url, req) {
   return request.post(url, req ? Qs.stringify(req) : {})
 }

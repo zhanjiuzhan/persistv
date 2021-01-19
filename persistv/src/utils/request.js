@@ -15,7 +15,7 @@ service.interceptors.request.use(
       let cookie;
       let arr = document.cookie.split(";");
       for (let i =0; i < arr.length; i++) {
-        if (arr[i].indexOf("YY_UMS_CLIENT_ID") > 0 || arr[i].indexOf("YY_UMS_SERVER_ID") > 0) {
+        if (arr[i].indexOf("YY_UMS_SERVER_ID") > -1) {
           cookie = arr[i];
           break;
         }
@@ -28,7 +28,7 @@ service.interceptors.request.use(
         let t_info = window.atob(t_arr[0]);
         // 设置用户名
         Config.username = JSON.parse(t_info).username;
-        config.headers['YY_UMS_CLIENT_ID'] = t_cookie;
+        config.headers['YY_UMS_SERVER_ID'] = t_cookie;
       }
     } catch (e) {
       console.error("取得客户端存储的登陆信息, 取得或者解析失败!");
@@ -47,7 +47,7 @@ service.interceptors.response.use(
     if (!code) {
       console.error(response);
       // 解析格式有问题 那就到登陆画面
-      window.location.href = "http://yyums.4366.com/login.do";
+      //window.location.href = "http://yyums.4366.com/login.do";
     }
     if(code === 200) {
       return response.data.data;
