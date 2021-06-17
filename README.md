@@ -1,59 +1,21 @@
-# persistv 后端管理的web界面
-## 项目部署步骤
-### 1. Node安装
-[Node安装](https://www.runoob.com/nodejs/nodejs-install-setup.html)  
-```
-node -v  
-npm -v  
+# persistv
+
+> A Vue.js project
+
+## Build Setup
+
+``` bash
+# install dependencies
+npm install
+
+# serve with hot reload at localhost:8080
+npm run dev
+
+# build for production with minification
+npm run build
+
+# build for production and view the bundle analyzer report
+npm run build --report
 ```
 
-### 2. Vue安装
-```
-npm i vue-cli -g  vue-cli的安装 全局安装
-vue -V  
---
-vue list 查看可用模板
-vue init <template-name> <project-name>
-
-
-```
-### webPack 项目加载和打包工具
-```
-npm install webpack -g  
-npm install webpack-cli -g  
-webpack -v  
-npm install --save-dev webpack  项目内执行  
-```
-### 脚手架搭建 
-[vue-cli搭建项目步骤](https://www.jb51.net/article/122491.htm)  
-[vue-cli搭建项目简介](https://www.cnblogs.com/amunamuna/p/8708102.html)  
-[项目打包](https://www.jianshu.com/p/599bfacbca82)  
-
-### 项目npm常用命令
-```
-npm run build  
-npm install  
-npm run dev  
-npm i element-ui -S  
-```
-
-### element ui 安装使用
-```
-npm install element-ui -S 
-```
-main.js 添加
-```
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
-Vue.use(ElementUI)
-```
-
-### axios使用
-```
-cnpm install axios --save 安装
-```
-main.js 添加
-```
-import axios from 'axios'
-Vue.prototype.$http= axios
-```
+For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
