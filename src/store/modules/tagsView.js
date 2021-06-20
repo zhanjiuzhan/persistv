@@ -13,7 +13,7 @@ const mutations = {
     )
   },
   ADD_CACHED_VIEW: (state, view) => {
-    if (state.cacheViews.includes(view.name)) return
+    if (state.cachedViews.includes(view.name)) return
     if (!view.meta.noCache) {
       state.cachedViews.push(view.name)
     }
@@ -38,7 +38,7 @@ const mutations = {
     for (const i of state.cachedViews) {
       if (i === view.name) {
         const index = state.cachedViews.indexOf(i)
-        state.cacheViews = state.cacheViews.slice(index, index + i)
+        state.cachedViews = state.cachedViews.slice(index, index + i)
         break
       }
     }

@@ -92,7 +92,6 @@ export default {
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
-        debugger
         if (valid) {
           const { username, password: plainPwd, rememberMe } = this.loginForm
           let encryptPwd = Cookies.get('password')

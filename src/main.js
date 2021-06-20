@@ -8,9 +8,9 @@ import 'mavon-editor/dist/css/index.css'
 import '@/styles/index.scss' // global css
 
 import App from './App'
+import store from '@/store'
 import router from '@/router/routers'
 import permission from '@/components/Permission'
-import store from '@/store'
 
 import '@/icons' // icon
 import './router/index' // permission control

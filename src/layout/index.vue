@@ -2,8 +2,8 @@
   <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutSide"/>
     <sidebar class="sidebar-container" />
-    <div :class="{hasTagView:needTagView}" class="main-container">
-      <div :class="{'fix-header':fixedHeader}">
+    <div :class="{hasTagView:needTagsView}" class="main-container">
+      <div :class="{'fixed-header':fixedHeader}">
         <navbar/>
         <tags-view v-if="needTagsView" />
       </div>
@@ -20,6 +20,7 @@ import RightPanel from '@/components/RightPanel'
 import { mapState } from 'vuex'
 import ResizeMixin from './mixin/ResizeHandler'
 import { AppMain, Navbar, Settings, Sidebar, TagsView } from './components'
+
 export default {
   name: 'Layout',
 
@@ -45,11 +46,15 @@ export default {
     classObj () {
       return {
         hideSidebar: !this.sidebar.opened,
-        openSidebar: this.sidebar.opedn,
+        openSidebar: this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'
       }
     }
+  },
+
+  mounted () {
+    console.log(this.$store);
   },
 
   methods: {
@@ -62,7 +67,6 @@ export default {
 
 <style lang="scss" scoped>
 @import "~@/styles/mixin.scss";
-@import "~@/styles/variables.scss";
 
 .app-wrapper {
   //@include clearfix;

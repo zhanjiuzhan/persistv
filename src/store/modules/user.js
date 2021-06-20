@@ -29,7 +29,6 @@ const actions = {
     // const { userName, password, rememberMe } = userInfo
     return new Promise((resolve, reject) => {
       login(userInfo).then(res => {
-        debugger
         console.log(res)
       })
     })

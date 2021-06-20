@@ -102,14 +102,14 @@ export default {
       const affixTags = this.affixTags = this.filterAffixTags(routerMap)
       for (const tag of affixTags) {
         if (tag.name) {
-          this.$route.dispatch('addVisitedView', tag)
+          this.$store.dispatch('addVisitedView', tag)
         }
       }
     },
     addViewTags() {
       const { name } = this.$route
       if (name) {
-        this.$store.dipatch('addView', this.$route)
+        this.$store.dispatch('addView', this.$route)
       }
       return false
     },
