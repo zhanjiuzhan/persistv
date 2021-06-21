@@ -155,3 +155,7 @@ export function downloadFile(obj, name, suffix) {
   link.click()
   document.body.removeChild(link)
 }
+
+export function convertBase642picture(code) {
+  return 'data:image/jpeg;base64,' + code
+}

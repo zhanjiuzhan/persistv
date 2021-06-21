@@ -59,6 +59,7 @@
 import Cookies from 'js-cookie'
 import Config from '@/config'
 import { validCode } from '@/api/login'
+import { convertBase642picture } from '@/utils'
 // import { encrypt } from '../utils/rsaEncrypt'
 // import { Base64 } from 'js-base64'
 export default {
@@ -74,7 +75,6 @@ export default {
         code: '',
         rememberMe: false
       },
-      phoneNumber: '',
       loginRules: {
         username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
         password: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
@@ -134,8 +134,8 @@ export default {
     },
     getCode() {
       validCode().then(res => {
-        console.log(res)
-      }).catch(error => console.log(error))
+        this.validCodeImage = convertBase642picture(res.img)
+      })
     }
   }
 }

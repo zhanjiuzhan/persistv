@@ -1,87 +1,63 @@
 import axios from 'axios'
-import router from '@/router/routers'
-import { Notification, MessageBox } from 'element-ui'
 import Config from '@/config'
 import { getToken } from './auth'
 
 const service = axios.create({
   baseURL: process['env']['BASE_API'],
   timeout: Config.timeout
-});
+})
 
+// todo: 需要将异常统一处理，以提示框的形式弹出，不能reject，让组件去catch。
+
+console.log(process.env.BASE_API)
 service.interceptors.request.use(
   config => {
     if (getToken()) {
       config.headers['Authorization'] = getToken()
     }
     config.headers['Content-Type'] = 'application/json'
+    return config
   },
   error => {
     // Do something with request error
-    console.log(error) // for debug
     Promise.reject(error)
   }
-);
+)
 
 service.interceptors.response.use(
   response => {
-    const code = response.data.code;
-    if (!code) {
-      console.error(response);
-      // 解析格式有问题 那就到登陆画面
-      //window.location.href = "http://yyums.4366.com/login.do";
+    console.log(response)
+    const { data: resData, status } = response
+    if (status < 400) {
+      const { data, code } = resData
+      if (code === 20000) {
+        return data
+      }
+    } else if (status === 400) {
+      console.log('Bad Request')
+    } else if (status === 401) {
+      console.log('Unauthorized')
+    } else if (status === 403) {
+      console.log('Forbidden')
+    } else if (status === 404) {
+      console.log('Not Found')
+    } else if (status === 405) {
+      console.log('Method Not Allowed')
+    } else if (status === 408) {
+      console.log('Request Time-out')
+    } else if (status === 500) {
+      console.log('Internal Server Error')
+    } else if (status === 501) {
+      console.log('Not Implemented')
+    } else if (status === 502) {
+      console.log('Bad Gateway')
+    } else if (status === 503) {
+      console.log('Service Unavailable')
     }
-    if(code === 200) {
-      return response.data.data;
-    }
-    else {
-      Notification.error({title: response.data.msg});
-      return Promise.reject(response);
-    }
+    Promise.reject(resData)
   },
   error => {
-    let code = 0
-    try {
-      code = error.response.data.status;
-    } catch (e) {
-      const errorMsg = error.toString();
-      if (errorMsg.indexOf('Error: timeout') !== -1) {
-        Notification.error({
-          title: '网络请求超时',
-          duration: 2500
-        });
-        return Promise.reject(error);
-      }
-      if (errorMsg.indexOf('Error: Network Error') !== -1) {
-        Notification.error({
-          title: '网络请求异常',
-          duration: 2500
-        });
-        return Promise.reject(error);
-      }
-    }
-    if (code === 401) {
-      MessageBox.confirm(
-        '登陆状态已经过期，请重新登陆', '系统提示', {
-          confirmButtonText: '重新登陆',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }
-      ).then(() => {
-        // 退出并logout，并且location.reload()
-      })
-    } else if (code === 403) {
-      router.push({ path: '/401' });
-    } else {
-      const errorMsg = error.response.data.message;
-      if (errorMsg !== undefined) {
-        Notification.error({
-          title: errorMsg,
-          duration: 3000
-        });
-      }
-      return Promise.reject(error);
-    }
+    Promise.reject(error)
   }
 );
-export default service;
+export default service
