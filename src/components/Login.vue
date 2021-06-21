@@ -13,6 +13,18 @@
         </el-input>
       </el-form-item>
       <el-form-item>
+        <el-row :gutter="5">
+          <el-col :span="16">
+            <el-input v-model="loginForm.code" :placeholder="validCodePlaceholder">
+              <svg-icon slot="prefix" icon-class="validCode" class="el-input__icon input-icon"/>
+            </el-input>
+          </el-col>
+          <el-col :span="8">
+            <img :src="validCodeImage">
+          </el-col>
+        </el-row>
+      </el-form-item>
+      <el-form-item>
         <el-row type="flex" justify="space-between">
           <el-checkbox :label="rememberMeLabel" v-model="loginForm.rememberMe"/>
           <el-button id="loginButton" :loading="loading" size="medium" type="primary" @click.native.prevent="handleLogin">
@@ -22,32 +34,33 @@
         </el-row>
       </el-form-item>
     </el-form>
-    <el-divider id="divider"/>
-    <el-row id="otherItemRow" type="flex" justify="end">
-      <el-col :span="4">
-        <el-link type="primary">{{ forgetText }}</el-link>
-      </el-col>
-      <el-col :span="1">
-        <span>|</span>
-      </el-col>
-      <el-col :span="4">
-        <el-link type="primary">{{ registerText }}</el-link>
-      </el-col>
-      <el-col :span="1">
-        <span>|</span>
-      </el-col>
-      <el-col :span="4">
-        <el-link type="primary">{{ quickWayText }}</el-link>
-      </el-col>
-    </el-row>
+    <!-- <el-divider id="divider"/>-->
+    <!-- <el-row id="otherItemRow" type="flex" justify="end">-->
+    <!--  <el-col :span="4">-->
+    <!--    <el-link type="primary">{{ forgetText }}</el-link>-->
+    <!--  </el-col>-->
+    <!--  <el-col :span="1">-->
+    <!--    <span>|</span>-->
+    <!--  </el-col>-->
+    <!--  <el-col :span="4">-->
+    <!--    <el-link type="primary">{{ registerText }}</el-link>-->
+    <!--  </el-col>-->
+    <!--  <el-col :span="1">-->
+    <!--    <span>|</span>-->
+    <!--  </el-col>-->
+    <!--  <el-col :span="4">-->
+    <!--    <el-link type="primary">{{ quickWayText }}</el-link>-->
+    <!--  </el-col>-->
+    <!-- /el-row>-->
   </div>
 </template>
 
 <script>
 import Cookies from 'js-cookie'
-import { encrypt } from '../utils/rsaEncrypt'
 import Config from '@/config'
-import { Base64 } from 'js-base64'
+import { validCode } from '@/api/login'
+// import { encrypt } from '../utils/rsaEncrypt'
+// import { Base64 } from 'js-base64'
 export default {
   name: 'LoginComponent',
 
@@ -58,8 +71,10 @@ export default {
       loginForm: {
         username: '',
         password: '',
+        code: '',
         rememberMe: false
       },
+      phoneNumber: '',
       loginRules: {
         username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
         password: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
@@ -67,6 +82,8 @@ export default {
       avatarUrl: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
       userNamePlaceholder: '账号/手机号码/邮箱',
       passwordPlaceholder: '密码',
+      validCodePlaceholder: '请输入验证码',
+      validCodeImage: '',
       rememberMeLabel: '记住我',
       loginText: '登 录',
       loggingText: '登 陆 中...',
@@ -78,6 +95,7 @@ export default {
 
   created() {
     this.getCookie()
+    this.getCode()
   },
 
   methods: {
@@ -93,25 +111,31 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          const { username, password: plainPwd, rememberMe } = this.loginForm
-          let encryptPwd = Cookies.get('password')
+          const { username, password, rememberMe } = this.loginForm
+          // let encryptPwd = Cookies.get('password')
           // 加密，并且防止在rememberMe的情况下重复加密
-          if (encryptPwd !== plainPwd) {
-            encryptPwd = Base64.encode(encrypt(plainPwd))
-          }
+          // if (encryptPwd !== plainPwd) {
+          //   encryptPwd = Base64.encode(encrypt(plainPwd))
+          // }
           if (rememberMe) {
             Cookies.set('username', username, { expires: Config.passCookieExpires })
-            Cookies.set('password', encryptPwd, { expires: Config.passCookieExpires })
+            // Cookies.set('password', encryptPwd, { expires: Config.passCookieExpires })
+            Cookies.set('password', password, { expires: Config.passCookieExpires })
             Cookies.set('rememberMe', rememberMe, { expires: Config.passCookieExpires })
           }
           const userInfo = {
             username,
-            password: encryptPwd,
+            password,
             rememberMe
           }
           this.$store.dispatch('user/login', userInfo)
         }
       })
+    },
+    getCode() {
+      validCode().then(res => {
+        console.log(res)
+      }).catch(error => console.log(error))
     }
   }
 }

@@ -7,3 +7,7 @@ export function login (data) {
     data
   })
 }
+
+export function validCode () {
+  return request.get('/sys/captcha')
+}

@@ -2,6 +2,7 @@ import axios from 'axios'
 import router from '@/router/routers'
 import { Notification, MessageBox } from 'element-ui'
 import Config from '@/config'
+import { getToken } from './auth'
 
 const service = axios.create({
   baseURL: process['env']['BASE_API'],
@@ -10,34 +11,15 @@ const service = axios.create({
 
 service.interceptors.request.use(
   config => {
-    // YYUMS 的登陆实现 登陆前先找到有没有客户端的Cookie存在 有的化设置到 axios 的 header 中
-    try {
-      let cookie;
-      let arr = document.cookie.split(";");
-      for (let i =0; i < arr.length; i++) {
-        if (arr[i].indexOf("YY_UMS_SERVER_ID") > -1) {
-          cookie = arr[i];
-          break;
-        }
-      }
-
-      if (cookie) {
-        let t_index = cookie.indexOf("=");
-        let t_cookie = cookie.substr(t_index +1);
-        let t_arr = t_cookie.split(".");
-        let t_info = window.atob(t_arr[0]);
-        // 设置用户名
-        Config.username = JSON.parse(t_info).username;
-        config.headers['YY_UMS_SERVER_ID'] = t_cookie;
-      }
-    } catch (e) {
-      console.error("取得客户端存储的登陆信息, 取得或者解析失败!");
+    if (getToken()) {
+      config.headers['Authorization'] = getToken()
     }
-    return config;
+    config.headers['Content-Type'] = 'application/json'
   },
   error => {
-    console.log(error);
-    Promise.reject(error);
+    // Do something with request error
+    console.log(error) // for debug
+    Promise.reject(error)
   }
 );
 
