@@ -5,9 +5,6 @@
         <router-view :key="key" />
       </keep-alive>
     </transition>
-    <div v-if="$store.state.settings.showFooter" id="el-main-foot">
-      <span v-html="$store.state.settings.footerTxt" />
-    </div>
   </section>
 </template>
 
@@ -27,20 +24,17 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.app-main {
-  min-height: calc(100vh - 50px);
+section.app-main {
+  height: calc(100vh - 40px);
   width: 100%;
   position: relative;
   overflow: hidden;
+  padding: 90px 15px 10px;
 }
 
-.fixed-header+.app-main {
-  padding-top: 50px;
-}
-
-.hasTagsView {
+/deep/ .hasTagView {
   .app-main {
-    min-height: calc(100vh - 84px);
+    height: calc(100vh - 110px);
   }
 
   .fixed-header+.app-main {

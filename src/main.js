@@ -5,7 +5,6 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 import 'mavon-editor/dist/css/index.css'
-import '@/styles/index.scss' // global css
 
 import App from './App'
 import store from '@/store'

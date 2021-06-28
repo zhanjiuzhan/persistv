@@ -9,7 +9,6 @@ const service = axios.create({
 
 // todo: 需要将异常统一处理，以提示框的形式弹出，不能reject，让组件去catch。
 
-console.log(process.env.BASE_API)
 service.interceptors.request.use(
   config => {
     if (getToken()) {
@@ -26,7 +25,6 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   response => {
-    console.log(response)
     const { data: resData, status } = response
     if (status < 400) {
       const { data, code } = resData

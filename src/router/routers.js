@@ -25,9 +25,16 @@ export const routerMap = [
   {
     path: '/',
     component: () => import('@/layout'),
-    name: '首页',
-    meta: { title: '', icon: '', noCache: true, affix: true }
-  }
+    redirect: 'analyzeResult',
+    children: [
+      {
+        path: 'analyzeResult',
+        component: () => import('@/views/analyseResult'),
+        name: '分析结果',
+        meta: { title: '分析结果', icon: 'index', noCache: true, affixTags: true }
+      },
+    ]
+  },
 ]
 
 export default new Router({

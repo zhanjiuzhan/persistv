@@ -1,10 +1,7 @@
 <template>
-  <el-menu-item v-if="sidebarLogo" :class="{'submenu-title-noDropdown':isCollapse}" index="0" style="pointer-events: none;">
-    <svg-icon v-if="isCollapse" icon-class="run" />
-    <div class="logo-icon">
-      <img :src="logoImg">
-    </div>
-  </el-menu-item>
+  <div v-if="sidebarLogo" :class="{'submenu-title-noDropdown':isCollapse}" class="logo-icon">
+    <img :src="logoImg">
+  </div>
 </template>
 
 <script>
@@ -20,9 +17,9 @@ export default {
     }
   },
 
-  date() {
+  data() {
     return {
-      logoImg: logoImg
+      logoImg
     }
   },
 
@@ -33,3 +30,17 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.logo-icon {
+  width: 100%;
+  height: 50px;
+  overflow: hidden;
+  object-fit: contain;
+
+  & > img {
+    width: 100%;
+    padding: 10px 20px;
+  }
+}
+</style>

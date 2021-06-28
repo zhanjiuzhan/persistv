@@ -20,7 +20,9 @@
             </el-input>
           </el-col>
           <el-col :span="8">
-            <img :src="validCodeImage">
+            <div id="validCode">
+              <img :src="validCodeImage">
+            </div>
           </el-col>
         </el-row>
       </el-form-item>
@@ -65,7 +67,7 @@ import { convertBase642picture } from '@/utils'
 export default {
   name: 'LoginComponent',
 
-  data() {
+  data () {
     return {
       loading: false,
       redirect: undefined,
@@ -93,13 +95,23 @@ export default {
     }
   },
 
-  created() {
+  watch: {
+    $route: {
+      handler: function (route) {
+        debugger
+        this.redirect = route.query && route.query.redirect
+      },
+      immediate: true
+    }
+  },
+
+  created () {
     this.getCookie()
     this.getCode()
   },
 
   methods: {
-    getCookie() {
+    getCookie () {
       const username = Cookies.get('username')
       const password = Cookies.get('password')
       const rememberMe = Cookies.get('rememberMe')
@@ -108,10 +120,10 @@ export default {
         password && (this.loginForm.password = password)
       }
     },
-    handleLogin() {
+    handleLogin () {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          const { username, password, rememberMe } = this.loginForm
+          const { username, password, code, rememberMe } = this.loginForm
           // let encryptPwd = Cookies.get('password')
           // 加密，并且防止在rememberMe的情况下重复加密
           // if (encryptPwd !== plainPwd) {
@@ -126,13 +138,23 @@ export default {
           const userInfo = {
             username,
             password,
-            rememberMe
+            code
           }
-          this.$store.dispatch('user/login', userInfo)
+          this.$store.dispatch('user/login', userInfo).then(() => {
+            // todo: 添加加载动画结束标志
+            this.$router.push({ path: this.redirect || '/' })
+          }).catch(error => {
+            // todo: 添加加载动画结束标志
+            console.log(error)
+            this.getCode()
+          })
+        } else {
+          // todo: 添加验证失败处理
+          return false
         }
       })
     },
-    getCode() {
+    getCode () {
       validCode().then(res => {
         this.validCodeImage = convertBase642picture(res.img)
       })
@@ -172,6 +194,19 @@ export default {
       height: 38px;
       font-size: 18px;
       line-height: 1px;
+    }
+  }
+
+  #validCode {
+    object-fit: cover;
+    overflow: hidden ;
+    height: 40px;
+    border: 1px solid #dcdfe6;
+    border-radius: 3px;
+    margin: -1px;
+
+    & > img {
+      width: 100%;
     }
   }
 

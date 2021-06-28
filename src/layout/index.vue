@@ -1,13 +1,16 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutSide"/>
-    <sidebar class="sidebar-container" />
+    <sidebar />
     <div :class="{hasTagView:needTagsView}" class="main-container">
       <div :class="{'fixed-header':fixedHeader}">
         <navbar/>
         <tags-view v-if="needTagsView" />
       </div>
       <app-main />
+      <div v-if="$store.state.settings.showFooter" id="el-main-foot">
+        <span v-html="$store.state.settings.footerTxt" />
+      </div>
       <right-panel v-if="showSettings">
         <settings />
       </right-panel>
@@ -53,10 +56,6 @@ export default {
     }
   },
 
-  mounted () {
-    console.log(this.$store);
-  },
-
   methods: {
     handleClickOutSide() {
       this.$store.dispatch('closeSideBar', { withoutAnimation: false })
@@ -66,8 +65,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import "~@/styles/mixin.scss";
-
 .app-wrapper {
   //@include clearfix;
   position: relative;
@@ -77,6 +74,34 @@ export default {
   &.mobile.openSidebar {
     position: fixed;
     top: 0;
+  }
+
+  .main-container {
+    background-color:$--main-background-color;
+
+    .fixed-header {
+      position: fixed;
+      top: 0;
+      right: 0;
+      background: #ffffff;
+      z-index: 99;
+      width: calc(100% - #{$--sidebar-width});
+      height: 80px;
+      transition: width 0.28s;
+      box-shadow: 1px 1px 7px 0px #c8c8c8;
+    }
+
+    #el-main-foot {
+      position: fixed;
+      bottom: 0;
+      padding: 0 20px;
+      height: 30px;
+      width: 100%;
+      background-color:$--second-backgroud-color;
+      font-size: 14px;
+      line-height: 30px;
+      box-shadow: 2px -2px 7px #c8c8c8;
+    }
   }
 }
 
@@ -90,18 +115,8 @@ export default {
   z-index: 999;
 }
 
-.fixed-header {
-  position: fixed;
-  top: 0;
-  right: 0;
-  background: #ffffff;
-  z-index: 99;
-  width: calc(100% - #{$sideBarWidth});
-  transition: width 0.28s;
-}
-
 .hideSidebar .fixed-header {
-  width: calc(100% - #{$hideSidebarWidth})
+  width: calc(100% - #{$--sidebar-width})
 }
 
 .mobile .fixed-header {

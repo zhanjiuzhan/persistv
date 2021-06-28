@@ -201,5 +201,8 @@ export default {
 </script>
 
 <style scoped>
-
+.tags-view-container {
+  height: 30px;
+  padding: 5px 15px;
+}
 </style>

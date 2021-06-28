@@ -84,6 +84,11 @@ a:hover {
   }
 }
 
+.scrollbar-wrapper .el-scrollbar__wrap {
+  overflow-x: hidden;
+  height: 100%;
+}
+
 //main-container全局样式
 .app-main{
   height: 100%;

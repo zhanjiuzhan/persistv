@@ -1,18 +1,18 @@
-import { getToken } from '@/utils/auth'
 // import { encrypt } from "@/utils/rsaEncrypt";
 import { login } from '@/api/login'
+import {
+  setToken,
+  setRefreshToken,
+  setExpireTime
+} from '@/utils/auth'
 
 const state = {
-  token: getToken(),
   user: {},
   roles: [],
   loadMenus: false
 }
 
 const mutations = {
-  SET_TOKEN: (state, token) => {
-    state.token = token
-  },
   SET_USER: (state, user) => {
     state.user = user
   },
@@ -26,10 +26,18 @@ const mutations = {
 
 const actions = {
   login({ commit }, userInfo) {
-    // const { userName, password, rememberMe } = userInfo
+    // todo: 用户点击登录后，提示正在登录，按钮开始loading，所有可以输入的项目需要禁止输入
     return new Promise((resolve, reject) => {
       login(userInfo).then(res => {
-        console.log(res)
+        const { accessToken, expireTime, refreshToken } = res
+        setToken(accessToken)
+        setExpireTime(expireTime)
+        setRefreshToken(refreshToken)
+        // todo: 取得用户信息
+        // todo: 取得用户权限
+        resolve()
+      }).catch(error => {
+        reject(error)
       })
     })
   },

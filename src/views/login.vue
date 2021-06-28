@@ -40,16 +40,32 @@ export default {
     height: 100%;
     width: 100%;
 
-    .login-background {
-      background-image: url("../assets/background.png");
-      height: 50%;
-      width: 100%;
-      position: absolute;
-      z-index: -1;
+    @media screen and (min-width: 1500px) {
+      .login-background {
+        background-image: url("../assets/background.png");
+        height: 50%;
+        width: 100%;
+        position: absolute;
+        z-index: -1;
+      }
+
+      .login-picture {
+        margin-right: 100px;
+      }
     }
 
-    .login-picture {
-      margin-right: 100px;
+    @media screen and (max-width: 1499px) {
+      .login-background {
+        background-image: url("../assets/background.png");
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        z-index: -1;
+      }
+
+      .login-picture {
+        display: none;
+      }
     }
 
     .login-content {

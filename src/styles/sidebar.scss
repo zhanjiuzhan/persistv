@@ -18,21 +18,13 @@
     left: 0;
     z-index: 1001;
     overflow: hidden;
+    background-color: $--menu-color;
     //reset element-ui css
     .horizontal-collapse-transition {
       transition: 0s width ease-in-out, 0s padding-left ease-in-out, 0s padding-right ease-in-out;
     }
     .el-scrollbar__bar.is-vertical{
       right: 0px;
-    }
-    .scrollbar-wrapper {
-      overflow-x: hidden!important;
-      .el-scrollbar__view {
-        height: 100%;
-      }
-    }
-    .is-horizontal {
-      display: none;
     }
     a {
       display: inline-block;
@@ -91,9 +83,9 @@
   .sidebar-container .nest-menu .el-submenu>.el-submenu__title,
   .sidebar-container .el-submenu .el-menu-item {
     min-width: 195px !important;
-    background-color: $subMenuBg !important;
+    background-color: $--sub-menu-color !important;
     &:hover {
-      background-color: $menuHover !important;
+      background-color: $--sub-menu-hover-color !important;
     }
   }
   .el-menu--collapse .el-menu .el-submenu {

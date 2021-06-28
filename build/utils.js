@@ -55,10 +55,22 @@ exports.cssLoaders = function(options) {
           sourceMap: options.sourceMap
         })
       })
+
+      if(loader === 'sass' || loader === 'scss') {
+        loaders.push({
+          loader: 'sass-resources-loader',
+          options: {
+            resources: [
+              path.resolve(__dirname, '../src/styles/index.scss'),
+            ]
+          }
+        })
+      }
     }
 
     return loaders
   }
+
   // https://vue-loader.vuejs.org/en/configurations/extract-css.html
   return {
     css: generateLoaders(),
