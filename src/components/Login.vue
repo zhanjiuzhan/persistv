@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <el-avatar :size="128" :src="avatarUrl" icon="el-icon-user-solid" />
+    <el-avatar :size="100" :src="avatarUrl" icon="el-icon-user-solid" shape="circle" />
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" :placeholder="userNamePlaceholder" type="text" auto-complete="off">
@@ -61,9 +61,10 @@
 import Cookies from 'js-cookie'
 import Config from '@/config'
 import { validCode } from '@/api/login'
+import { getAuthorities } from '@/api/authorities'
 import { convertBase642picture } from '@/utils'
-// import { encrypt } from '../utils/rsaEncrypt'
-// import { Base64 } from 'js-base64'
+import { encrypt } from '../utils/rsaEncrypt'
+import { Base64 } from 'js-base64'
 export default {
   name: 'LoginComponent',
 
@@ -81,7 +82,7 @@ export default {
         username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
         password: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
       },
-      avatarUrl: 'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
+      avatarUrl: require('@/assets/avatar/pre_avatar.png'),
       userNamePlaceholder: '账号/手机号码/邮箱',
       passwordPlaceholder: '密码',
       validCodePlaceholder: '请输入验证码',
@@ -91,14 +92,14 @@ export default {
       loggingText: '登 陆 中...',
       forgetText: '忘记密码',
       registerText: '注册账号',
-      quickWayText: '快捷登陆'
+      quickWayText: '快捷登陆',
+      publicKey: ''
     }
   },
 
   watch: {
     $route: {
       handler: function (route) {
-        debugger
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
@@ -108,6 +109,9 @@ export default {
   created () {
     this.getCookie()
     this.getCode()
+    getAuthorities().then(res => {
+      this.publicKey = res
+    })
   },
 
   methods: {
@@ -123,21 +127,20 @@ export default {
     handleLogin () {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          const { username, password, code, rememberMe } = this.loginForm
-          // let encryptPwd = Cookies.get('password')
-          // 加密，并且防止在rememberMe的情况下重复加密
-          // if (encryptPwd !== plainPwd) {
-          //   encryptPwd = Base64.encode(encrypt(plainPwd))
-          // }
+          const { username, password: plainPwd, code, rememberMe } = this.loginForm
+          let encryptPwd = Cookies.get('password')
+          if (encryptPwd !== plainPwd) {
+            encryptPwd = Base64.encode(encrypt(plainPwd, this.publicKey))
+          }
           if (rememberMe) {
             Cookies.set('username', username, { expires: Config.passCookieExpires })
             // Cookies.set('password', encryptPwd, { expires: Config.passCookieExpires })
-            Cookies.set('password', password, { expires: Config.passCookieExpires })
+            Cookies.set('password', encryptPwd, { expires: Config.passCookieExpires })
             Cookies.set('rememberMe', rememberMe, { expires: Config.passCookieExpires })
           }
           const userInfo = {
             username,
-            password,
+            password: encryptPwd,
             code
           }
           this.$store.dispatch('user/login', userInfo).then(() => {
@@ -165,16 +168,16 @@ export default {
 
 <style lang="scss" scoped>
 .login-container {
-  background-color: #ffffff;
-  border: 2px solid #4ebbfe;
+  background-color: $--second-backgroud-color;
+  border: 2px solid $--color-primary;
   border-radius: 6px;
   position: relative;
 
   /deep/ .el-avatar--circle {
-    border: 2px solid #4ebbfe;
+    border: 2px solid $--color-secondary;
     position: absolute;
-    left: 136px;
-    top: -70px;
+    left: 150px;
+    top: -60px;
   }
 
   .login-form {
@@ -201,7 +204,7 @@ export default {
     object-fit: cover;
     overflow: hidden ;
     height: 40px;
-    border: 1px solid #dcdfe6;
+    border: 1px solid $--color-primary;
     border-radius: 3px;
     margin: -1px;
 
@@ -212,6 +215,10 @@ export default {
 
   /deep/ #divider {
     margin: 0 0 24px 0;
+  }
+
+  /deep/ .el-avatar {
+    background-color: $--color-secondary;
   }
 
   #otherItemRow {

@@ -23,13 +23,18 @@
       border-collapse: collapse;
       max-width:80px;
     }
+    .signFooter {
+      position: absolute;
+      bottom: 0;
+      margin-bottom: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="resultContent">
-    <h3>
+    <h4>
       受检者信息
-    </h3>
+    </h4>
     <table>
       <tr>
         <th>受检者编号</th>
@@ -56,9 +61,9 @@
         <td>前列腺癌，2021/05初次确诊</td>
       </tr>
     </table>
-    <h3>
+    <h4>
       样本信息
-    </h3>
+    </h4>
     <table>
       <tr>
         <th>
@@ -77,9 +82,9 @@
         </td>
       </tr>
     </table>
-    <h3>
+    <h4>
       基因检测结果
-    </h3>
+    </h4>
     <table>
       <tr>
         <th>基因</th>
@@ -114,12 +119,12 @@
         <td colspan="2">阳性</td>
       </tr>
     </table>
-    <div class="description">
-      <label>
-        检测说明：检测结果应结合患者病情及其他诊断结果进行综合判断，不作为诊断唯一依据。
-      </label>
-    </div>
     <div class="signFooter">
+      <div class="description">
+        <label>
+          检测说明：检测结果应结合患者病情及其他诊断结果进行综合判断，不作为诊断唯一依据。
+        </label>
+      </div>
       <span class="item">
         <label>报告日期</label>
       </span>
@@ -127,11 +132,17 @@
         <label>2021/06/12</label>
       </span>
       <span class="item">
-        <label>检测人</label>
+        <label>检测人：</label>
       </span>
-      <span class=""></span>
-      <span class="item"></span>
-      <span class="item"></span>
+      <span class="empty"/>
+      <span class="item">
+        <label>报告人：</label>
+      </span>
+      <span class="empty"/>
+      <span class="item">
+        <label>审核人：</label>
+      </span>
+      <span class="empty"/>
     </div>
   </div>
 </body>

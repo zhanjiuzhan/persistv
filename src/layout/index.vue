@@ -115,8 +115,8 @@ export default {
   z-index: 999;
 }
 
-.hideSidebar .fixed-header {
-  width: calc(100% - #{$--sidebar-width})
+.hideSidebar .main-container .fixed-header {
+  width: calc(100% - 36px)
 }
 
 .mobile .fixed-header {

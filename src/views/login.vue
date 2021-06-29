@@ -1,9 +1,9 @@
 <template>
   <div class="login">
     <div class="login-background"/>
-    <img :src="loginPicture" class="login-picture" width="870" height="494" alt="the internet connect us">
+    <img :src="loginPicture" class="login-picture" width="650" height="530" alt="the internet connect us">
     <el-card>
-      <h2 slot="header" class="title">『PERSIST』用户管理系统</h2>
+      <div slot="header" class="title">『普瑞基准』管理系统</div>
       <login-component class="login-content"/>
     </el-card>
   </div>
@@ -11,7 +11,7 @@
 
 <script>
 import LoginComponent from '@/components/login'
-import loginPicture from '@/assets/login-picture.png'
+import loginPicture from '@/assets/images/login_background_image.png'
 export default {
   name: 'Login',
   components: { LoginComponent },
@@ -42,8 +42,10 @@ export default {
 
     @media screen and (min-width: 1500px) {
       .login-background {
-        background-image: url("../assets/background.png");
-        height: 50%;
+        background-repeat: no-repeat;
+        background-size: 2560px 2560px;
+        background-image: url("../assets/images/background.png");
+        height: 500px;
         width: 100%;
         position: absolute;
         z-index: -1;
@@ -56,7 +58,7 @@ export default {
 
     @media screen and (max-width: 1499px) {
       .login-background {
-        background-image: url("../assets/background.png");
+        background-image: url("../assets/images/background.png");
         height: 100%;
         width: 100%;
         position: absolute;
@@ -71,9 +73,17 @@ export default {
     .login-content {
       margin-top: 70px;
     }
+
+    .el-card__header {
+      border: 0;
+    }
   }
   .title {
     text-align: center;
-    color: #707070;
+    margin: 15px 10px 5px 10px;
+    color: $--color-info;
+    font-family: "KaiTi";
+    font-weight: 700;
+    font-size: 35px;
   }
 </style>

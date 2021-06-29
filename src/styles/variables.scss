@@ -16,16 +16,26 @@ $--hide-sidebar-Width:38px;
 $--main-background-color: #f0f2f5;
 $--second-backgroud-color:#ffffff;
 
-// the :export directive is the magic sauce for webpack
-// https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
-//:export {
-//  $--menu-text-color;
-//  $--menu-active-text-color;
-//  $--sub-menu-active-text;
-//  $--menu-color;
-//  $--menu-hover-color;
-//  $--sub-menu-color;
-//  $--sub-menu-hover-color;
-//  $--sidebar-width;
-//  $--hide-sidebar-Width;
-//}
+/* theme color */
+$--color-primary: #34797F;
+$--color-secondary: #99CCCC;
+$--color-success: #2B9869;
+$--color-warning: #D3BA3F;
+$--color-danger: #BC3232;
+$--color-info:#fa8072;
+
+/* text color */
+$--color-text-primary: #303133;
+$--color-text-regular: #606266;
+$--color-text-secondary: #909399;
+$--color-text-placeholder: #c0c4cc;
+
+/* border color */
+$--color-border-base: #dcdfe6;
+$--color-border-light: #e4e7ed;
+$--color-border-lighter: #ebeef5;
+$--color-border-extra-light: #f2f6fc;
+
+$--button-font-weight: 400;
+
+$--table-border:1px solid#dfe6ec;

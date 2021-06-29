@@ -32,7 +32,7 @@
       </el-table>
     </div>
     <el-dialog :visible.sync="resultsDetailDialogVisible" title="检测详情">
-      <iframe id="detailContentIframe" ref="detailContentIframe" width="595px" height="842px" style="border: none"/>
+      <iframe id="detailContentIframe" ref="detailContentIframe" width="595px" height="842px" style="border: none; width:100%; height: 900px; box-shadow: 2px 2px 8px grey"/>
       <el-button @click.native.prevent="print">打印</el-button>
     </el-dialog>
   </div>
@@ -96,5 +96,8 @@ export default {
   padding: 15px;
   width: 100%;
   height: 100%;
+}
+/deep/ .el-dialog__body {
+  text-align: center;
 }
 </style>

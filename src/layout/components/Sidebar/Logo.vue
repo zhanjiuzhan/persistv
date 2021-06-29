@@ -33,8 +33,6 @@ export default {
 
 <style lang="scss" scoped>
 .logo-icon {
-  width: 100%;
-  height: 50px;
   overflow: hidden;
   object-fit: contain;
 
