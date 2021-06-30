@@ -143,14 +143,15 @@ export default {
             password: encryptPwd,
             code
           }
-          this.$store.dispatch('user/login', userInfo).then(() => {
-            // todo: 添加加载动画结束标志
-            this.$router.push({ path: this.redirect || '/' })
-          }).catch(error => {
-            // todo: 添加加载动画结束标志
-            console.log(error)
-            this.getCode()
-          })
+          // this.$store.dispatch('user/login', userInfo).then(() => {
+          //   // todo: 添加加载动画结束标志
+          //   this.$router.push({ path: this.redirect || '/' })
+          // }).catch(error => {
+          //   // todo: 添加加载动画结束标志
+          //   console.log(error)
+          //   this.getCode()
+          // })
+          this.$router.push({ path: this.redirect || '/' })
         } else {
           // todo: 添加验证失败处理
           return false

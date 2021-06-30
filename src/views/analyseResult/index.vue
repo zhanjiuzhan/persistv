@@ -66,14 +66,12 @@ export default {
       setTimeout(() => {
         const iframe = this.$refs.detailContentIframe
         const win = iframe.contentWindow
-        console.log(templateSrc)
         win.document.body.innerHTML = templateSrc.toString()
       })
     },
     print() {
       const iframe = this.$refs.detailContentIframe
       const win = iframe.contentWindow
-      console.log(templateSrc)
       win.document.body.innerHTML = templateSrc.toString()
       win.print()
     }
@@ -90,6 +88,10 @@ export default {
   align-items: center;
   width: 100%;
   height: 100%;
+
+  /deep/ .el-dialog {
+    width: 675px;
+  }
 }
 .table-container {
   position: relative;

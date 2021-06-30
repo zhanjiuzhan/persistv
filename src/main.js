@@ -2,8 +2,8 @@ import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import ElementUI from 'element-ui'
-import './styles/theme.css'
 import './styles/index.scss'
+import './styles/theme.css'
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 import 'mavon-editor/dist/css/index.css'
 

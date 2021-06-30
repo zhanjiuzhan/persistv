@@ -15,6 +15,13 @@
   left: 0;
   position: relative;
   margin: 0 auto;
+
+  .el-dialog__header .el-dialog__title {
+    font-size: 25px;
+    font-weight: 700;
+    font-family: KaiTi;
+    color: $--color-info;
+  }
 }
 
 //element ui upload

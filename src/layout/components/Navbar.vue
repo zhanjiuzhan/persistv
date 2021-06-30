@@ -92,7 +92,6 @@ export default {
       })
     },
     toggleSideBar () {
-      debugger
       this.$store.dispatch('app/toggleSideBar')
     }
   }

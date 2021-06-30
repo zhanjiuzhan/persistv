@@ -200,9 +200,49 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .tags-view-container {
-  height: 30px;
+  height: 40px;
   padding: 5px 15px;
+  line-height: 20px;
+
+  .tags-view-item {
+    cursor: pointer;
+    display: inline-block;
+    height: 30px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 3px;
+    padding: 4px 10px;
+    margin-right: 10px;
+    border: 1px solid $--color-border-base;
+
+    &.active {
+      background-color: $--color-info;
+      color: $--second-backgroud-color;
+
+      &:before {
+        background-color: $--second-backgroud-color;
+        border-radius: 50%;
+        width: 8px;
+        height: 8px;
+        content: '';
+        display: inline-block;
+        position: relative;
+        margin-right: 2px;
+      }
+    }
+  }
+
+  .el-icon-close {
+    font-size: 10px;
+    padding: 1px 0 0 0;
+    margin-left: 2px;
+
+    &:hover {
+      border-radius: 50%;
+      background-color: $--color-secondary;
+    }
+  }
 }
 </style>

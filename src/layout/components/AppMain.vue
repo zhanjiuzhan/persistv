@@ -25,20 +25,16 @@ export default {
 
 <style lang="scss" scoped>
 section.app-main {
-  height: calc(100vh - 40px);
+  height: calc(100vh - 30px);
   width: 100%;
   position: relative;
   overflow: hidden;
-  padding: 90px 15px 10px;
+  padding: 100px 15px 10px;
 }
 
 /deep/ .hasTagView {
   .app-main {
     height: calc(100vh - 110px);
-  }
-
-  .fixed-header+.app-main {
-    padding-top: 84px;
   }
 }
 .el-popup-parent--hidden {

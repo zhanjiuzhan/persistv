@@ -86,7 +86,7 @@ export default {
       background: #ffffff;
       z-index: 99;
       width: calc(100% - #{$--sidebar-width});
-      height: 80px;
+      height: 90px;
       transition: width 0.28s;
       box-shadow: 1px 1px 7px 0px #c8c8c8;
     }
