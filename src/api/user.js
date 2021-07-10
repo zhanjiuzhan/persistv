@@ -5,7 +5,7 @@ export function addUser (data) {
 }
 
 export function getUserList (params) {
-  return request.get('/sys/user/page', params)
+  return request.get('/sys/user/page', { params })
 }
 
 export function changePwd (data) {

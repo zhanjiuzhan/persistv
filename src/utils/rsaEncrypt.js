@@ -1,4 +1,4 @@
-import JSEncrypt from 'jsencrypt/bin/jsencrypt'
+import { JSEncrypt } from 'jsencrypt/bin/jsencrypt'
 
 export function encrypt (plainText, publicKey) {
   const jsEncrypt = new JSEncrypt()

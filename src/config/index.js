@@ -15,7 +15,7 @@ export default {
   /**
    * @description 此处修改网站名称
    */
-  webName: 'UMS 后台管理系统',
+  webName: '【普瑞基准】基因突变分析管理系统',
   /**
    * @description 是否只保持一个子菜单的展开
    */
@@ -58,7 +58,7 @@ export default {
   /**
    * 底部文字，支持html语法
    */
-  footerTxt: '© 2020 PCT <a href="http://www.apache.org/licenses/LICENSE-2.0" target="_blank">Apache License 2.0</a>',
+  footerTxt: 'COPYRIGHT @ PRECISION SCIENTIFIC ALL RIGHTS RESERVED',
 
   /**
    * 备案号

@@ -21,7 +21,7 @@
           </el-col>
           <el-col :span="8">
             <div id="validCode">
-              <img :src="validCodeImage">
+              <img :src="validCodeImage" @click="getCode">
             </div>
           </el-col>
         </el-row>
@@ -58,18 +58,19 @@
 </template>
 
 <script>
-import Cookies from 'js-cookie'
 import Config from '@/config'
 import { validCode } from '@/api/login'
 import { getAuthorities } from '@/api/authorities'
 import { convertBase642picture } from '@/utils'
 import { encrypt } from '../utils/rsaEncrypt'
-import { Base64 } from 'js-base64'
+import { SessionStorageUtil } from '../utils/sessionStorageUtil'
+// import { Base64 } from 'js-base64'
 export default {
   name: 'LoginComponent',
 
   data () {
     return {
+      sessionStorageUtil: null,
       loading: false,
       redirect: undefined,
       loginForm: {
@@ -93,7 +94,8 @@ export default {
       forgetText: '忘记密码',
       registerText: '注册账号',
       quickWayText: '快捷登陆',
-      publicKey: ''
+      publicKey: '',
+      uuid: ''
     }
   },
 
@@ -107,6 +109,7 @@ export default {
   },
 
   created () {
+    this.sessionStorageUtil = new SessionStorageUtil({ expireTime: Config.passCookieExpires })
     this.getCookie()
     this.getCode()
     getAuthorities().then(res => {
@@ -116,9 +119,9 @@ export default {
 
   methods: {
     getCookie () {
-      const username = Cookies.get('username')
-      const password = Cookies.get('password')
-      const rememberMe = Cookies.get('rememberMe')
+      const username = this.sessionStorageUtil.getItem('username')
+      const password = this.sessionStorageUtil.getItem('password')
+      const rememberMe = this.sessionStorageUtil.getItem('password')
       if (rememberMe) {
         username && (this.loginForm.username = username)
         password && (this.loginForm.password = password)
@@ -128,30 +131,30 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           const { username, password: plainPwd, code, rememberMe } = this.loginForm
-          let encryptPwd = Cookies.get('password')
+          let encryptPwd = this.sessionStorageUtil.getItem('password')
           if (encryptPwd !== plainPwd) {
-            encryptPwd = Base64.encode(encrypt(plainPwd, this.publicKey))
+            encryptPwd = encrypt(plainPwd, this.publicKey)
+            // encryptPwd = Base64.encode(encrypt(plainPwd, this.publicKey))
           }
           if (rememberMe) {
-            Cookies.set('username', username, { expires: Config.passCookieExpires })
-            // Cookies.set('password', encryptPwd, { expires: Config.passCookieExpires })
-            Cookies.set('password', encryptPwd, { expires: Config.passCookieExpires })
-            Cookies.set('rememberMe', rememberMe, { expires: Config.passCookieExpires })
+            this.sessionStorageUtil.setItem('username', username)
+            this.sessionStorageUtil.setItem('password', encryptPwd)
+            this.sessionStorageUtil.setItem('rememberMe', rememberMe)
           }
           const userInfo = {
             username,
             password: encryptPwd,
-            code
+            code,
+            uuid: this.uuid
           }
-          // this.$store.dispatch('user/login', userInfo).then(() => {
-          //   // todo: 添加加载动画结束标志
-          //   this.$router.push({ path: this.redirect || '/' })
-          // }).catch(error => {
-          //   // todo: 添加加载动画结束标志
-          //   console.log(error)
-          //   this.getCode()
-          // })
-          this.$router.push({ path: this.redirect || '/' })
+          this.$store.dispatch('user/login', userInfo).then(() => {
+            // todo: 添加加载动画结束标志
+            this.$router.push({ path: this.redirect || '/' })
+          }).catch(error => {
+            // todo: 添加加载动画结束标志
+            console.log(error)
+            this.getCode()
+          })
         } else {
           // todo: 添加验证失败处理
           return false
@@ -161,6 +164,7 @@ export default {
     getCode () {
       validCode().then(res => {
         this.validCodeImage = convertBase642picture(res.img)
+        this.uuid = res.uuid
       })
     }
   }

@@ -1,3 +1,4 @@
+import 'babel-polyfill'
 import Vue from 'vue'
 
 import 'normalize.css/normalize.css' // A modern alternative to CSS resets
@@ -13,18 +14,11 @@ import router from '@/router/routers'
 import permission from '@/components/Permission'
 
 import '@/icons' // icon
-import './router/index' // permission control
-import Router from 'vue-router'
+import '@/router/index'
 
 Vue.use(permission)
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
-
-const routerPush = Router.prototype.push
-Router.prototype.push = function push(location) {
-  return routerPush.call(this, location).catch(error => error)
-}
-require('babel-polyfill')
 
 new Vue({
   el: '#app',

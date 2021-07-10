@@ -1,6 +1,6 @@
 <template>
   <div class="page-content">
-    <div class="tool-icon">
+    <div class="tools">
       <!-- 搜搜按钮 -->
       <!-- 操作按钮 -->
     </div>

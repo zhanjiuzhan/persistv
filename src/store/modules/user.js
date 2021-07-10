@@ -2,9 +2,9 @@
 import { login } from '@/api/login'
 import {
   setToken,
-  setRefreshToken,
-  setExpireTime
+  setRefreshToken
 } from '@/utils/auth'
+import { SessionStorageUtil } from '../../utils/sessionStorageUtil'
 
 const state = {
   user: {},
@@ -25,15 +25,16 @@ const mutations = {
 }
 
 const actions = {
-  login({ commit }, userInfo) {
+  login(store, userInfo) {
     // todo: 用户点击登录后，提示正在登录，按钮开始loading，所有可以输入的项目需要禁止输入
     return new Promise((resolve, reject) => {
       login(userInfo).then(res => {
-        const { accessToken, expireTime, refreshToken } = res
-        setToken(accessToken)
-        setExpireTime(expireTime)
+        const { accessToken, expireTime, refreshToken, userInfo } = res
+        setToken(accessToken, expireTime)
         setRefreshToken(refreshToken)
+        const sessionUtil = new SessionStorageUtil()
         // todo: 取得用户信息
+        sessionUtil.setItem('userInfo', JSON.stringify(userInfo))
         // todo: 取得用户权限
         resolve()
       }).catch(error => {
@@ -50,8 +51,11 @@ const actions = {
 
   },
 
-  updateLoadMenus({ commit }) {
-
+  updateLoadMenus({ commit }, reload) {
+    return new Promise((resolve) => {
+      commit('SET_LOAD_MENUS', reload)
+      resolve(reload)
+    })
   }
 }
 

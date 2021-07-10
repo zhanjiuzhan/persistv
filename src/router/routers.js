@@ -12,6 +12,11 @@ export const routerMap = [
     hidden: true
   },
   {
+    path: '/404',
+    component: () => import('@/views/template'),
+    hidden: true
+  },
+  {
     path: '/redirect',
     component: Layout,
     hidden: true,
@@ -34,19 +39,19 @@ export const routerMap = [
         meta: { title: '分析结果', icon: 'index', noCache: true, affixTags: true }
       }
     ]
-  },
-  {
-    path: '/template',
-    component: () => import('@/layout'),
-    redirect: 'noredirect',
-    children: [
-      {
-        path: 'page',
-        component: () => import('@/views/template'),
-        name: '模板',
-        meta: { title: '模板', icon: 'swagger', noCache: true, affixTags: true }
-      }
-    ]
+  // },
+  // {
+  //   path: '/template',
+  //   component: () => import('@/layout'),
+  //   redirect: 'template',
+  //   children: [
+  //     {
+  //       path: 'template',
+  //       component: () => import('@/views/template'),
+  //       name: '模板',
+  //       meta: { title: '模板', icon: 'swagger', noCache: true, affixTags: true }
+  //     }
+  //   ]
   }
 ]
 

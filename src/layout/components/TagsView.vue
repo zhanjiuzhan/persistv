@@ -118,7 +118,7 @@ export default {
       this.$nextTick(() => {
         for (const tag of tags) {
           if (tag.to.path === this.$route.path) {
-            this.$refs.scroollPane.moveToTarget(tag)
+            this.$refs.scrollPane.moveToTarget(tag)
 
             if (tag.to.fullPath !== this.$route.fullPath) {
               this.$store.dipatch('updateVisitedView', this.$route)

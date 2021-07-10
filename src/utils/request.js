@@ -52,10 +52,10 @@ service.interceptors.response.use(
     } else if (status === 503) {
       console.log('Service Unavailable')
     }
-    Promise.reject(resData)
+    return Promise.reject(resData)
   },
   error => {
-    Promise.reject(error)
+    return Promise.reject(error)
   }
 );
 export default service
