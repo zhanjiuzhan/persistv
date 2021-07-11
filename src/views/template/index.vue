@@ -1,5 +1,5 @@
 <template>
-  <div class="page-content">
+  <div className="page-content">
     <img :src="imgURL" width="600px">
     <label>功能正在开发中，请等待!</label>
   </div>
@@ -7,6 +7,7 @@
 
 <script>
 import imgURL from '@/assets/images/not-complete.svg'
+
 export default {
   name: 'PageTemplate',
 
