@@ -2,9 +2,13 @@
 import { login } from '@/api/login'
 import {
   setToken,
-  setRefreshToken
+  setRefreshToken,
+  getToken,
+  removeToken,
+  removeRefreshToken
 } from '@/utils/auth'
 import { SessionStorageUtil } from '../../utils/sessionStorageUtil'
+import { logout } from '../../api/logout'
 
 const state = {
   user: {},
@@ -48,7 +52,19 @@ const actions = {
   },
 
   logout({ commit }) {
-
+    return new Promise((resolve, reject) => {
+      const sessionUtil = new SessionStorageUtil()
+      const data = {
+        accessToken: getToken(),
+        userId: sessionUtil.getItem('userInfo')
+      }
+      logout(data).then(res => {
+        sessionUtil.removeItem('userInfo')
+        removeRefreshToken()
+        removeToken()
+        resolve()
+      }).catch(error => reject(error))
+    })
   },
 
   updateLoadMenus({ commit }, reload) {

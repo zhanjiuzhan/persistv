@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { restPwd } from '@/api/user'
+import { restPwd, deleteUser } from '@/api/user'
 import List from './List'
 import Modal from './Modal'
 import eventBus from '@/utils/eventBus'
@@ -76,7 +76,6 @@ export default {
     eventBus.$off('onSelected')
     eventBus.$off('manySelected')
     eventBus.$off('noOneSelected')
-    eventBus.$off('reloadList')
   },
 
   methods: {
@@ -101,10 +100,44 @@ export default {
       }
     },
     deleteUser(data) {
-      if (!data && this.selectValueList) {
-        return
-      }
-      eventBus.$emit('deleteUser', data)
+      this.$confirm('确定要删除这条信息吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.selectValueList) {
+          this.loading = true
+          this.selectValueList.forEach(item => {
+            deleteUser(item.id).then(() => {
+              eventBus.$emit('reloadList')
+              this.loading = false
+            }).catch(error => {
+              this.loading = false
+              this.$alert({
+                type: 'error',
+                message: error.message
+              })
+            })
+          })
+        }
+        if (data) {
+          this.loading = true
+          deleteUser(data.id).then(() => {
+            eventBus.$emit('reloadList')
+            this.loading = false
+            this.$message({
+              type: 'success',
+              message: '删除成功'
+            })
+          }).catch(error => {
+            this.loading = false
+            this.$alert({
+              type: 'error',
+              message: error.message
+            })
+          })
+        }
+      })
     },
     resetPwd(id) {
       if (!id) return

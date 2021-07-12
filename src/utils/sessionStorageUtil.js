@@ -27,6 +27,10 @@ SessionStorageUtil.prototype.getItem = function (key) {
   }
 }
 
+SessionStorageUtil.prototype.removeItem = function (key) {
+  this.sessionStorage.removeItem(key)
+}
+
 SessionStorageUtil.prototype.setExpireTime = function (time) {
   this.expireTime = time
 }

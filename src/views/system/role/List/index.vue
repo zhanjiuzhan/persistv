@@ -4,11 +4,17 @@
       v-loading="loading"
       id="roleInfoTable"
       :data="data"
+      :highlight-current-row="true"
       border
       row-key="id"
       class="persist-table"
       @selection-change="handleSelectionChange"
+      @row-click="selectRow"
     >
+      <el-table-column
+        type="selection"
+        width="55"
+      />
       <el-table-column
         prop="name"
         label="用户名"
@@ -79,6 +85,9 @@ export default {
     search(query) {
       this.query = query
     },
+    selectRow(row) {
+      eventBus.$emit('selectRole', row)
+    }
   }
 }
 </script>

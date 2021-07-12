@@ -11,7 +11,3 @@ export function validCode () {
 export function refreshToken (data) {
   return request.post('/sys/oauth/refresh', data)
 }
-
-export function logout (data) {
-  return request.post('/sys/oauth/logout', data)
-}

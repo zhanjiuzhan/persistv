@@ -15,7 +15,7 @@ export default {
   /**
    * @description 此处修改网站名称
    */
-  webName: '【普瑞基准】基因突变分析管理系统',
+  webName: '人类同源重组修复基因突变分析软件',
   /**
    * @description 是否只保持一个子菜单的展开
    */

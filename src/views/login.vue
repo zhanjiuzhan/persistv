@@ -3,7 +3,7 @@
     <div class="login-background"/>
     <img :src="loginPicture" class="login-picture" width="650" height="530" alt="the internet connect us">
     <el-card>
-      <div slot="header" class="title">『普瑞基准』管理系统</div>
+      <div slot="header" class="title">人类同源重组修复基因突变分析软件</div>
       <login-component class="login-content"/>
     </el-card>
   </div>
@@ -77,8 +77,13 @@ export default {
     .el-card__header {
       border: 0;
     }
+
+    .el-card {
+      width: 450px;
+    }
   }
   .title {
+    word-break: break-all;
     text-align: center;
     margin: 15px 10px 5px 10px;
     color: $--color-info;

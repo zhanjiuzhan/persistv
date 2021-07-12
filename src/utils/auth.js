@@ -16,10 +16,18 @@ export function setToken (token, expireTime) {
   tokenSessionStorage.setItem(TOKEN, token)
 }
 
+export function removeToken () {
+  return tokenSessionStorage.removeItem(TOKEN)
+}
+
 export function setRefreshToken(refreshToken) {
   refreshTokenSessionStorage.setItem(REFRESH_TOKEN, refreshToken)
 }
 
 export function getRefreshToken() {
   refreshTokenSessionStorage.getItem(REFRESH_TOKEN)
+}
+
+export function removeRefreshToken() {
+  refreshTokenSessionStorage.removeItem(REFRESH_TOKEN)
 }

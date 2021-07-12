@@ -1,5 +1,5 @@
 <template>
-  <div class="login-container">
+  <div class="login-container" @keydown="enterKeyHandler">
     <el-avatar :size="100" :src="avatarUrl" icon="el-icon-user-solid" shape="circle" />
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
       <el-form-item prop="username">
@@ -118,6 +118,11 @@ export default {
   },
 
   methods: {
+    enterKeyHandler(e) {
+      if (e.keyCode === 13) {
+        this.handleLogin()
+      }
+    },
     getCookie () {
       const username = this.sessionStorageUtil.getItem('username')
       const password = this.sessionStorageUtil.getItem('password')
