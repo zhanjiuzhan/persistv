@@ -6,7 +6,7 @@
         :show-timeout="200"
         :default-active="$route.path"
         :collapse="isCollapse"
-        :unique-opend="$store.state.settings.uniqueOpened"
+        :unique-opened="uniqueOpened"
         mode="vertical"
         background-color="#34797f"
         text-color="#c8c8c8"
@@ -31,7 +31,8 @@ export default {
   computed: {
     ...mapGetters([
       'permission_routers',
-      'sidebar'
+      'sidebar',
+      'uniqueOpened'
     ]),
     isCollapse() {
       return !this.sidebar.opened

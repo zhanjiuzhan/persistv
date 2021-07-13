@@ -50,7 +50,7 @@ const adaptMenuTree = (menuTree) => {
   if (menuType.toLowerCase() === 'm') {
     routers.path = `/${path}`
     routers.redirect = path
-    routers.children = children.map(child => adaptMenuTree(child))
+    routers.children = children && children.map(child => adaptMenuTree(child))
   }
   return routers
 }

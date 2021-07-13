@@ -25,5 +25,5 @@ export function updateRole(data) {
 }
 
 export function deleteRole(id) {
-  return request.delete(`/sys/role${id}`)
+  return request.delete(`/sys/role/${id}`)
 }

@@ -15,3 +15,15 @@ export function getRoleMenu (roleId) {
 export function setRoleMenu (data) {
   return request.post('/sys/role-menu', data)
 }
+
+export function setMenu (data) {
+  return request.post('/sys/menu', data)
+}
+
+export function updateMenu (data) {
+  return request.put(`/sys/menu/${data.id}`, data)
+}
+
+export function deleteMenu (id) {
+  return request.delete(`/sys/menu/${id}`)
+}

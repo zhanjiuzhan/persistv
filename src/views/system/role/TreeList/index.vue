@@ -98,7 +98,7 @@ export default {
           getID(item)
         })
         this.$refs.tree.setCheckedKeys(ids)
-        this.checkItem(ids)
+        this.applyDisabled = false
         this.loading = false
       }).catch(error => {
         this.$message({
@@ -107,10 +107,6 @@ export default {
         })
         this.loading = false
       })
-    },
-    checkItem(checkedKeys) {
-      if (checkedKeys.length > 0) this.applyDisabled = false
-      else this.applyDisabled = true
     },
     applyMenu() {
       this.$confirm(`确定对${this.selectRole.name}角色应用该设置？`, '提示', {

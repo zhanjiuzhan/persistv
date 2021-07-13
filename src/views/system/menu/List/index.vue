@@ -44,8 +44,8 @@
 </template>
 
 <script>
-import eventBus from '@/utils/eventBus'
 import { getAllMenu } from '@/api/menu'
+import eventBus from '@/utils/eventBus'
 
 export default {
   name: 'List',
@@ -61,6 +61,11 @@ export default {
     this.$nextTick(() => {
       this.init()
     })
+    eventBus.$on('reloadList', this.init)
+  },
+
+  destroyed() {
+    eventBus.$off('reloadList', this.init)
   },
 
   methods: {

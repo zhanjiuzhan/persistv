@@ -39,19 +39,6 @@ export const routerMap = [
         meta: { title: '分析结果', icon: 'index', noCache: true, affixTags: true }
       }
     ]
-  },
-  {
-    path: '/maintain',
-    component: () => import('@/layout'),
-    redirect: 'maintain',
-    children: [
-      {
-        path: 'maintain',
-        component: () => import('@/views/system/maintain'),
-        name: '安全策略',
-        meta: { title: '安全策略', icon: 'sys-tools', noCache: true, affixTags: true }
-      }
-    ]
   }
 ]
 

@@ -3,7 +3,7 @@
     <el-scrollbar class="scrollbar-wrapper">
       <div class="persist-toolbar">
         <div class="persist-query">
-          <el-input v-model="menuname" placeholder="查询用户名" class="query-input">
+          <el-input v-model="name" placeholder="查询用户名" class="query-input">
             <i slot="suffix" class="el-icon-circle-close" @click="clearQuery()" />
           </el-input>
           <el-button size="small" icon="el-icon-search" type="primary" @click="search">搜素</el-button>
@@ -29,6 +29,7 @@
 import List from './List'
 import Modal from './Modal'
 import eventBus from '@/utils/eventBus'
+import { deleteMenu } from '../../../api/menu'
 
 export default {
   name: 'MenuManagement',
@@ -37,7 +38,7 @@ export default {
 
   data() {
     return {
-      menuname: '',
+      name: '',
       selectValueList: [],
       delBtnDisabled: true,
       editBtnDisabled: true,
@@ -55,12 +56,33 @@ export default {
       this.username = ''
     },
     addMenu() {
-
+      eventBus.$emit('addMenu')
     },
-    editMenu() {
-
+    editMenu(data) {
+      eventBus.$emit('editMenu', data)
     },
-    deleteMenu() {
+    deleteMenu(data) {
+      this.$confirm('确定要删除该菜单吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.loading = true
+        deleteMenu(data.id).then(() => {
+          eventBus.$emit('reloadList')
+          this.loading = false
+          this.$message({
+            type: 'success',
+            message: '删除成功'
+          })
+        }).catch(error => {
+          this.loading = false
+          this.$message({
+            type: 'error',
+            message: error.message
+          })
+        })
+      })
     }
   },
 
@@ -74,5 +96,7 @@ export default {
 </script>
 
 <style scoped>
-
+.scrollbar-wrapper {
+  height: 100%;
+}
 </style>
