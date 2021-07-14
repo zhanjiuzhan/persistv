@@ -39,6 +39,20 @@ export const routerMap = [
         meta: { title: '分析结果', icon: 'index', noCache: true, affixTags: true }
       }
     ]
+  },
+  {
+    path: '/user',
+    component: () => import('@/layout'),
+    hidden: true,
+    redirect: 'center',
+    children: [
+      {
+        path: 'center',
+        component: () => import('@/views/user/profile'),
+        name: '个人中心',
+        meta: { title: '个人中心', icon: 'user' }
+      }
+    ]
   }
 ]
 

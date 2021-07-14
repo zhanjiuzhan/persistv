@@ -53,7 +53,7 @@ export default {
 
   data () {
     return {
-      Avatar: Avatar,
+      Avatar: require('@/assets/avatar/pre_avatar.png'),
       dialogVisible: false,
       textFullScreen: '全屏'
     }

@@ -12,7 +12,7 @@
           <svg-icon slot="prefix" icon-class="password" class="el-input__icon input-icon"/>
         </el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item prop="code">
         <el-row :gutter="5">
           <el-col :span="16">
             <el-input v-model="loginForm.code" :placeholder="validCodePlaceholder">
@@ -81,7 +81,8 @@ export default {
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur', message: '用户名不能为空' }],
-        password: [{ required: true, trigger: 'blur', message: '密码不能为空' }]
+        password: [{ required: true, trigger: 'blur', message: '密码不能为空' }],
+        code: [{ required: true, trigger: 'blur', message: '请输入验证码' }]
       },
       avatarUrl: require('@/assets/avatar/pre_avatar.png'),
       userNamePlaceholder: '账号/手机号码/邮箱',
@@ -154,14 +155,25 @@ export default {
           }
           this.$store.dispatch('user/login', userInfo).then(() => {
             // todo: 添加加载动画结束标志
+            this.$notify({
+              title: '登录成功',
+              type: 'success',
+            })
             this.$router.push({ path: this.redirect || '/' })
           }).catch(error => {
             // todo: 添加加载动画结束标志
-            console.log(error)
+            this.$notify({
+              title: error.message,
+              type: 'error'
+            })
             this.getCode()
           })
         } else {
           // todo: 添加验证失败处理
+          this.$notify({
+            title: '登录失败',
+            type: 'error'
+          })
           return false
         }
       })
