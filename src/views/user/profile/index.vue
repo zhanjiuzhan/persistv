@@ -61,6 +61,7 @@
 <script>
 import { SessionStorageUtil } from '../../../utils/sessionStorageUtil'
 import { changePwd } from '../../../api/user'
+import { getStrategy } from '../../../api/strategy'
 
 export default {
   name: 'Profile',
@@ -85,15 +86,18 @@ export default {
         oldPwd: '',
         confirmPwd: ''
       },
+      pattern: '',
+      newPwdRules: {},
+      oldPwdRules: {},
       rules: {
         oldPwd: [
           { required: true, message: '请输入原始密码', trigger: 'blur' }
         ],
         newPwd: [
-          { required: true, message: '请输入新密码', trigger: 'blur' }
+          { required: true, message: '请输入新密码', trigger: 'blur' },
         ],
         confirmPwd: [
-          { required: true, message: '请确认输入密码', trigger: 'blur' }
+          { required: true, message: '请确认输入密码', trigger: 'blur' },
         ]
       }
     }
@@ -102,9 +106,24 @@ export default {
   mounted() {
     const sessionStorageUtil = new SessionStorageUtil()
     this.user = JSON.parse(sessionStorageUtil.getItem('userInfo'))
+    this.init()
   },
 
   methods: {
+    init() {
+      getStrategy().then(res => {
+        const { includeCase, includeDigital, includeLetter, includeSpecialSymbol, regularExpression, minLength } = res
+        const errorMessage = `密码必须是长度为${minLength}的，包含${includeDigital === 'Y' ? '数字、' : ''}${includeLetter === 'Y' ? '字母、' : ''}${includeSpecialSymbol === 'Y' ? '特殊字符、' : ''}${includeCase === 'Y' ? '区分大小写' : '不区分大小写'}的字符`
+        this.rules.newPwd.push({
+          pattern: new RegExp(regularExpression),
+          message: errorMessage
+        })
+        this.rules.confirmPwd.push({
+          pattern: new RegExp(regularExpression),
+          message: errorMessage
+        })
+      })
+    },
     confirmPwdData() {
       new Promise((resolve, reject) => {
         if (!this.pwdForm.oldPwd) {
@@ -134,6 +153,9 @@ export default {
             this.$message({
               type: 'success',
               message: '密码设置成功'
+            })
+            this.$store.dispatch('user/logout').then(() => {
+              location.reload()
             })
           }).catch(error => {
             this.$message({

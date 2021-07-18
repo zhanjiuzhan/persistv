@@ -4,7 +4,8 @@ import { SessionStorageUtil } from '../../utils/sessionStorageUtil'
 
 const state = {
   permission_routers: routerMap,
-  addRouters: []
+  addRouters: [],
+  logoutInterval: 30
 }
 
 const mutations = {
@@ -16,6 +17,9 @@ const mutations = {
     const router = originRouter.map(router => adaptMenuTree(router))
     state.permission_routers = routerMap.concat(router)
     state.addRouters = router
+  },
+  CHANGE_LOGOUT_INTERVAL: (state, interval) => {
+    state.logoutInterval = interval
   }
 }
 
@@ -29,6 +33,7 @@ const actions = {
       const { id } = JSON.parse(sessionStorage.getItem('userInfo'))
       getMenu(id).then(originRouter => {
         commit('GENERATE_ROUTERS', originRouter.menus)
+        commit('CHANGE_LOGOUT_INTERVAL', originRouter.logoutTime)
         resolve(originRouter)
       }).catch(error => {
         reject(error)

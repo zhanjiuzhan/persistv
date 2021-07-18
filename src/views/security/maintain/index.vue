@@ -1,7 +1,7 @@
 <template>
   <div class="page-content">
     <el-scrollbar class="scrollbar-wrapper">
-      <div class="maintain-content">
+      <div v-loading="loadingForm" class="maintain-content">
         <el-form label-position="top">
           <el-form-item label="密码复杂性">
             <el-checkbox-group v-model="checkboxList" @change="changePwdSetting">
@@ -24,37 +24,43 @@
               :min="changeCycleRange.min"
               :max="changeCycleRange.max"/>
             <div class="suffix">
-              <el-select
-                v-model="changeCycleRange.label"
-                @change="(val) => changeRangeHandler('change', val)"
-              >
-                <el-option
-                  v-for="item in changeCycleOption"
-                  :key="item.value"
-                  :value="item"
-                  :label="item.label"
-                />
-              </el-select>
+              <!--              <el-select-->
+              <!--                v-model="changeCycleRange.label"-->
+              <!--                @change="(val) => changeRangeHandler('change', val)"-->
+              <!--              >-->
+              <!--                <el-option-->
+              <!--                  v-for="item in changeCycleOption"-->
+              <!--                  :key="item.value"-->
+              <!--                  :value="item"-->
+              <!--                  :label="item.label"-->
+              <!--                />-->
+              <!--              </el-select>-->
+              <label>
+                日
+              </label>
             </div>
           </el-form-item>
           <el-form-item label="密码禁止复用限制周期">
             <el-input-number
               v-model="maintainForm.reuseCycle"
               :min="reuseCycleOption.min"
-              :max="reuseCycleRange.maxValue"
+              :max="reuseCycleRange.max"
             />
             <div class="suffix">
-              <el-select
-                v-model="reuseCycleRange.label"
-                @change="(val) => changeRangeHandler('reuse', val)"
-              >
-                <el-option
-                  v-for="item in reuseCycleOption"
-                  :key="item.value"
-                  :value="item"
-                  :label="item.label"
-                />
-              </el-select>
+              <!--              <el-select-->
+              <!--                v-model="reuseCycleRange.label"-->
+              <!--                @change="(val) => changeRangeHandler('reuse', val)"-->
+              <!--              >-->
+              <!--                <el-option-->
+              <!--                  v-for="item in reuseCycleOption"-->
+              <!--                  :key="item.value"-->
+              <!--                  :value="item"-->
+              <!--                  :label="item.label"-->
+              <!--                />-->
+              <!--              </el-select>-->
+              <div>
+                日
+              </div>
             </div>
           </el-form-item>
           <el-form-item label="自动注销时间（系统错误操作下自动注销账号时间）">
@@ -87,20 +93,21 @@
 </template>
 
 <script>
-import { getStrategy } from '../../../api/strategy'
+import { getStrategy, setStrategy } from '@/api/strategy'
 
 export default {
   name: 'MaintainManagement',
 
   data() {
     return {
+      loadingForm: false,
       checkboxList: [],
       caseSense: '大小写敏感',
       containLetter: '应包含字母',
       containNumber: '应包含数字',
       specialSymbol: '应包含特殊符号',
       lengthRange: {
-        minValue: 8,
+        minValue: 1,
         maxValue: 30
       },
       logoutTimeRange: {
@@ -138,10 +145,10 @@ export default {
         }
       ],
       reuseCycleRange: {
-        label: '月',
-        value: 'mont',
+        label: '日',
+        value: 'day',
         min: 1,
-        max: 12
+        max: 31
       },
       reuseCycleOption: [
         {
@@ -212,23 +219,43 @@ export default {
       }
     },
     submitMaintainSetting() {
-      let containLetter = ''
-      let containNumber = ''
-      let specialSymbol = ''
-      this.checkboxList.forEach(item => {
-        if (item === this.containLetter) {
-          containLetter = 'a-zA-Z'
-        }
-        if (item === this.containNumber) {
-          containNumber = '0-9'
-        }
-        if (item === this.specialSymbol) {
-          specialSymbol = '!-/:-@[-`{-~'
-        }
+      this.$confirm('确定提交以上设置？', '提示', {
+        cancelButtonText: '取消',
+        confirmButtonText: '确定',
+        type: 'warning'
+      }).then(() => {
+        this.loadingForm = true
+        let containLetter = ''
+        let containNumber = ''
+        let specialSymbol = ''
+        this.checkboxList.forEach(item => {
+          if (item === this.containLetter) {
+            containLetter = 'a-zA-Z'
+          }
+          if (item === this.containNumber) {
+            containNumber = '0-9'
+          }
+          if (item === this.specialSymbol) {
+            specialSymbol = '!-/:-@[-`{-~'
+          }
+        })
+        const regExpString = `^[${containLetter}${containNumber}${specialSymbol}]{${this.maintainForm.minLength},}$`
+        this.maintainForm.regularExpression = regExpString
+        setStrategy(this.maintainForm).then(res => {
+          this.loadingForm = false
+          this.$message({
+            message: '变更成功',
+            type: 'success'
+          })
+          this.init()
+        }).catch(error => {
+          this.loadingForm = false
+          this.$message({
+            message: error.message,
+            type: 'error'
+          })
+        })
       })
-      const regExpString = `/^[${containLetter}${containNumber}${specialSymbol}]{${this.maintainForm.minLength},}$/`
-      this.maintainForm.regularExpression = regExpString
-      console.log(regExpString)
     },
     changePwdSetting(valueList) {
       this.maintainForm.includeSpecialSymbol = 'N'
@@ -252,7 +279,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.maintain-content{
+.maintain-content {
   padding: 15px;
 
   .suffix {

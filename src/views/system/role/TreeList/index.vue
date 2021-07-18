@@ -14,7 +14,8 @@
           type="primary"
           icon="el-icon-document-checked"
           @click="applyMenu"
-        >应用</el-button>
+        >应用
+        </el-button>
       </el-col>
     </el-row>
     <el-tree
@@ -24,6 +25,7 @@
       :props="treeProps"
       :filter-node-method="filterMenu"
       :default-expand-all="true"
+      :check-strictly="true"
       show-checkbox
       node-key="id"
     />
@@ -114,7 +116,7 @@ export default {
         confirmButtonText: '确定',
         type: 'warning'
       }).then(() => {
-        const menuIds = this.$refs.tree.getCheckedKeys()
+        const menuIds = this.getCheckMenu()
         const roleId = this.selectRole.id
         this.loading = true
         setRoleMenu({ menuIds, roleId }).then(res => {
@@ -131,6 +133,28 @@ export default {
           })
         })
       })
+    },
+    getCheckMenu() {
+      const checkedNodeList = []
+      const getCheckedTree = (key, objList) => {
+        objList.every(obj => {
+          const { id } = obj
+          if (id !== 0 && id === key) {
+            if (checkedNodeList.indexOf(key) === -1) {
+              checkedNodeList.push(key)
+            }
+            getCheckedTree(obj.pid, this.treeData)
+            return false
+          } else if (id !== 0 && id !== key && obj[this.treeProps.children]) {
+            getCheckedTree(key, obj[this.treeProps.children])
+          }
+          return true
+        })
+      }
+      this.$refs.tree.getCheckedKeys().forEach((key) => {
+        getCheckedTree(key, this.treeData)
+      })
+      return checkedNodeList
     }
   }
 }

@@ -20,6 +20,9 @@ Vue.use(permission)
 Vue.use(ElementUI, { locale })
 Vue.config.productionTip = false
 
+Vue.prototype.$mesage = ElementUI.Message
+Vue.prototype.notify = ElementUI.MessageBox.confirm
+
 new Vue({
   el: '#app',
   router,

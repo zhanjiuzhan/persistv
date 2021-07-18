@@ -4,6 +4,7 @@ const getters = {
   sidebar: state => state.app.sidebar,
   permission_routers: state => state.routers.permission_routers,
   addRouters: state => state.routers.addRouters,
+  logoutInterval: state => state.routers.logoutInterval,
   visitedViews: state => state.tagsView.visitedViews,
   cachedViews: state => state.tagsView.cachedViews,
   token: state => state.user.token,
