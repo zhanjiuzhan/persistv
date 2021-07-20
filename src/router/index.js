@@ -17,44 +17,37 @@ router.beforeEach((to, from, next) => {
     if (to.path === '/login') {
       next({ path: '/' })
     } else {
-      if (to.path === '/user/center') {
-        const { changePasswordFlag } = JSON.parse(sessionStorage.getItem('userInfo'))
-        if (changePasswordFlag === 'Y') {
-          router.app.$message({
-            message: '请修改默认密码',
-            type: 'warning'
-          })
-        }
+      const { changePasswordFlag } = JSON.parse(sessionStorage.getItem('userInfo'))
+      if (changePasswordFlag === 'Y' && to.path === '/user/center') {
         next()
         NProgress.done()
+        return
+      }
+      if (changePasswordFlag === 'Y') {
+        next('/user/center')
+        NProgress.done()
       } else {
-        const { changePasswordFlag } = JSON.parse(sessionStorage.getItem('userInfo'))
-        if (changePasswordFlag === 'Y') {
-          next('/user/center')
-          NProgress.done()
+        if (store.getters.addRouters.length === 0) {
+          store.dispatch('generateRouters').then(() => {
+            router.addRoutes(store.getters.addRouters)
+            next({ ...to, replace: true })
+          }).catch(error => {
+            this.$message({
+              message: error.message,
+              type: 'error'
+            })
+            NProgress.done()
+          })
         } else {
-          if (store.getters.addRouters.length === 0) {
-            store.dispatch('generateRouters').then(() => {
-              router.addRoutes(store.getters.addRouters)
-              next({ ...to, replace: true })
-            }).catch(error => {
-              this.$message({
-                message: error.message,
-                type: 'error'
+          if (store.getters.loadMenus) {
+            store.dispatch('user/updateLoadMenus', false).then(() => {
+              store.dispatch('generateRouters').then(() => {
+                router.addRoutes(store.getters.addRouters)
+                next({ ...to, replace: true })
               })
-              NProgress.done()
             })
           } else {
-            if (store.getters.loadMenus) {
-              store.dispatch('user/updateLoadMenus').then(() => {
-                store.dispatch('generateRouters').then(() => {
-                  router.addRoutes(store.getters.addRouters)
-                  next({ ...to, replace: true })
-                })
-              })
-            } else {
-              next()
-            }
+            next()
           }
         }
       }
@@ -74,10 +67,10 @@ router.beforeEach((to, from, next) => {
       type: 'warning'
     }).then(() => {
       store.dispatch('user/logout').then(() => {
-        location.reload()
+        location.reload();
       })
     })
-  }, store.getters.logoutInterval * 100)
+  }, store.getters.logoutInterval * 1000 * 60)
 })
 
 router.afterEach(() => {

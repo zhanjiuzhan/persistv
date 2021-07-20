@@ -41,13 +41,13 @@
         </div>
         <el-form ref="form" :rules="rules" :model="pwdForm" class="profile-content">
           <el-form-item label="原始密码" prop="oldPwd">
-            <el-input v-model="pwdForm.oldPwd" placeholder="请输入原始密码"/>
+            <el-input v-model="pwdForm.oldPwd" type="password" placeholder="请输入原始密码"/>
           </el-form-item>
           <el-form-item label="新密码" prop="newPwd">
-            <el-input v-model="pwdForm.newPwd" placeholder="请输入新密码"/>
+            <el-input v-model="pwdForm.newPwd" type="password" :placeholder="newPwdPlaceholder"/>
           </el-form-item>
           <el-form-item label="确认新密码" prop="confirmPwd">
-            <el-input v-model="pwdForm.confirmPwd" placeholder="请再次输入新密码" @change="confirmPwdData"/>
+            <el-input v-model="pwdForm.confirmPwd" type="password" placeholder="请再次输入新密码" @change="confirmPwdData"/>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" size="small" @click="apply">应用</el-button>
@@ -89,6 +89,7 @@ export default {
       pattern: '',
       newPwdRules: {},
       oldPwdRules: {},
+      newPwdPlaceholder: '',
       rules: {
         oldPwd: [
           { required: true, message: '请输入原始密码', trigger: 'blur' }
@@ -103,17 +104,20 @@ export default {
     }
   },
 
+  created() {
+    this.init()
+  },
+
   mounted() {
     const sessionStorageUtil = new SessionStorageUtil()
     this.user = JSON.parse(sessionStorageUtil.getItem('userInfo'))
-    this.init()
   },
 
   methods: {
     init() {
       getStrategy().then(res => {
-        const { includeCase, includeDigital, includeLetter, includeSpecialSymbol, regularExpression, minLength } = res
-        const errorMessage = `密码必须是长度为${minLength}的，包含${includeDigital === 'Y' ? '数字、' : ''}${includeLetter === 'Y' ? '字母、' : ''}${includeSpecialSymbol === 'Y' ? '特殊字符、' : ''}${includeCase === 'Y' ? '区分大小写' : '不区分大小写'}的字符`
+        const { includeDigital, includeLetter, includeSpecialSymbol, regularExpression, minLength } = res
+        const errorMessage = `密码必须是长度为${minLength}的，包含${includeDigital === 'Y' ? '数字、' : ''}${includeLetter === 'Y' ? '字母、' : ''}${includeSpecialSymbol === 'Y' ? '特殊字符、' : ''}的字符`
         this.rules.newPwd.push({
           pattern: new RegExp(regularExpression),
           message: errorMessage
@@ -122,6 +126,11 @@ export default {
           pattern: new RegExp(regularExpression),
           message: errorMessage
         })
+        if (includeDigital !== 'Y' && includeLetter !== 'Y' && includeSpecialSymbol !== 'Y') {
+          this.newPwdPlaceholder = `请输入任意长度不少于${minLength}位的任意字符`
+        } else {
+          this.newPwdPlaceholder = `新密码应包含${includeDigital === 'Y' ? '数字、' : ''}${includeLetter === 'Y' ? '字母、' : ''}${includeSpecialSymbol === 'Y' ? '特殊符号、' : ''}且长度不少于${minLength}位`
+        }
       })
     },
     confirmPwdData() {
@@ -155,7 +164,7 @@ export default {
               message: '密码设置成功'
             })
             this.$store.dispatch('user/logout').then(() => {
-              location.reload()
+              location.replace('/login')
             })
           }).catch(error => {
             this.$message({

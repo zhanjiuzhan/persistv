@@ -87,7 +87,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.$store.dispatch('user/logout').then(() => {
-          location.reload()
+          location.replace('/login')
         })
       })
     },

@@ -5,7 +5,7 @@
         <el-form label-position="top">
           <el-form-item label="密码复杂性">
             <el-checkbox-group v-model="checkboxList" @change="changePwdSetting">
-              <el-checkbox v-model="maintainForm.includeCase" :label="caseSense"/>
+              <!--<el-checkbox v-model="maintainForm.includeCase" :label="caseSense"/>-->
               <el-checkbox v-model="maintainForm.includeLetter" :label="containLetter"/>
               <el-checkbox v-model="maintainForm.includeDigital" :label="containNumber"/>
               <el-checkbox v-model="maintainForm.includeSpecialSymbol" :label="specialSymbol"/>
@@ -24,17 +24,17 @@
               :min="changeCycleRange.min"
               :max="changeCycleRange.max"/>
             <div class="suffix">
-              <!--              <el-select-->
-              <!--                v-model="changeCycleRange.label"-->
-              <!--                @change="(val) => changeRangeHandler('change', val)"-->
-              <!--              >-->
-              <!--                <el-option-->
-              <!--                  v-for="item in changeCycleOption"-->
-              <!--                  :key="item.value"-->
-              <!--                  :value="item"-->
-              <!--                  :label="item.label"-->
-              <!--                />-->
-              <!--              </el-select>-->
+              <!-- <el-select-->
+              <!--   v-model="changeCycleRange.label"-->
+              <!--   @change="(val) => changeRangeHandler('change', val)"-->
+              <!-- >-->
+              <!--   <el-option-->
+              <!--     v-for="item in changeCycleOption"-->
+              <!--     :key="item.value"-->
+              <!--     :value="item"-->
+              <!--     :label="item.label"-->
+              <!--   />-->
+              <!-- </el-select>-->
               <label>
                 日
               </label>
@@ -47,17 +47,17 @@
               :max="reuseCycleRange.max"
             />
             <div class="suffix">
-              <!--              <el-select-->
-              <!--                v-model="reuseCycleRange.label"-->
-              <!--                @change="(val) => changeRangeHandler('reuse', val)"-->
-              <!--              >-->
-              <!--                <el-option-->
-              <!--                  v-for="item in reuseCycleOption"-->
-              <!--                  :key="item.value"-->
-              <!--                  :value="item"-->
-              <!--                  :label="item.label"-->
-              <!--                />-->
-              <!--              </el-select>-->
+              <!-- <el-select-->
+              <!--   v-model="reuseCycleRange.label"-->
+              <!--   @change="(val) => changeRangeHandler('reuse', val)"-->
+              <!-- >-->
+              <!--   <el-option-->
+              <!--     v-for="item in reuseCycleOption"-->
+              <!--     :key="item.value"-->
+              <!--     :value="item"-->
+              <!--     :label="item.label"-->
+              <!--   />-->
+              <!-- </el-select>-->
               <div>
                 日
               </div>
@@ -230,16 +230,16 @@ export default {
         let specialSymbol = ''
         this.checkboxList.forEach(item => {
           if (item === this.containLetter) {
-            containLetter = 'a-zA-Z'
+            containLetter = '(?=.*[a-zA-Z])'
           }
           if (item === this.containNumber) {
-            containNumber = '0-9'
+            containNumber = '(?=.*[0-9])'
           }
           if (item === this.specialSymbol) {
-            specialSymbol = '!-/:-@[-`{-~'
+            specialSymbol = '(?=.*[~`!@#$%^&*_+=-])'
           }
         })
-        const regExpString = `^[${containLetter}${containNumber}${specialSymbol}]{${this.maintainForm.minLength},}$`
+        const regExpString = `^(${containLetter}${containNumber}${specialSymbol}).{${this.maintainForm.minLength},}$`
         this.maintainForm.regularExpression = regExpString
         setStrategy(this.maintainForm).then(res => {
           this.loadingForm = false
