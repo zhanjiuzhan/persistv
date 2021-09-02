@@ -2,36 +2,25 @@
   <div>
     <el-table
       v-loading="loading"
-      id="roleInfoTable"
+      id="userInfoTable"
       :data="data"
-      :highlight-current-row="true"
       border
-      row-key="id"
       class="persist-table"
+      row-key="id"
       @selection-change="handleSelectionChange"
-      @row-click="selectRow"
     >
       <el-table-column
-        type="selection"
-        width="55"
+        prop="subjectNumber"
+        label="受检者编号"
       />
       <el-table-column
-        prop="name"
-        label="角色"
+        prop="subjectResult"
+        label="检测结果"
       />
       <el-table-column
-        prop="comments"
-        label="描述"
-      />
-      <el-table-column
-        prop="createTime"
-        label="创建时间"
-      />
-      <el-table-column
-        label="操作"
         fixed="right"
-        width="200"
-      >
+        label="操作"
+        width="300">
         <template slot-scope="scope">
           <slot :row="scope.row"/>
         </template>
@@ -51,8 +40,8 @@
 </template>
 
 <script>
-import initData from '@/mixins/initData'
-import eventBus from '@/utils/eventBus'
+import eventBus from '../../../utils/eventBus'
+import initData from '../../../mixins/initData'
 
 export default {
   name: 'List',
@@ -74,20 +63,20 @@ export default {
 
   methods: {
     init() {
-      this.url = '/sys/role/page'
-      this.params = {
-        current: this.current,
-        size: this.size,
-        pages: this.pages,
-        total: this.total
-      }
+      this.data = [
+        {
+          subjectNumber: 'Sample000001',
+          subjectResult: '阳性'
+        },
+        {
+          subjectNumber: 'Sample000002',
+          subjectResult: '阴性'
+        }
+      ]
     },
     search(query) {
       this.query = query
     },
-    selectRow(row) {
-      eventBus.$emit('selectRole', row)
-    }
   }
 }
 </script>

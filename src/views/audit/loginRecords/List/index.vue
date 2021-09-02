@@ -2,40 +2,41 @@
   <div>
     <el-table
       v-loading="loading"
-      id="roleInfoTable"
+      id="auditRecordsTable"
       :data="data"
-      :highlight-current-row="true"
       border
       row-key="id"
       class="persist-table"
-      @selection-change="handleSelectionChange"
-      @row-click="selectRow"
     >
       <el-table-column
-        type="selection"
-        width="55"
+        prop="userName"
+        label="登录用户"
       />
       <el-table-column
-        prop="name"
-        label="角色"
+        prop="status"
+        label="登录状态"
+      >
+        <template slot-scope="scope">
+          <div v-if="scope.row.status===1" class="text-success">成功</div>
+          <div v-else-if="scope.row.status===0" class="text-failure">失败</div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="os"
+        label="操作系统"
       />
       <el-table-column
-        prop="comments"
-        label="描述"
+        prop="msg"
+        label="提示消息"
       />
       <el-table-column
         prop="createTime"
-        label="创建时间"
+        label="登录/退出时间"
       />
       <el-table-column
-        label="操作"
-        fixed="right"
-        width="200"
-      >
-        <template slot-scope="scope">
-          <slot :row="scope.row"/>
-        </template>
-      </el-table-column>
+        prop="ipAddress"
+        label="ip地址"
+      />
     </el-table>
     <el-pagination
       :page-size="size"
@@ -74,7 +75,7 @@ export default {
 
   methods: {
     init() {
-      this.url = '/sys/role/page'
+      this.url = '/sys/loginlog/page'
       this.params = {
         current: this.current,
         size: this.size,
@@ -84,9 +85,6 @@ export default {
     },
     search(query) {
       this.query = query
-    },
-    selectRow(row) {
-      eventBus.$emit('selectRole', row)
     }
   }
 }

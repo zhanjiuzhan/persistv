@@ -23,7 +23,12 @@ export default {
       deep: true
     },
     query(val) {
-      this.params = { ...this.params, ...val }
+      this.params = {
+        current: this.current,
+        size: this.size,
+        total: this.total,
+        pages: this.pages,
+        ...val }
     }
   },
 
@@ -38,6 +43,12 @@ export default {
         this.pages = pages
         this.data = records
         this.loading = false
+      }).catch(error => {
+        this.loading = false
+        this.$message({
+          message: error.message,
+          type: 'error'
+        })
       })
     },
     handleSelectionChange(valList) {

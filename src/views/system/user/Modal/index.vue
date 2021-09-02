@@ -43,7 +43,7 @@
         </el-col>
       </el-row>
       <el-form-item label="角色">
-        <el-select v-model="userRole" multiple placeholder="请选择用户角色" style="width: 100%">
+        <el-select v-model="userRole" placeholder="请选择用户角色" style="width: 100%">
           <el-option
             v-for="item in roleList"
             :key="item.id"
@@ -74,7 +74,7 @@ export default {
       isEdit: true,
       visible: false,
       dialogTitle: '',
-      userRole: [],
+      userRole: '',
       roleList: [],
       formData: {
         id: '',
@@ -102,7 +102,7 @@ export default {
       this.isEdit = false
       this.dialogTitle = '新增用户'
       this.formData = {}
-      this.userRole = []
+      this.userRole = ''
       this.visible = true
     },
     editFormData(data) {
@@ -110,7 +110,7 @@ export default {
       this.isEdit = true
       this.dialogTitle = '编辑用户'
       this.formData = data
-      this.userRole = []
+      this.userRole = ''
       this.visible = true
     },
     submitFormData() {
@@ -118,7 +118,7 @@ export default {
       if (this.isEdit) {
         updateUserInfo(this.formData.id, this.formData).then(res => {
           const data = {
-            roleIds: this.userRole,
+            roleIds: [this.userRole],
             userId: this.formData.id
           }
           setUserRole(data).then(() => {
@@ -154,7 +154,7 @@ export default {
             })
           }
           const data = {
-            roleIds: this.userRole,
+            roleIds: [this.userRole],
             userId: res.id
           }
           setUserRole(data).then(() => {
@@ -183,7 +183,7 @@ export default {
         if (this.formData.id) {
           getRole(this.formData.id).then(role => {
             this.loading = false
-            this.userRole = role.map(item => item.id)
+            this.userRole = role.map(item => item.id)[0]
           }).catch(error => {
             this.visible = false
             this.loading = false

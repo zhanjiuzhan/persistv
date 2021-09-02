@@ -1,6 +1,7 @@
 import axios from 'axios'
 import Config from '@/config'
 import { getToken } from './auth'
+import qs from 'qs';
 
 const service = axios.create({
   baseURL: process['env']['BASE_API'],
@@ -14,7 +15,12 @@ service.interceptors.request.use(
     if (getToken()) {
       config.headers['Authorization'] = `Bearer ${getToken()}`
     }
-    config.headers['Content-Type'] = 'application/json'
+    if (!config.headers['Content-Type']) {
+      config.headers['Content-Type'] = 'application/json'
+    } else if (config.headers['Content-Type'].endsWith('urlencoded')) {
+      config.data = qs.stringify(config.data)
+    }
+
     return config
   },
   error => {

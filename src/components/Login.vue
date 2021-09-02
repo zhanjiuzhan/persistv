@@ -62,8 +62,8 @@ import Config from '@/config'
 import { validCode } from '@/api/login'
 import { getAuthorities } from '@/api/authorities'
 import { convertBase642picture } from '@/utils'
-import { encrypt } from '../utils/rsaEncrypt'
-import { SessionStorageUtil } from '../utils/sessionStorageUtil'
+import { encrypt } from '@/utils/rsaEncrypt'
+import { SessionStorageUtil } from '@/utils/sessionStorageUtil'
 // import { Base64 } from 'js-base64'
 export default {
   name: 'LoginComponent',

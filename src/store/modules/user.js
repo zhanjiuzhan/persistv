@@ -56,7 +56,7 @@ const actions = {
       const sessionUtil = new SessionStorageUtil()
       const data = {
         accessToken: getToken(),
-        userId: sessionUtil.getItem('userInfo')
+        userId: JSON.parse(sessionUtil.getItem('userInfo')).id
       }
       logout(data).then(res => {
         sessionUtil.removeItem('userInfo')

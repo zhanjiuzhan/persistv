@@ -1,47 +1,40 @@
 <template>
   <div class="page-content">
-    <div class="tools">
-      <!-- 搜搜按钮 -->
-      <!-- 操作按钮 -->
-    </div>
-    <!-- 自定义折叠面板 -->
-    <div class="table-container">
-      <el-table
-        id="analyseResultTable"
-        :data="results"
-        border
-        class="persist-table"
-      >
-        <el-table-column
-          prop="subjectNumber"
-          label="受检者编号"
-        />
-        <el-table-column
-          prop="subjectResult"
-          label="检测结果"
-        />
-        <el-table-column
-          fixed="right"
-          label="操作"
-          width="100"
-        >
+    <el-scrollbar class="scrollbar-wrapper">
+      <div class="persist-toolbar">
+        <div class="persist-query">
+          <el-input placeholder="请输入查询的受验者编号" class="query-input">
+            <i slot="suffix" class="el-icon-circle-close" @click="clearQuery()" />
+          </el-input>
+          <el-button size="small" icon="el-icon-search" type="primary" @click="search">搜素</el-button>
+        </div>
+        <div class="tools">
+          <el-button type="primary" size="small" icon="el-icon-plus" @click="startAnalyse()">开始分析</el-button>
+        </div>
+      </div>
+      <!-- 自定义折叠面板 -->
+      <div class="table-container">
+        <List>
           <template slot-scope="scope">
-            <el-button size="small" @click="previewHandler(scope.row)" >预览</el-button>
+            <el-button size="small" icon="el-icon-edit" type="primary" @click="previewHandler(scope.row)">编辑</el-button>
           </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <el-dialog :visible.sync="resultsDetailDialogVisible" title="检测详情">
-      <iframe id="detailContentIframe" ref="detailContentIframe" width="595px" height="842px" style="border: none; width:100%; height: 900px; box-shadow: 2px 2px 8px grey"/>
-      <el-button @click.native.prevent="print">打印</el-button>
-    </el-dialog>
+        </List>
+      </div>
+      <Modal/>
+    </el-scrollbar>
   </div>
 </template>
 
 <script>
 import templateSrc from '@/config/pdfTemplate/analyseResultTemplate.html'
+import List from './List'
+import Modal from './Modal'
+import eventBus from '../../utils/eventBus'
+
 export default {
   name: 'AnalyseResult',
+
+  components: { List, Modal },
 
   data() {
     return {
@@ -56,50 +49,29 @@ export default {
           subjectResult: '阴性'
         }
       ],
-      resultsDetailDialogVisible: false,
+      resultsDetailDialogVisible: false
     }
   },
 
   methods: {
     previewHandler(rowData) {
-      this.resultsDetailDialogVisible = true
-      setTimeout(() => {
-        const iframe = this.$refs.detailContentIframe
-        const win = iframe.contentWindow
-        win.document.body.innerHTML = templateSrc.toString()
+      eventBus.$emit('previewData')
+    },
+    search() {
+      this.$message({
+        message: '该功能持续开发中！',
+        type: 'warning'
       })
     },
-    print() {
-      const iframe = this.$refs.detailContentIframe
-      const win = iframe.contentWindow
-      win.document.body.innerHTML = templateSrc.toString()
-      win.print()
+    startAnalyse() {
+      this.$message({
+        message: '该功能持续开发中！',
+        type: 'warning'
+      })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.page-content {
-  overflow: auto;
-  background-color: $--second-backgroud-color;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-
-  /deep/ .el-dialog {
-    width: 675px;
-  }
-}
-.table-container {
-  position: relative;
-  padding: 15px;
-  width: 100%;
-  height: 100%;
-}
-/deep/ .el-dialog__body {
-  text-align: center;
-}
 </style>

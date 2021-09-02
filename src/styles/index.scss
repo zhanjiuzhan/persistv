@@ -152,3 +152,15 @@ a:active {
   line-height: 45px;
   width: 368px;
 }
+
+.text-success {
+  color: $--color-success;
+}
+
+.text-failure {
+  color: $--color-danger;
+}
+
+.text-warning {
+  color: $--color-warning;
+}

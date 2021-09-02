@@ -2,35 +2,56 @@
   <div>
     <el-table
       v-loading="loading"
-      id="roleInfoTable"
+      id="auditRecordsTable"
       :data="data"
-      :highlight-current-row="true"
       border
       row-key="id"
       class="persist-table"
-      @selection-change="handleSelectionChange"
-      @row-click="selectRow"
     >
       <el-table-column
-        type="selection"
-        width="55"
+        prop="operatorName"
+        label="操作人"
       />
       <el-table-column
-        prop="name"
+        prop="roles"
         label="角色"
       />
       <el-table-column
-        prop="comments"
-        label="描述"
+        label="操作状态"
+      >
+        <template slot-scope="scope">
+          <div v-if="scope.row.status===0" class="text-success">正常</div>
+          <div v-else-if="scope.row.status===1" class="text-success">异常</div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        label="业务类型"
+      >
+        <template slot-scope="scope">
+          <div v-if="scope.row.businessType===0">其他</div>
+          <div v-else-if="scope.row.businessType===1">新增</div>
+          <div v-else-if="scope.row.businessType===2">修改</div>
+          <div v-else-if="scope.row.businessType===3">删除</div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="title"
+        label="操作内容"
       />
       <el-table-column
-        prop="createTime"
-        label="创建时间"
+        prop="updateTime"
+        label="操作时间"
+      />
+      <el-table-column
+        prop="operatorLocation"
+        label="位置"
+      />
+      <el-table-column
+        prop="operatorIp"
+        label="IP"
       />
       <el-table-column
         label="操作"
-        fixed="right"
-        width="200"
       >
         <template slot-scope="scope">
           <slot :row="scope.row"/>
@@ -74,7 +95,7 @@ export default {
 
   methods: {
     init() {
-      this.url = '/sys/role/page'
+      this.url = '/sys/operatorlog/page'
       this.params = {
         current: this.current,
         size: this.size,
@@ -84,9 +105,6 @@ export default {
     },
     search(query) {
       this.query = query
-    },
-    selectRow(row) {
-      eventBus.$emit('selectRole', row)
     }
   }
 }

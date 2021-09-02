@@ -3,7 +3,7 @@
     <el-scrollbar class="scrollbar-wrapper">
       <div class="persist-toolbar">
         <div class="persist-query">
-          <el-input v-model="username" placeholder="查询用户名" class="query-input">
+          <el-input v-model="name" placeholder="查询角色" class="query-input">
             <i slot="suffix" class="el-icon-circle-close" @click="clearQuery()"/>
           </el-input>
           <el-button size="small" icon="el-icon-search" type="primary" @click="search">搜素</el-button>
@@ -51,7 +51,7 @@ export default {
   data() {
     return {
       treeLoading: false,
-      username: '',
+      name: '',
       selectValueList: [],
       delBtnDisabled: true,
       editBtnDisabled: true,
@@ -96,10 +96,10 @@ export default {
 
   methods: {
     search() {
-      eventBus.$emit('query', { username: this.username })
+      eventBus.$emit('query', { name: this.name })
     },
     clearQuery() {
-      this.username = ''
+      this.name = ''
     },
     initTree() {
       this.treeLoading = true

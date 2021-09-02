@@ -2,34 +2,22 @@
   <div>
     <el-table
       v-loading="loading"
-      id="roleInfoTable"
+      id="backupRecordsTable"
       :data="data"
-      :highlight-current-row="true"
       border
-      row-key="id"
       class="persist-table"
-      @selection-change="handleSelectionChange"
-      @row-click="selectRow"
+      row-key="id"
     >
       <el-table-column
-        type="selection"
-        width="55"
+        prop="backupFilename"
+        label="文件名"
       />
       <el-table-column
-        prop="name"
-        label="角色"
-      />
-      <el-table-column
-        prop="comments"
-        label="描述"
-      />
-      <el-table-column
-        prop="createTime"
-        label="创建时间"
+        prop="updateTime"
+        label="时间"
       />
       <el-table-column
         label="操作"
-        fixed="right"
         width="200"
       >
         <template slot-scope="scope">
@@ -53,7 +41,6 @@
 <script>
 import initData from '@/mixins/initData'
 import eventBus from '@/utils/eventBus'
-
 export default {
   name: 'List',
 
@@ -74,19 +61,16 @@ export default {
 
   methods: {
     init() {
-      this.url = '/sys/role/page'
+      this.url = '/sys/db-backup-record/page'
       this.params = {
         current: this.current,
         size: this.size,
-        pages: this.pages,
+        page: this.pages,
         total: this.total
       }
     },
     search(query) {
       this.query = query
-    },
-    selectRow(row) {
-      eventBus.$emit('selectRole', row)
     }
   }
 }

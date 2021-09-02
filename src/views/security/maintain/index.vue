@@ -63,7 +63,7 @@
               </div>
             </div>
           </el-form-item>
-          <el-form-item label="自动注销时间（系统错误操作下自动注销账号时间）">
+          <el-form-item label="自动注销时间（系统无操作自动注销账号时间）">
             <el-input-number
               v-model="maintainForm.logoutTime"
               :min="logoutTimeRange.minValue"
