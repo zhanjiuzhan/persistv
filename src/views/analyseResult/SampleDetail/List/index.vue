@@ -9,32 +9,17 @@
       row-key="id"
     >
       <el-table-column
-        label="实验名称（批次）"
-      >
-        <template slot-scope="scope">
-          <router-link
-            :to="{name: 'sampleDetailList', params: {testName: scope.row.subjectNumber }}"
-            class="testLink">
-            {{ scope.row.subjectNumber }}
-          </router-link>
-        </template>
-      </el-table-column>
+        prop="subjectNumber"
+        label="受检者编号"
+      />
       <el-table-column
         prop="subjectResult"
-        label="分析状态"
-      />
-      <el-table-column
-        prop="startTime"
-        label="开始时间"
-      />
-      <el-table-column
-        prop="endTime"
-        label="结束时间"
+        label="检测结果"
       />
       <el-table-column
         fixed="right"
         label="操作"
-        width="100">
+        width="300">
         <template slot-scope="scope">
           <slot :row="scope.row"/>
         </template>
@@ -79,16 +64,12 @@ export default {
     init() {
       this.data = [
         {
-          subjectNumber: 'Test20210901-01',
-          subjectResult: '已分析',
-          startTime: '-',
-          endTime: '-'
+          subjectNumber: 'Sample000001',
+          subjectResult: '阳性'
         },
         {
-          subjectNumber: 'Test20210901-02',
-          subjectResult: '已分析',
-          startTime: '-',
-          endTime: '-'
+          subjectNumber: 'Sample000002',
+          subjectResult: '阴性'
         }
       ]
     },
@@ -100,8 +81,5 @@ export default {
 </script>
 
 <style scoped>
-a.testLink{
-  color: #34797f;
-  text-decoration: underline!important;
-}
+
 </style>

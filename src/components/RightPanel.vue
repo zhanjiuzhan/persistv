@@ -1,11 +1,10 @@
 <template>
   <div ref="rightPanel" :class="{show:show}" class="rightPanel-container">
-    <div class="rightPanel-background" />
+    <div class="rightPanel-background" @click="show=!show" />
     <div class="rightPanel">
       <div v-if="settingBtn" :style="{'top':buttonTop+'px','background-color':theme}" class="handle-button" @click="show=!show">
         <i :class="show?'el-icon-close':'el-icon-setting'" />
       </div>
-      <div v-else :style="{'top':buttonTop+'px'}" @click="show=!show"/>
       <div class="rightPanel-items">
         <slot />
       </div>
@@ -31,11 +30,11 @@ export default {
   computed: {
     show: {
       get() {
-        return this.$store.state.settings.showRightPanel
+        return this.$store.state.settings.showSettings
       },
       set(val) {
         this.$store.dispatch('changeSetting', {
-          key: 'showRightPanel',
+          key: 'showSettings',
           value: val
         })
       }

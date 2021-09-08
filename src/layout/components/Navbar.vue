@@ -25,6 +25,11 @@
               个人中心
             </el-dropdown-item>
           </router-link>
+          <span style="display:block" @click="showRegistryInfo">
+            <el-dropdown-item>
+              激活状态
+            </el-dropdown-item>
+          </span>
           <span style="display:block" @click="logout">
             <el-dropdown-item divide>
               退出登录
@@ -32,6 +37,7 @@
           </span>
         </el-dropdown-menu>
       </el-dropdown>
+      <LicenseInfoDialog/>
     </div>
   </div>
 </template>
@@ -41,14 +47,17 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
-import Avatar from '@/assets/avatar/avatar.png'
+import eventBus from '@/utils/eventBus'
+import LicenseInfoDialog from '@/components/LicenseInfoDialog'
+import { getActivate } from '@/api/strategy'
 export default {
   name: 'Navbar',
 
   components: {
     Breadcrumb,
     Hamburger,
-    Screenfull
+    Screenfull,
+    LicenseInfoDialog
   },
 
   data () {
@@ -68,11 +77,11 @@ export default {
     ]),
     show: {
       get() {
-        return this.$store.state.settings
+        return this.$store.state.settings.showSettings
       },
       set(val) {
         this.$store.dispatch('changeSetting', {
-          key: 'showRightPanel',
+          key: 'showSettings',
           value: val
         })
       }
@@ -80,6 +89,26 @@ export default {
   },
 
   methods: {
+    showRegistryInfo () {
+      getActivate().then(res => {
+        if (!res) {
+          this.$message({
+            message: '激活异常',
+            type: 'error'
+          })
+          this.$store.dispatch('user/logout').then(() => {
+            location.replace('/login')
+          })
+        } else {
+          eventBus.$emit('showLicenseInfo', res)
+        }
+      }).catch(error => {
+        this.$message({
+          message: error.message,
+          type: 'error'
+        })
+      })
+    },
     logout () {
       this.$confirm('确定注销并退出系统吗？', '提示', {
         confirmButtonText: '确定',

@@ -9,10 +9,14 @@ export const setStrategy = (data) => {
 }
 
 export const getActivate = () => {
-  return request.get('sys/security-strategy/activate')
+  return request.get('/sys/security-license/activate')
 }
 
 export const registry = (data) => {
-  const headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
-  return request.put('/sys/security-license', data, { headers })
+  const headers = { 'Content-Type': 'multipart/form-data' }
+  return request.post('/sys/security-license/upload', data, { headers })
+}
+
+export const getUniqueCode = () => {
+  return request.get('/sys/security-license/uniqueCode')
 }

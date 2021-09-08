@@ -6,44 +6,20 @@
       <div slot="header" class="title">人类同源重组修复基因突变分析软件</div>
       <login-component class="login-content"/>
     </el-card>
-    <el-dialog
-      v-loading.lock="loading"
-      :show-close="false"
-      :title="dialogTitle"
-      :visible.sync="visible"
-      :append-to-body="true"
-      :close-on-click-modal="false"
-      class="persist-dialog"
-      width="30%"
-    >
-      <el-form ref="form" :model="formData">
-        <el-form-item label="激活码">
-          <el-input v-model="formData.license" placeholder="请输入激活码以正常使用该程序"/>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="presit-dialog-footer">
-        <el-button type="primary" @click="registryProgram">激活</el-button>
-      </div>
-    </el-dialog>
+    <LicenseInfoDialog/>
   </div>
 </template>
 
 <script>
 import LoginComponent from '@/components/login'
+import LicenseInfoDialog from '@/components/LicenseInfoDialog'
 import loginPicture from '@/assets/images/login_background_image.png'
-import { getActivate, registry } from '@/api/strategy'
 export default {
   name: 'Login',
-  components: { LoginComponent },
+  components: { LoginComponent, LicenseInfoDialog },
   data() {
     return {
-      loading: false,
-      dialogTitle: '激活程序',
-      visible: false,
       redirect: undefined,
-      formData: {
-        license: '',
-      },
       loginPicture
     }
   },
@@ -53,29 +29,6 @@ export default {
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
-    }
-  },
-  created () {
-    getActivate().then(res => {
-      if (res !== 'Y') {
-        this.visible = true
-      }
-    })
-  },
-  methods: {
-    registryProgram() {
-      registry(this.formData).then(res => {
-        this.visible = false
-        this.$message({
-          message: '激活成功',
-          type: 'success'
-        })
-      }).catch(error => {
-        this.$message({
-          message: error.message,
-          type: 'error'
-        })
-      })
     }
   }
 }

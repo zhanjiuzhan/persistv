@@ -1,7 +1,7 @@
 <template>
   <div class="login-container" @keydown="enterKeyHandler">
     <el-avatar :size="100" :src="avatarUrl" icon="el-icon-user-solid" shape="circle" />
-    <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
+    <el-form ref="loginForm" :disabled="disabled" :model="loginForm" :rules="loginRules" class="login-form">
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" :placeholder="userNamePlaceholder" type="text" auto-complete="off">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon"/>
@@ -64,6 +64,8 @@ import { getAuthorities } from '@/api/authorities'
 import { convertBase642picture } from '@/utils'
 import { encrypt } from '@/utils/rsaEncrypt'
 import { SessionStorageUtil } from '@/utils/sessionStorageUtil'
+import eventBus from '../utils/eventBus'
+import { getActivate } from '../api/strategy'
 // import { Base64 } from 'js-base64'
 export default {
   name: 'LoginComponent',
@@ -84,6 +86,7 @@ export default {
         password: [{ required: true, trigger: 'blur', message: '密码不能为空' }],
         code: [{ required: true, trigger: 'blur', message: '请输入验证码' }]
       },
+      disabled: true,
       avatarUrl: require('@/assets/avatar/pre_avatar.png'),
       userNamePlaceholder: '账号/手机号码/邮箱',
       passwordPlaceholder: '密码',
@@ -106,15 +109,34 @@ export default {
         this.redirect = route.query && route.query.redirect
       },
       immediate: true
+    },
+    disabled() {
+      this.getCode()
     }
   },
 
   created () {
-    this.sessionStorageUtil = new SessionStorageUtil({ expireTime: Config.passCookieExpires })
-    this.getCookie()
-    this.getCode()
-    getAuthorities().then(res => {
-      this.publicKey = res
+    getActivate().then(res => {
+      if (!res) {
+        eventBus.$emit('showLicenseInfo', false)
+        this.disabled = true
+        this.getCode(true)
+      } else {
+        this.disabled = false
+        this.sessionStorageUtil = new SessionStorageUtil({ expireTime: Config.passCookieExpires })
+        this.getCookie()
+        getAuthorities().then(res => {
+          this.publicKey = res
+        })
+      }
+    }).catch((error) => {
+      this.disabled = true
+      this.$message({
+        message: error.message,
+        type: 'error'
+      })
+      eventBus.$emit('showLicenseInfo', false)
+      this.getCode(true)
     })
   },
 
@@ -178,11 +200,15 @@ export default {
         }
       })
     },
-    getCode () {
-      validCode().then(res => {
-        this.validCodeImage = convertBase642picture(res.img)
-        this.uuid = res.uuid
-      })
+    getCode (cacheable) {
+      if (cacheable) {
+        this.validCodeImage = '/src/assets/images/404.svg'
+      } else {
+        validCode().then(res => {
+          this.validCodeImage = convertBase642picture(res.img)
+          this.uuid = res.uuid
+        })
+      }
     }
   }
 }

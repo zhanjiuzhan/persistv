@@ -3,50 +3,37 @@
     <el-scrollbar class="scrollbar-wrapper">
       <div class="persist-toolbar">
         <div class="persist-query">
-          <el-input placeholder="请输入查询的实验名称" class="query-input">
+          <el-input placeholder="请输入查询的样本编号" class="query-input">
             <i slot="suffix" class="el-icon-circle-close" @click="clearQuery()" />
           </el-input>
           <el-button size="small" icon="el-icon-search" type="primary" @click="search">搜素</el-button>
         </div>
-        <div class="tools">
-          <el-button type="primary" size="small" icon="el-icon-pie-chart" @click="analyseBatch()">多批次队列分析</el-button>
-        </div>
+        <!-- T.B.D : 多样本生成报告的文件长啥样 --->
+        <!--        <div class="tools">-->
+        <!--          <el-button type="primary" size="small" icon="el-icon-plus" @click="startAnalyse()">开始分析</el-button>-->
+        <!--        </div>-->
       </div>
       <div class="table-container">
         <List>
           <template slot-scope="scope">
-            <el-button size="small" icon="el-icon-pie-chart" type="primary" @click="analyse(scope.row)">批分析</el-button>
+            <el-button size="small" icon="el-icon-edit" type="primary" @click="previewHandler(scope.row)">编辑</el-button>
           </template>
         </List>
       </div>
+      <Modal/>
     </el-scrollbar>
   </div>
 </template>
 
 <script>
 import List from './List'
-import eventBus from '@/utils/eventBus'
+import Modal from './Modal'
+import eventBus from '../../../utils/eventBus'
 
 export default {
-  name: 'AnalyseResult',
+  name: 'SampleDetail',
 
-  components: { List },
-
-  data() {
-    return {
-      results: [
-        {
-          subjectNumber: 'Sample000001',
-          subjectResult: '阳性'
-        },
-        {
-          subjectNumber: 'Sample000002',
-          subjectResult: '阴性'
-        }
-      ],
-      resultsDetailDialogVisible: false
-    }
-  },
+  components: { List, Modal },
 
   methods: {
     clearQuery() {
@@ -61,13 +48,7 @@ export default {
         type: 'warning'
       })
     },
-    analyseBatch() {
-      this.$message({
-        message: '该功能持续开发中！',
-        type: 'warning'
-      })
-    },
-    analyse(row) {
+    startAnalyse() {
       this.$message({
         message: '该功能持续开发中！',
         type: 'warning'
@@ -77,5 +58,6 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+
 </style>

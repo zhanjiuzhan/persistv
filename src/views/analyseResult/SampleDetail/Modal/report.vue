@@ -80,11 +80,11 @@
           </tr>
           <template v-for="(item, index) in detectionInfo.detectionResultList">
             <tr :key="index">
-              <td>{{ item.gene }}}</td>
+              <td>{{ item.Gene }}}</td>
               <td>{{ item.Transcript }}</td>
-              <td>{{ item.nucleotide }}</td>
-              <td>{{ item.aminoAcid }}</td>
-              <td>{{ item.classification }}</td>
+              <td>{{ item.HGVSc }}</td>
+              <td>{{ item.HGVSp }}</td>
+              <td>{{ item.Class }}</td>
             </tr>
           </template>
           <tr>
@@ -111,11 +111,11 @@ export default {
         subjectNumber: '',
         detectionResultList: [
           {
-            gene: '',
+            Gene: '',
             Transcript: '',
-            nucleotide: '',
-            aminoAcid: '',
-            classification: ''
+            HGVSc: '',
+            HGVSp: '',
+            Class: ''
           }
         ],
         result: ''
@@ -150,25 +150,25 @@ export default {
         subjectNumber: 'Sample123456',
         detectionResultList: [
           {
-            gene: 'BRCA1',
+            Gene: 'BRCA1',
             Transcript: 'NM_007294.3',
-            nucleotide: 'c.2361del',
-            aminoAcid: 'p(Arg117MetfsTer5)',
-            classification: '致病'
+            HGVSc: 'c.2361del',
+            HGVSp: 'p(Arg117MetfsTer5)',
+            Class: '致病'
           },
           {
-            gene: 'BRCA2',
+            Gene: 'BRCA2',
             Transcript: 'NM_00059.3',
-            nucleotide: 'c.1170T>C',
-            aminoAcid: '-',
-            classification: '致病'
+            HGVSc: 'c.1170T>C',
+            HGVSp: '-',
+            Class: '致病'
           },
           {
-            gene: 'BRCA3',
+            Gene: 'BRCA3',
             Transcript: 'NM_024675.3',
-            nucleotide: 'c.96C>G',
-            aminoAcid: 'p(Arg117MetfsTer5)',
-            classification: '可能致病'
+            HGVSc: 'c.96C>G',
+            HGVSp: 'p(Arg117MetfsTer5)',
+            Class: '可能致病'
           }
         ],
         result: '阳性'

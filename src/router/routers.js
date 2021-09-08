@@ -37,6 +37,13 @@ export const routerMap = [
         component: () => import('@/views/analyseResult'),
         name: '分析结果',
         meta: { title: '分析结果', icon: 'index', noCache: true, affixTags: true }
+      },
+      {
+        path: 'analyzeResult/:testName/sampleDetail',
+        hidden: true,
+        component: () => import('@/views/analyseResult/SampleDetail'),
+        name: 'sampleDetailList',
+        meta: { title: '报告一览', noCache: true }
       }
     ]
   },
