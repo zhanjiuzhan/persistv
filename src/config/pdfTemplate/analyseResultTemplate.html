@@ -4,11 +4,15 @@
   <meta charset="UTF-8">
   <title>人类BRCA1/BRCA2/PALB2基因突变检测报告单</title>
   <style>
-    .resultContent {
-      width: 595px;
-      height: 842px;
+    .resultContent .title {
+      text-align: center;
     }
-    .resultContent table {
+
+    .content {
+      height: 80%;
+    }
+
+    .resultContent .content table {
       width: 100%;
       padding: 20px;
       text-align: center;
@@ -17,33 +21,42 @@
       font-size: 14px;
       border-collapse: collapse;
     }
+
     .resultContent table td, th {
       height: 40px;
       border: 1px solid #2c2c2c;
       border-collapse: collapse;
-      max-width:80px;
+      min-width: 60px;
+      max-width: 80px;
     }
+
     .signFooter {
-      position: absolute;
-      bottom: 0;
       margin-bottom: 10px;
+      font-size: 18px;
+    }
+
+    .signFooter .signPosition {
+      display: flex;
+      justify-content: space-between;
     }
   </style>
 </head>
 <body>
-  <div class="resultContent">
+<div class="resultContent">
+  <h2 class="title">人类BRCA1/BRCA2/PALB2基因突变检测报告单</h2>
+  <div class="content">
     <h4>
       受检者信息
     </h4>
     <table>
       <tr>
         <th>受检者编号</th>
-        <td id="subjectNumber"></td>
+        <td id="sampleId"></td>
         <th>姓名</th>
         <td id="name"></td>
       </tr>
       <tr>
-        <th>姓名</th>
+        <th>性别</th>
         <td id="gender"></td>
         <th>年龄</th>
         <td id="age"></td>
@@ -83,7 +96,7 @@
     <h4>
       基因检测结果
     </h4>
-    <table>
+    <table id="resultTable">
       <tr>
         <th>基因</th>
         <th>转录本</th>
@@ -91,57 +104,36 @@
         <th>氯胺酸变异</th>
         <th>变异分类</th>
       </tr>
-      <tr>
-        <td>BRCA1</td>
-        <td>NM_007294.3</td>
-        <td>c.2361del</td>
-        <td>p(Va1780187341)</td>
-        <td>致病</td>
-      </tr>
-      <tr>
-        <td>BRCA2</td>
-        <td>NM_00059.3</td>
-        <td>c.1170T>C</td>
-        <td>-</td>
-        <td>致病</td>
-      </tr>
-      <tr>
-        <td>BRCA3</td>
-        <td>NM_024675.3</td>
-        <td>c.96C>G</td>
-        <td>p(Arg117MetfsTer5)</td>
-        <td>可能致病</td>
-      </tr>
+      <tr id="resultPlaceholder">
       <tr>
         <td colspan="3">检测结果</td>
-        <td colspan="2">阳性</td>
+        <td colspan="2" id="clazz"></td>
       </tr>
     </table>
-    <div class="signFooter">
-      <div class="description">
-        <label>
-          检测说明：检测结果应结合患者病情及其他诊断结果进行综合判断，不作为诊断唯一依据。
-        </label>
-      </div>
-      <span class="item">
-        <label>报告日期</label>
-      </span>
-      <span class="time item">
-        <label>2021/06/12</label>
+  </div>
+  <div class="signFooter">
+    <div class="description">
+      <label>
+        检测说明：检测结果应结合患者病情及其他诊断结果进行综合判断，不作为诊断唯一依据。
+      </label>
+    </div>
+    <div class="signPosition">
+        <span class="item">
+        <label>报告日期：</label>
+        <label id="signTime"/>
       </span>
       <span class="item">
         <label>检测人：</label>
       </span>
-      <span class="empty"/>
       <span class="item">
         <label>报告人：</label>
       </span>
-      <span class="empty"/>
       <span class="item">
         <label>审核人：</label>
       </span>
-      <span class="empty"/>
+      <span class="item"/>
     </div>
   </div>
+</div>
 </body>
 </html>

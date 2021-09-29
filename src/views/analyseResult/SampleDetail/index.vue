@@ -3,15 +3,11 @@
     <el-scrollbar class="scrollbar-wrapper">
       <div class="persist-toolbar">
         <div class="persist-query">
-          <el-input placeholder="请输入查询的样本编号" class="query-input">
+          <el-input v-model="sampleId" placeholder="请输入查询的样本编号" class="query-input">
             <i slot="suffix" class="el-icon-circle-close" @click="clearQuery()" />
           </el-input>
           <el-button size="small" icon="el-icon-search" type="primary" @click="search">搜素</el-button>
         </div>
-        <!-- T.B.D : 多样本生成报告的文件长啥样 --->
-        <!--        <div class="tools">-->
-        <!--          <el-button type="primary" size="small" icon="el-icon-plus" @click="startAnalyse()">开始分析</el-button>-->
-        <!--        </div>-->
       </div>
       <div class="table-container">
         <List>
@@ -35,18 +31,22 @@ export default {
 
   components: { List, Modal },
 
+  data() {
+    return {
+      sampleId: '',
+    }
+  },
+
   methods: {
     clearQuery() {
-      console.log('clear')
+      this.sampleId = ''
+      eventBus.$emit('reloadList')
     },
     previewHandler(rowData) {
-      eventBus.$emit('previewData')
+      eventBus.$emit('previewData', rowData)
     },
     search() {
-      this.$message({
-        message: '该功能持续开发中！',
-        type: 'warning'
-      })
+      eventBus.$emit('query', { sampleId: this.sampleId, experimentName: this.$route.params.testName })
     },
     startAnalyse() {
       this.$message({

@@ -12,15 +12,16 @@
     <div slot="footer" class="persit-dialog-footer">
       <el-button type="primary" icon="el-icon-printer" @click="printFile()">打印</el-button>
       <el-button @click="visible=false">取消</el-button>
-      <el-button @click="visible=false">保存</el-button>
+      <el-button @click="saveInfo">保存</el-button>
     </div>
   </el-dialog>
 </template>
 
 <script>
-import eventBus from '../../../../utils/eventBus'
+import eventBus from '@/utils/eventBus'
 import Report from './report'
 import templateSrc from '@/config/pdfTemplate/analyseResultTemplate.html'
+import { parseTime } from '@/utils'
 
 export default {
   name: 'Modal',
@@ -45,12 +46,12 @@ export default {
   },
 
   methods: {
-    previewData() {
+    previewData(rowData) {
       this.visible = true
       setTimeout(() => {
         const report = this.$refs.report
         if (report && report.init) {
-          report.init()
+          report.init(rowData)
         }
       })
     },
@@ -65,15 +66,41 @@ export default {
         const data = this.$refs.report
         this.fillData(win.document, data)
         win.print()
+        document.body.removeChild(iframe)
       }
     },
     fillData(printDoc, docData) {
-      const data = docData.formData
-      Object.keys(data).forEach(key => {
-        if (data[key]) {
-          printDoc.querySelector(`#${key}`).textContent = data[key]
+      const { baseInfo, geneInfos, sampleId, clazz } = docData.detectionInfo
+      Object.keys(baseInfo).forEach(key => {
+        if (baseInfo[key]) {
+          printDoc.querySelector(`#${key}`).textContent = baseInfo[key]
         }
       })
+      printDoc.querySelector(`#sampleId`).textContent = sampleId
+      geneInfos.forEach(info => {
+        const trNode = printDoc.querySelector('#resultPlaceholder')
+        const geneNameNode = printDoc.createElement('td')
+        const transcriptNode = printDoc.createElement('td')
+        const hgvsCNode = printDoc.createElement('td')
+        const hgvsPNode = printDoc.createElement('td')
+        const clazzNode = printDoc.createElement('td')
+        trNode.appendChild(geneNameNode)
+        trNode.appendChild(transcriptNode)
+        trNode.appendChild(hgvsCNode)
+        trNode.appendChild(hgvsPNode)
+        trNode.appendChild(clazzNode)
+        geneNameNode.textContent = info.geneName || ''
+        transcriptNode.textContent = info.transcript || ''
+        hgvsCNode.textContent = info.hgvsC || ''
+        hgvsPNode.textContent = info.hgvsP || ''
+        clazzNode.textContent = info.clazz || ''
+      })
+      printDoc.querySelector(`#clazz`).textContent = clazz
+      printDoc.querySelector('#signTime').textContent = parseTime(new Date())
+    },
+    saveInfo() {
+      eventBus.$emit('saveBaseInfo', [this.visible, this.loading])
+      this.visible = false
     }
   }
 }

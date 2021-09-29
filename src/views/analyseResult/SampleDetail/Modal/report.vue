@@ -1,5 +1,5 @@
 <template>
-  <el-scrollbar class="scrollbar-wrapper">
+  <el-scrollbar v-loading="loading" class="scrollbar-wrapper">
     <div class="resultContent">
       <!-- 受验者信息--->
       <div id="subjectInfo">
@@ -7,40 +7,43 @@
         <table>
           <tr>
             <th>受验者编号</th>
-            <td>{{ subjectNumber }}</td>
+            <td>{{ detectionInfo.sampleId }}</td>
             <th>姓名</th>
             <td>
-              <el-input v-model="formData.name" class="editInfo"/>
+              <el-input v-model="detectionInfo.baseInfo.name" class="editInfo"/>
             </td>
           </tr>
           <tr>
             <th>性别</th>
             <td>
-              <el-input v-model="formData.gender" class="editInfo"/>
+              <el-select v-model="detectionInfo.baseInfo.gender" class="editInfo">
+                <el-option label="男" value="男"/>
+                <el-option label="女" value="女"/>
+              </el-select>
             </td>
             <th>年龄</th>
             <td>
-              <el-input v-model="formData.age" class="editInfo"/>
+              <el-input v-model="detectionInfo.baseInfo.age" class="editInfo"/>
             </td>
           </tr>
           <tr>
             <th>送检医院</th>
             <td>
-              <el-input v-model="formData.hospital" class="editInfo"/>
+              <el-input v-model="detectionInfo.baseInfo.hospital" class="editInfo"/>
             </td>
             <th>送检科室</th>
             <td>
-              <el-input v-model="formData.department" class="editInfo"/>
+              <el-input v-model="detectionInfo.baseInfo.department" class="editInfo"/>
             </td>
           </tr>
           <tr>
             <th>院内识别唯一编号（如住院号、病历号等）</th>
             <td>
-              <el-input v-model="formData.ID" class="editInfo"/>
+              <el-input v-model="detectionInfo.baseInfo.ID" class="editInfo"/>
             </td>
             <th>临床诊断</th>
             <td>
-              <el-input v-model="formData.clinicalDiagnosis" class="editInfo"/>
+              <el-input v-model="detectionInfo.baseInfo.clinicalDiagnosis" class="editInfo"/>
             </td>
           </tr>
         </table>
@@ -59,10 +62,16 @@
           </tr>
           <tr>
             <td>
-              <el-input v-model="formData.sampleType" class="editInfo"/>
+              <el-input v-model="detectionInfo.baseInfo.sampleType" class="editInfo"/>
             </td>
             <td>
-              <el-input v-model="formData.samplingTime" class="editInfo"/>
+              <el-date-picker
+                v-model="detectionInfo.baseInfo.samplingTime"
+                type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                class="editInfo"
+                style="width: 100%"
+              />
             </td>
           </tr>
         </table>
@@ -78,18 +87,18 @@
             <th>氯胺酸变异</th>
             <th>变异分类</th>
           </tr>
-          <template v-for="(item, index) in detectionInfo.detectionResultList">
+          <template v-for="(item, index) in detectionInfo.geneInfos">
             <tr :key="index">
-              <td>{{ item.Gene }}}</td>
-              <td>{{ item.Transcript }}</td>
-              <td>{{ item.HGVSc }}</td>
-              <td>{{ item.HGVSp }}</td>
-              <td>{{ item.Class }}</td>
+              <td>{{ item.geneName }}</td>
+              <td>{{ item.transcript }}</td>
+              <td>{{ item.hgvsC }}</td>
+              <td>{{ item.hgvsP }}</td>
+              <td>{{ item.clazz }}</td>
             </tr>
           </template>
           <tr>
             <td colspan="3">检测结果</td>
-            <td colspan="2">{{ detectionInfo.result }}</td>
+            <td colspan="2">{{ detectionInfo.clazz }}</td>
           </tr>
         </table>
       </div>
@@ -98,81 +107,93 @@
 </template>
 
 <script>
+import { getAnalyseInfo, saveBaseInfo } from '../../../../api/gene'
+import eventBus from '../../../../utils/eventBus'
+
 export default {
   name: 'Report',
 
   data() {
     return {
+      loading: false,
       subjectInfoTitle: '受验者信息',
       sampleInfoTitle: '样本信息',
       geneDetectionResultTitle: '基因检测结果',
-      subjectNumber: 'Sample123456',
       detectionInfo: {
-        subjectNumber: '',
-        detectionResultList: [
+        sampleId: '',
+        geneInfos: [
           {
-            Gene: '',
-            Transcript: '',
-            HGVSc: '',
-            HGVSp: '',
-            Class: ''
+            geneName: '',
+            transcript: '',
+            hgvsC: '',
+            hgvsP: '',
+            clazz: ''
           }
         ],
-        result: ''
-      },
-      formData: {
-        name: '',
-        gender: '',
-        age: '',
-        hospital: '',
-        department: '',
-        ID: '',
-        clinicalDiagnosis: '',
-        sampleType: '',
-        samplingTime: ''
+        clazz: '',
+        baseInfo: {
+          name: '',
+          gender: '',
+          age: '',
+          hospital: '',
+          department: '',
+          ID: '',
+          clinicalDiagnosis: '',
+          sampleType: '',
+          samplingTime: ''
+        }
       }
     }
   },
+
+  created() {
+    eventBus.$on('saveBaseInfo', this.saveInfo)
+  },
+
+  destroyed() {
+    eventBus.$off('saveBaseInfo', this.saveInfo)
+  },
+
   methods: {
-    init() {
-      this.formData = {
-        name: 'xxxx',
-        gender: '男',
-        age: '60岁',
-        hospital: '北京协和医院',
-        department: '肿瘤外科',
-        ID: 'xxxxxx',
-        clinicalDiagnosis: '前列腺癌，2021/05初次确诊',
-        sampleType: '采血',
-        samplingTime: '2021/06/07'
-      }
-      this.detectionInfo = {
-        subjectNumber: 'Sample123456',
-        detectionResultList: [
-          {
-            Gene: 'BRCA1',
-            Transcript: 'NM_007294.3',
-            HGVSc: 'c.2361del',
-            HGVSp: 'p(Arg117MetfsTer5)',
-            Class: '致病'
-          },
-          {
-            Gene: 'BRCA2',
-            Transcript: 'NM_00059.3',
-            HGVSc: 'c.1170T>C',
-            HGVSp: '-',
-            Class: '致病'
-          },
-          {
-            Gene: 'BRCA3',
-            Transcript: 'NM_024675.3',
-            HGVSc: 'c.96C>G',
-            HGVSp: 'p(Arg117MetfsTer5)',
-            Class: '可能致病'
+    init(formData) {
+      this.loading = true
+      getAnalyseInfo(formData.id)
+        .then(res => {
+          if (!res.geneInfos) {
+            res.geneInfos = []
           }
-        ],
-        result: '阳性'
-      }
+          if (!res.baseInfo) {
+            res.baseInfo = {
+              name: '',
+              gender: '',
+              age: '',
+              hospital: '',
+              department: '',
+              ID: '',
+              clinicalDiagnosis: '',
+              sampleType: '',
+              samplingTime: ''
+            }
+          }
+          this.detectionInfo = res
+        })
+        .catch(error => {
+          this.$message({
+            message: error.message,
+            type: 'error'
+          })
+        })
+        .finally(() => {
+          this.loading = false
+        })
+    },
+    saveInfo() {
+      saveBaseInfo(this.detectionInfo.sampleId, this.detectionInfo.baseInfo).catch(error => {
+        this.$message({
+          message: error.message,
+          type: 'error'
+        })
+      })
     }
   }
 }

@@ -13,24 +13,46 @@
       >
         <template slot-scope="scope">
           <router-link
-            :to="{name: 'sampleDetailList', params: {testName: scope.row.subjectNumber }}"
+            v-if="scope.row.status=== 2"
+            :to="{name: 'sampleDetailList', params: {testName: scope.row.name }}"
             class="testLink">
-            {{ scope.row.subjectNumber }}
+            {{ scope.row.name }}
           </router-link>
+          <div v-else>
+            {{ scope.row.name }}
+          </div>
         </template>
       </el-table-column>
       <el-table-column
-        prop="subjectResult"
         label="分析状态"
+      >
+        <template slot-scope="scope">
+          <div v-if="scope.row.status === 1" class="text-success">正在分析</div>
+          <div v-else-if="scope.row.status === 2" class="text-info">分析完成</div>
+          <div v-else-if="scope.row.status === -1" class="text-failure">分析出错</div>
+          <div v-else-if="scope.row.status === 0" class="text-warning">未分析</div>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="createTime"
+        label="创建时间"
       />
       <el-table-column
-        prop="startTime"
         label="开始时间"
-      />
+      >
+        <template slot-scope="scope">
+          <div v-if="scope.row.startTime">{{ scope.row.startTime }}</div>
+          <div v-else>-</div>
+        </template>
+      </el-table-column>
       <el-table-column
-        prop="endTime"
         label="结束时间"
-      />
+      >
+        <template slot-scope="scope">
+          <div v-if="scope.row.endTime">{{ scope.row.endTime }}</div>
+          <div v-else>-</div>
+        </template>
+      </el-table-column>
       <el-table-column
         fixed="right"
         label="操作"
@@ -77,20 +99,13 @@ export default {
 
   methods: {
     init() {
-      this.data = [
-        {
-          subjectNumber: 'Test20210901-01',
-          subjectResult: '已分析',
-          startTime: '-',
-          endTime: '-'
-        },
-        {
-          subjectNumber: 'Test20210901-02',
-          subjectResult: '已分析',
-          startTime: '-',
-          endTime: '-'
-        }
-      ]
+      this.url = '/sys/experiment-info/page'
+      this.params = {
+        current: this.current,
+        size: this.size,
+        pages: this.pages,
+        total: this.total
+      }
     },
     search(query) {
       this.query = query

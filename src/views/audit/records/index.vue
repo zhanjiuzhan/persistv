@@ -65,10 +65,12 @@ export default {
 
     clearQueryOperatorName() {
       this.operatorName = ''
+      eventBus.$emit('reloadList')
     },
 
     clearQueryTitle() {
       this.title = ''
+      eventBus.$emit('reloadList')
     },
 
     showDetail(rowData) {

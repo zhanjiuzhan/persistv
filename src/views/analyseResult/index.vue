@@ -1,21 +1,25 @@
 <template>
-  <div class="page-content">
+  <div class="page-content" v-loading="loading">
     <el-scrollbar class="scrollbar-wrapper">
       <div class="persist-toolbar">
         <div class="persist-query">
-          <el-input placeholder="请输入查询的实验名称" class="query-input">
+          <el-input v-model="experimentName" placeholder="请输入查询的实验名称" class="query-input">
             <i slot="suffix" class="el-icon-circle-close" @click="clearQuery()" />
           </el-input>
           <el-button size="small" icon="el-icon-search" type="primary" @click="search">搜素</el-button>
-        </div>
-        <div class="tools">
-          <el-button type="primary" size="small" icon="el-icon-pie-chart" @click="analyseBatch()">多批次队列分析</el-button>
         </div>
       </div>
       <div class="table-container">
         <List>
           <template slot-scope="scope">
-            <el-button size="small" icon="el-icon-pie-chart" type="primary" @click="analyse(scope.row)">批分析</el-button>
+            <el-button
+              :disabled="scope.row.status === 1 || scope.row.status === 2"
+              size="small"
+              icon="el-icon-pie-chart"
+              type="primary"
+              @click="analyse(scope.row)">
+              批分析
+            </el-button>
           </template>
         </List>
       </div>
@@ -26,6 +30,7 @@
 <script>
 import List from './List'
 import eventBus from '@/utils/eventBus'
+import { executeAnalyse } from '../../api/experimentInfo'
 
 export default {
   name: 'AnalyseResult',
@@ -34,44 +39,37 @@ export default {
 
   data() {
     return {
-      results: [
-        {
-          subjectNumber: 'Sample000001',
-          subjectResult: '阳性'
-        },
-        {
-          subjectNumber: 'Sample000002',
-          subjectResult: '阴性'
-        }
-      ],
-      resultsDetailDialogVisible: false
+      loading: false,
+      experimentName: ''
     }
   },
 
   methods: {
     clearQuery() {
-      console.log('clear')
+      this.experimentName = ''
+      eventBus.$emit('reloadList')
     },
     previewHandler(rowData) {
       eventBus.$emit('previewData')
     },
     search() {
-      this.$message({
-        message: '该功能持续开发中！',
-        type: 'warning'
-      })
-    },
-    analyseBatch() {
-      this.$message({
-        message: '该功能持续开发中！',
-        type: 'warning'
-      })
+      eventBus.$emit('query', { name: this.experimentName })
     },
     analyse(row) {
-      this.$message({
-        message: '该功能持续开发中！',
-        type: 'warning'
-      })
+      this.loading = true
+      executeAnalyse(row.name)
+        .then(() => {
+          eventBus.$emit('reloadList')
+        })
+        .catch(error => {
+          this.$message({
+            message: error.message,
+            type: 'error'
+          })
+        })
+        .finally(() => {
+          this.loading = false
+        })
     }
   }
 }

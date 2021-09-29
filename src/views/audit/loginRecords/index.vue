@@ -44,11 +44,13 @@ export default {
     },
 
     clearQueryUserName() {
-      this.operatorName = ''
+      this.userName = ''
+      eventBus.$emit('reloadList')
     },
 
     clearQueryUpdateTime() {
       this.updateTime = ''
+      eventBus.$emit('reloadList')
     }
 
   }

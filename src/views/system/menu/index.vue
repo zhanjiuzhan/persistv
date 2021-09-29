@@ -53,7 +53,8 @@ export default {
       eventBus.$emit('query', { username: this.username })
     },
     clearQuery() {
-      this.username = ''
+      this.name = ''
+      eventBus.$emit('reloadList')
     },
     addMenu() {
       eventBus.$emit('addMenu')

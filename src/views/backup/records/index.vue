@@ -63,6 +63,7 @@ export default {
     },
     clearQuery() {
       this.filename = ''
+      eventBus.$emit('reloadList')
     },
     recoverBackup(rowData) {
       if (!rowData) return

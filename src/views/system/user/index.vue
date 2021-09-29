@@ -84,6 +84,7 @@ export default {
     },
     clearQuery() {
       this.username = ''
+      eventBus.$emit('reloadList')
     },
     addUser() {
       eventBus.$emit('addUser')

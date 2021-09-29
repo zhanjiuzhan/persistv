@@ -100,6 +100,7 @@ export default {
     },
     clearQuery() {
       this.name = ''
+      eventBus.$emit('reloadList')
     },
     initTree() {
       this.treeLoading = true
