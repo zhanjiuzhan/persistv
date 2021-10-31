@@ -8,15 +8,21 @@
           </el-input>
           <el-button size="small" icon="el-icon-search" type="primary" @click="search">搜素</el-button>
         </div>
+        <div class="tools">
+          <el-button type="primary" size="small" icon="el-icon-download" @click="exportBatch">批量导出</el-button>
+        </div>
       </div>
       <div class="table-container">
         <List>
           <template slot-scope="scope">
-            <el-button size="small" icon="el-icon-edit" type="primary" @click="previewHandler(scope.row)">编辑</el-button>
+            <el-button size="small" icon="el-icon-view" type="primary" @click="previewHandler(scope.row)">预览</el-button>
+            <el-button size="small" icon="el-icon-edit" type="primary" @click="previewHandler(scope.row, true)">编辑</el-button>
+            <el-button :disabled="scope.row.qcStatus===-1" size="small" icon="el-icon-view" type="primary" @click="previewQualityControl(scope.row)">质控结果</el-button>
           </template>
         </List>
       </div>
       <Modal/>
+      <qc-modal/>
     </el-scrollbar>
   </div>
 </template>
@@ -25,15 +31,16 @@
 import List from './List'
 import Modal from './Modal'
 import eventBus from '../../../utils/eventBus'
+import qcModal from '../qualityControl'
 
 export default {
   name: 'SampleDetail',
 
-  components: { List, Modal },
+  components: { List, Modal, qcModal },
 
   data() {
     return {
-      sampleId: '',
+      sampleId: ''
     }
   },
 
@@ -42,17 +49,17 @@ export default {
       this.sampleId = ''
       eventBus.$emit('reloadList')
     },
-    previewHandler(rowData) {
-      eventBus.$emit('previewData', rowData)
+    previewHandler(rowData, editable = false) {
+      eventBus.$emit('previewData', rowData, editable)
     },
     search() {
       eventBus.$emit('query', { sampleId: this.sampleId, experimentName: this.$route.params.testName })
     },
-    startAnalyse() {
-      this.$message({
-        message: '该功能持续开发中！',
-        type: 'warning'
-      })
+    previewQualityControl(rowData) {
+      eventBus.$emit('showQualityControl', rowData)
+    },
+    exportBatch() {
+      eventBus.$emit('exportBatch')
     }
   }
 }

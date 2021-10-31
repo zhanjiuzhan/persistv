@@ -29,7 +29,7 @@
       </el-col>
       <el-col :span="18">
         <label class="infoValue">
-          {{ authenticInfo.productName }}
+          {{ config.webName }}
         </label>
       </el-col>
     </el-row>
@@ -56,6 +56,7 @@
 <script>
 import eventBus from '../utils/eventBus'
 import { getUniqueCode, registry } from '../api/strategy'
+import Config from '@/config'
 
 export default {
   name: 'LicenseInfoDialog',
@@ -68,6 +69,7 @@ export default {
       activated: true,
       showClose: false,
       uploadUrl: '/sys/security-license/upload',
+      config: Config,
       authenticInfo: {
         machineCode: '',
         productName: '',

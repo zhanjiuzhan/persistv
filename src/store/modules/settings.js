@@ -1,6 +1,6 @@
 import defaultSettings from '@/config'
 
-const { tagsView, fixedHeader, sidebarLogo, uniqueOpened, showFooter, footerTxt, caseNumber } = defaultSettings
+const { tagsView, fixedHeader, sidebarLogo, uniqueOpened, showFooter, footerCopyRightTxt, footerVersionTxt, caseNumber } = defaultSettings
 
 const state = {
   showSettings: false,
@@ -9,7 +9,8 @@ const state = {
   sidebarLogo,
   uniqueOpened,
   showFooter,
-  footerTxt,
+  footerCopyRightTxt,
+  footerVersionTxt,
   caseNumber
 }
 

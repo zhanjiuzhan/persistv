@@ -1,5 +1,5 @@
 <template>
-  <el-scrollbar v-loading="loading" class="scrollbar-wrapper">
+  <div>
     <div class="resultContent">
       <!-- 受验者信息--->
       <div id="subjectInfo">
@@ -39,7 +39,7 @@
           <tr>
             <th>院内识别唯一编号（如住院号、病历号等）</th>
             <td>
-              <el-input v-model="detectionInfo.baseInfo.ID" class="editInfo"/>
+              <el-input v-model="detectionInfo.baseInfo.id" class="editInfo"/>
             </td>
             <th>临床诊断</th>
             <td>
@@ -67,8 +67,8 @@
             <td>
               <el-date-picker
                 v-model="detectionInfo.baseInfo.samplingTime"
-                type="datetime"
-                value-format="yyyy-MM-dd HH:mm:ss"
+                type="date"
+                value-format="yyyy-MM-dd"
                 class="editInfo"
                 style="width: 100%"
               />
@@ -103,23 +103,62 @@
         </table>
       </div>
     </div>
-  </el-scrollbar>
+    <el-row :gutter="10" class="editReportInfoRow">
+      <el-col :span="3">
+        <label>报告日期</label>
+      </el-col>
+      <el-col :span="9">
+        <el-date-picker
+          v-model="detectionInfo.baseInfo.reportDate"
+          type="date"
+          class="editReportInfo"
+          value-format="yyyy-MM-dd"
+          style="width: 100%"
+        />
+      </el-col>
+      <el-col :span="3">
+        <label>检测人</label>
+      </el-col>
+      <el-col :span="9">
+        <el-input v-model="detectionInfo.baseInfo.inspector" type="text" class="editReportInfo" placeholder="请输入检测人" maxlength="5" show-word-limit/>
+      </el-col>
+    </el-row>
+    <el-row :gutter="8" class="editReportInfoRow">
+      <el-col :span="3">
+        <label>报告人</label>
+      </el-col>
+      <el-col :span="9">
+        <el-input v-model="detectionInfo.baseInfo.reporter" type="text" class="editReportInfo" placeholder="请输入报告人" maxlength="5" show-word-limit/>
+      </el-col>
+      <el-col :span="3">
+        <label>审核人</label>
+      </el-col>
+      <el-col :span="9">
+        <el-input v-model="detectionInfo.baseInfo.reviewer" type="text" class="editReportInfo" placeholder="请输入审核人" maxlength="5" show-word-limit/>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
-import { getAnalyseInfo, saveBaseInfo } from '../../../../api/gene'
-import eventBus from '../../../../utils/eventBus'
+import { saveBaseInfo } from '@/api/gene'
+import eventBus from '@/utils/eventBus'
+import templateSrc from '@/config/pdfTemplate/analyseResultTemplate.html'
+import html2canvas from 'html2canvas'
+import JsPDF from 'jspdf'
+import { parseTime } from '@/utils'
 
 export default {
   name: 'Report',
 
-  data() {
-    return {
-      loading: false,
-      subjectInfoTitle: '受验者信息',
-      sampleInfoTitle: '样本信息',
-      geneDetectionResultTitle: '基因检测结果',
-      detectionInfo: {
+  props: {
+    fillData: {
+      type: Function,
+      default: () => {}
+    },
+    detectionInfo: {
+      type: Object,
+      default: () => ({
         sampleId: '',
         geneInfos: [
           {
@@ -137,12 +176,26 @@ export default {
           age: '',
           hospital: '',
           department: '',
-          ID: '',
+          id: '',
           clinicalDiagnosis: '',
           sampleType: '',
-          samplingTime: ''
+          samplingTime: '',
+          inspector: '',
+          reporter: '',
+          reviewer: '',
+          reportDate: ''
         }
-      }
+      })
+    }
+  },
+
+  data() {
+    return {
+      a4Size: [595.28, 841.89],
+      loading: false,
+      subjectInfoTitle: '受验者信息',
+      sampleInfoTitle: '样本信息',
+      geneDetectionResultTitle: '基因检测结果'
     }
   },
 
@@ -155,44 +208,48 @@ export default {
   },
 
   methods: {
-    init(formData) {
-      this.loading = true
-      getAnalyseInfo(formData.id)
-        .then(res => {
-          if (!res.geneInfos) {
-            res.geneInfos = []
+    saveInfo(target) {
+      target.loading = true
+      const iframe = document.createElement('iframe')
+      document.body.appendChild(iframe)
+      const win = iframe.contentWindow
+      win.document.body.innerHTML = templateSrc
+      this.fillData(win.document, this.detectionInfo)
+      html2canvas(win.document.body).then(canvas => {
+        const imageUrl = canvas.toDataURL('image/png')
+        const pdf = new JsPDF('p', 'pt', this.a4Size)
+        const [width, height] = this.a4Size
+        pdf.addImage(imageUrl, 'PNG', 0, 0, width, height)
+        const blob = pdf.output('blob')
+        document.body.removeChild(iframe)
+        debugger
+        const fileName = this.detectionInfo.sampleId + '.pdf'
+        const file = new File([blob], fileName)
+        const formData = new FormData()
+        formData.append('reportFile', file)
+        const baseInfo = this.detectionInfo.baseInfo
+        Object.keys(this.detectionInfo.baseInfo).map(key => {
+          if (baseInfo[key] && baseInfo[key] !== 'null') {
+            formData.append(key, baseInfo[key])
           }
-          if (!res.baseInfo) {
-            res.baseInfo = {
-              name: '',
-              gender: '',
-              age: '',
-              hospital: '',
-              department: '',
-              ID: '',
-              clinicalDiagnosis: '',
-              sampleType: '',
-              samplingTime: ''
-            }
-          }
-          this.detectionInfo = res
         })
-        .catch(error => {
-          this.$message({
-            message: error.message,
-            type: 'error'
-          })
+        this.detectionInfo.baseInfo = formData
+        return this.detectionInfo
+      }).then(res => {
+        return saveBaseInfo(res.sampleId, res.baseInfo)
+      }).then(() => {
+        this.$message({
+          message: '保存成功',
+          type: 'success'
         })
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    saveInfo() {
-      saveBaseInfo(this.detectionInfo.sampleId, this.detectionInfo.baseInfo).catch(error => {
+      }).catch(error => {
         this.$message({
           message: error.message,
           type: 'error'
         })
+      }).finally(() => {
+        target.loading = false
+        target.visible = false
       })
     }
   }
@@ -200,9 +257,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.scrollbar-wrapper {
-  height: calc(100vh - 400px);
-}
 .resultContent {
   padding-bottom: 17px;
 }
@@ -226,6 +280,18 @@ export default {
   .editInfo {
     /deep/ .el-input__inner {
       color: $--color-success!important;
+    }
+  }
+}
+
+.editReportInfoRow {
+  margin: 5px 0;
+  display: flex;
+  align-items: baseline;
+
+  .editReportInfo {
+    /deep/ .el-input__inner {
+      border-color: #2c2c2c!important;
     }
   }
 }

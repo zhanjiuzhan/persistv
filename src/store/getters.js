@@ -18,7 +18,8 @@ const getters = {
   sidebarLogo: state => state.settings.sidebarLogo,
   uniqueOpened: state => state.settings.uniqueOpened,
   showFooter: state => state.settings.showFooter,
-  footerTxt: state => state.settings.footerTxt,
+  footerCopyRightTxt: state => state.settings.footerCopyRightTxt,
+  footerVersionTxt: state => state.settings.footerVersionTxt,
   caseNumber: state => state.settings.caseNumber
 }
 

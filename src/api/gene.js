@@ -9,5 +9,17 @@ export const getAnalyseInfo = (id) => {
 }
 
 export const saveBaseInfo = (sampleId, data) => {
-  return request.post(`/sys/gene/${sampleId}`, data)
+  const headers = { 'Content-Type': 'multipart/form-data' }
+  return request.post(`/sys/gene/${sampleId}`, data, { headers })
+}
+
+export const getQualityControlInfo = (experimentName, sampleId) => {
+  return request.get(`/sys/gene/qc/${experimentName}/${sampleId}`)
+}
+
+export const exportReportBatch = (params) => {
+  const headers = {
+    'Content-Type': 'application/json; application/octet-stream'
+  }
+  return request.get('/sys/gene/exportReport', { params, headers, responseType: 'blob' })
 }

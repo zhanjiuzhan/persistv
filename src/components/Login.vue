@@ -21,7 +21,7 @@
           </el-col>
           <el-col :span="8">
             <div id="validCode">
-              <img :src="validCodeImage" @click="getCode">
+              <img :src="validCodeImage" @click="refreshCode">
             </div>
           </el-col>
         </el-row>
@@ -36,7 +36,6 @@
         </el-row>
       </el-form-item>
     </el-form>
-    <!-- <el-divider id="divider"/>-->
     <!-- <el-row id="otherItemRow" type="flex" justify="end">-->
     <!--  <el-col :span="4">-->
     <!--    <el-link type="primary">{{ forgetText }}</el-link>-->
@@ -209,6 +208,9 @@ export default {
           this.uuid = res.uuid
         })
       }
+    },
+    refreshCode() {
+      this.getCode(this.disabled)
     }
   }
 }

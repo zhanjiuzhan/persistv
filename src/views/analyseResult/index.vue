@@ -18,7 +18,7 @@
               icon="el-icon-pie-chart"
               type="primary"
               @click="analyse(scope.row)">
-              批分析
+              {{ scope.row.status !== -1 ? '批分析' : '重新分析' }}
             </el-button>
           </template>
         </List>

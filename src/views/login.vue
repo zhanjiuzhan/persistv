@@ -5,6 +5,14 @@
     <el-card>
       <div slot="header" class="title">人类同源重组修复基因突变分析软件</div>
       <login-component class="login-content"/>
+      <div class="copyrightContent">
+        <el-row type="flex" justify="center" >
+          <span class="copyrightText">{{ $store.getters.footerCopyRightTxt }}</span>
+        </el-row>
+        <el-row type="flex" justify="center" >
+          <span class="copyrightText">{{ $store.getters.footerVersionTxt }}</span>
+        </el-row>
+      </div>
     </el-card>
     <LicenseInfoDialog/>
   </div>
@@ -92,5 +100,12 @@ export default {
     font-family: "KaiTi";
     font-weight: 700;
     font-size: 35px;
+  }
+  .copyrightContent {
+    margin-top: 10px;
+
+    .copyrightText {
+      font-size: 13px;
+    }
   }
 </style>

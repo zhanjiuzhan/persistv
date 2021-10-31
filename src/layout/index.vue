@@ -9,7 +9,8 @@
       </div>
       <app-main />
       <div v-if="$store.state.settings.showFooter" id="el-main-foot">
-        <span v-html="$store.state.settings.footerTxt" />
+        <span v-if="$store.getters.footerCopyRightTxt" v-html="$store.getters.footerCopyRightTxt" />
+        <span v-if="$store.getters.footerVersionTxt" v-html="$store.getters.footerVersionTxt" />
       </div>
       <right-panel v-if="showSettings">
         <settings />

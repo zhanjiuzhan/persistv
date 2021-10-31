@@ -36,6 +36,8 @@ service.interceptors.response.use(
       const { data, code } = resData
       if (code === 20000) {
         return data
+      } else if (!code && !data && resData) {
+        return resData
       }
     } else if (status === 400) {
       console.log('Bad Request')

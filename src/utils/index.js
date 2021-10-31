@@ -1,4 +1,4 @@
-export function parseTime(time) {
+export function parseTime(time, divide = ' ') {
   if (time) {
     const date = new Date(time)
     const year = date.getFullYear()
@@ -10,7 +10,7 @@ export function parseTime(time) {
     const hours = date.getHours() < 10 ? '0' + date.getHours() : date.getHours()
     const minutes = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
     const seconds = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
-    return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds
+    return year + '-' + month + '-' + day + divide + hours + ':' + minutes + ':' + seconds
   } else {
     return ''
   }

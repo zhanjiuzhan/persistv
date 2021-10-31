@@ -4,19 +4,25 @@
   <meta charset="UTF-8">
   <title>人类BRCA1/BRCA2/PALB2基因突变检测报告单</title>
   <style>
+    body {
+      width: 595.28pt;
+      height: 841.89pt;
+      display: flex;
+      justify-content: center;
+    }
     .resultContent .title {
       text-align: center;
     }
 
     .content {
-      height: 80%;
+      height: 70%;
     }
 
     .resultContent .content table {
       width: 100%;
       padding: 20px;
       text-align: center;
-      word-break: break-word;
+      word-break: break-all;
       white-space: break-spaces;
       font-size: 14px;
       border-collapse: collapse;
@@ -33,6 +39,10 @@
     .signFooter {
       margin-bottom: 10px;
       font-size: 18px;
+    }
+
+    .signFooter .description {
+      margin-bottom: 50px;
     }
 
     .signFooter .signPosition {
@@ -105,7 +115,6 @@
         <th>变异分类</th>
       </tr>
       <tr id="resultPlaceholder">
-      <tr>
         <td colspan="3">检测结果</td>
         <td colspan="2" id="clazz"></td>
       </tr>
@@ -118,18 +127,21 @@
       </label>
     </div>
     <div class="signPosition">
-        <span class="item">
+      <span class="item">
         <label>报告日期：</label>
-        <label id="signTime"/>
+        <label id="reportDate"/>
       </span>
       <span class="item">
         <label>检测人：</label>
+        <label id="inspector"/>
       </span>
       <span class="item">
         <label>报告人：</label>
+        <label id="reporter"/>
       </span>
       <span class="item">
         <label>审核人：</label>
+        <label id="reviewer"/>
       </span>
       <span class="item"/>
     </div>
