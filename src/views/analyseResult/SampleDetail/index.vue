@@ -17,7 +17,7 @@
           <template slot-scope="scope">
             <el-button size="small" icon="el-icon-view" type="primary" @click="previewHandler(scope.row)">预览</el-button>
             <el-button size="small" icon="el-icon-edit" type="primary" @click="previewHandler(scope.row, true)">编辑</el-button>
-            <el-button :disabled="scope.row.qcStatus===-1" size="small" icon="el-icon-view" type="primary" @click="previewQualityControl(scope.row)">质控结果</el-button>
+            <el-button size="small" icon="el-icon-view" type="primary" @click="previewQualityControl(scope.row)">质控结果</el-button>
           </template>
         </List>
       </div>

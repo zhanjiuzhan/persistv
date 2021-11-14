@@ -28,7 +28,7 @@
       </el-form-item>
       <el-form-item>
         <el-row type="flex" justify="space-between">
-          <el-checkbox :label="rememberMeLabel" v-model="loginForm.rememberMe"/>
+          <!--<el-checkbox :label="rememberMeLabel" v-model="loginForm.rememberMe"/> -->
           <el-button id="loginButton" :loading="loading" size="medium" type="primary" @click.native.prevent="handleLogin">
             <span v-if="!loading">{{ loginText }}</span>
             <span v-else>{{ loggingText }}</span>
@@ -87,7 +87,7 @@ export default {
       },
       disabled: true,
       avatarUrl: require('@/assets/avatar/pre_avatar.png'),
-      userNamePlaceholder: '账号/手机号码/邮箱',
+      userNamePlaceholder: '用户名',
       passwordPlaceholder: '密码',
       validCodePlaceholder: '请输入验证码',
       validCodeImage: '',

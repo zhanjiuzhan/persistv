@@ -22,7 +22,7 @@
             width="150"
             trigger="manual"
           >
-            <div>软件版本V1.0</div>
+            <div>发布版本V1</div>
             <div>完整版本V1.0.0</div>
             <Item slot="reference" icon="info" title="关于"/>
           </el-popover>

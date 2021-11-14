@@ -13,7 +13,7 @@
           <el-button :disabled="delBtnDisabled" type="danger" size="small" icon="el-icon-delete" @click="deleteRole()">
             删除
           </el-button>
-          <el-button :disabled="editBtnDisabled" type="primary" size="small" icon="el-icon-edit" @click="editRole()">编辑
+          <el-button v-show="false" :disabled="editBtnDisabled" type="primary" size="small" icon="el-icon-edit" @click="editRole()">编辑
           </el-button>
         </div>
       </div>

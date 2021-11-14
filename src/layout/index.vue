@@ -12,9 +12,6 @@
         <span v-if="$store.getters.footerCopyRightTxt" v-html="$store.getters.footerCopyRightTxt" />
         <span v-if="$store.getters.footerVersionTxt" v-html="$store.getters.footerVersionTxt" />
       </div>
-      <right-panel v-if="showSettings">
-        <settings />
-      </right-panel>
     </div>
   </div>
 </template>

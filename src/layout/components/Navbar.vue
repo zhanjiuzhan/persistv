@@ -15,11 +15,6 @@
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown">
-          <span style="display:block" @click="show = true">
-            <el-dropdown-item>
-              布局设置
-            </el-dropdown-item>
-          </span>
           <router-link to="/user/center">
             <el-dropdown-item>
               个人中心

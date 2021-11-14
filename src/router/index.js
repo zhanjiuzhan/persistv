@@ -32,10 +32,7 @@ router.beforeEach((to, from, next) => {
             router.addRoutes(store.getters.addRouters)
             next({ ...to, replace: true })
           }).catch(error => {
-            this.$message({
-              message: error.message,
-              type: 'error'
-            })
+            console.log(error.message)
             NProgress.done()
           })
         } else {

@@ -58,8 +58,8 @@ export default {
   /**
    * 底部文字，支持html语法
    */
-  footerCopyRightTxt: 'Copyright Precision Scientific 普瑞基准  2021-2022',
-  footerVersionTxt: '发布版本：V1.0 完整版本：V1.0.0',
+  footerCopyRightTxt: '© 2021 Precision Scientific，普瑞基准. All rights reserved.',
+  footerVersionTxt: '发布版本：V1 完整版本：V1.0.0',
 
   /**
    * 备案号
