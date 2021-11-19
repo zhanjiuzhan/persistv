@@ -56,7 +56,7 @@ export default {
       const query = {}
       this.filename && (query['filename'] = this.filename)
       if (this.timeRange && this.timeRange.length === 2) {
-        query['startTIme'] = parseTime(this.timeRange[0])
+        query['startTime'] = parseTime(this.timeRange[0])
         query['endTime'] = parseTime(this.timeRange[1])
       }
       eventBus.$emit('query', query)

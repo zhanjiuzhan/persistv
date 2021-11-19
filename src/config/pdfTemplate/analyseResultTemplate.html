@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>人类BRCA1/BRCA2/PALB2基因突变检测报告单</title>
+  <title>人类BRCA1/BRCA2基因突变检测报告单</title>
   <style>
     body {
       width: 595.28pt;
-      height: 841.89pt;
+      /*height: 841.89pt;*/
       display: flex;
       justify-content: center;
     }
@@ -14,8 +14,8 @@
       text-align: center;
     }
 
-    .content {
-      height: 70%;
+    .resultContent .title .subtitle {
+      font-style: italic;
     }
 
     .resultContent .content table {
@@ -37,15 +37,12 @@
     }
 
     .signFooter {
-      margin-bottom: 10px;
+      margin-top: 20px;
       font-size: 18px;
     }
 
-    .signFooter .description {
-      margin-bottom: 50px;
-    }
-
     .signFooter .signPosition {
+      margin-top: 10px;
       display: flex;
       justify-content: space-between;
     }
@@ -53,7 +50,7 @@
 </head>
 <body>
 <div class="resultContent">
-  <h2 class="title">人类BRCA1/BRCA2基因突变检测报告单</h2>
+  <h2 class="title">人类<label class="subtitle"> BRCA1/BRCA2 </label>基因突变检测报告单</h2>
   <div class="content">
     <h4>
       受检者信息
@@ -111,7 +108,7 @@
         <th>基因</th>
         <th>转录本</th>
         <th>核苷酸变异</th>
-        <th>氯胺酸变异</th>
+        <th>氨基酸变异</th>
         <th>变异分类</th>
       </tr>
       <tr id="resultPlaceholder">

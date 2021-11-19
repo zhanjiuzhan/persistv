@@ -8,8 +8,8 @@
         :collapse="isCollapse"
         :unique-opened="uniqueOpened"
         mode="vertical"
-        background-color="#34797f"
-        text-color="#c8c8c8"
+        background-color="#2151a3"
+        text-color="#f3f3f3"
         active-text-color="#fa8072"
       >
 

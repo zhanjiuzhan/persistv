@@ -27,7 +27,7 @@
         </el-row>
       </el-form-item>
       <el-form-item>
-        <el-row type="flex" justify="space-between">
+        <el-row type="flex" justify="center">
           <!--<el-checkbox :label="rememberMeLabel" v-model="loginForm.rememberMe"/> -->
           <el-button id="loginButton" :loading="loading" size="medium" type="primary" @click.native.prevent="handleLogin">
             <span v-if="!loading">{{ loginText }}</span>
@@ -224,7 +224,7 @@ export default {
   position: relative;
 
   /deep/ .el-avatar--circle {
-    border: 2px solid $--color-secondary;
+    border: 2px solid $--color-primary;
     position: absolute;
     left: 150px;
     top: -60px;
@@ -268,7 +268,7 @@ export default {
   }
 
   /deep/ .el-avatar {
-    background-color: $--color-secondary;
+    background-color: $--second-backgroud-color;
   }
 
   #otherItemRow {

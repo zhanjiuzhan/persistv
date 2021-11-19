@@ -201,6 +201,10 @@ export default {
       text-align: center;
     }
 
+    /deep/ .el-avatar {
+      background-color: $--second-backgroud-color;
+    }
+
     .profile-content {
       padding-left: 0px;
       list-style: none;

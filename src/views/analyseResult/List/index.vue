@@ -116,7 +116,7 @@ export default {
 
 <style scoped>
 a.testLink{
-  color: #34797f;
+  color: #2151A3;
   text-decoration: underline!important;
 }
 </style>

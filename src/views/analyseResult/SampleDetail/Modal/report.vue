@@ -84,7 +84,7 @@
             <th>基因</th>
             <th>转录本</th>
             <th>核苷酸变异</th>
-            <th>氯胺酸变异</th>
+            <th>氨基酸变异</th>
             <th>变异分类</th>
           </tr>
           <template v-for="(item, index) in detectionInfo.geneInfos">
