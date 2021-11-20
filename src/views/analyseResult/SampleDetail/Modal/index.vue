@@ -50,11 +50,11 @@ export default {
         sampleId: '',
         geneInfos: [
           {
-            geneName: '',
-            transcript: '',
-            hgvsC: '',
-            hgvsP: '',
-            clazz: ''
+            geneName: 'ND',
+            transcript: 'ND',
+            hgvsC: 'ND',
+            hgvsP: 'ND',
+            clazz: 'ND'
           }
         ],
         clazz: '',
@@ -107,7 +107,10 @@ export default {
               reportDate: ''
             }
           }
-          this.detectionInfo = res
+          this.detectionInfo = Object.assign(
+            this.detectionInfo,
+            res
+          )
           return res
         })
         .catch(error => {

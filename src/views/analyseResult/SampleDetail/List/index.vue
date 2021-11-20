@@ -15,6 +15,14 @@
         width="55"
       />
       <el-table-column
+        label="样本名称"
+        width="100"
+      >
+        <template slot-scope="scope">
+          <span>{{ scope.row.sampleName ? scope.row.sampleName : "-" }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
         prop="sampleId"
         label="受检者编号"
       />
@@ -90,7 +98,6 @@ export default {
 
   created() {
     this.$nextTick(() => {
-
       this.init()
     })
     eventBus.$on('reloadList', this.init)

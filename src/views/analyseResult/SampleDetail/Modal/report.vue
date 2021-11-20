@@ -146,7 +146,6 @@ import eventBus from '@/utils/eventBus'
 import templateSrc from '@/config/pdfTemplate/analyseResultTemplate.html'
 import html2canvas from 'html2canvas'
 import JsPDF from 'jspdf'
-import { parseTime } from '@/utils'
 
 export default {
   name: 'Report',
