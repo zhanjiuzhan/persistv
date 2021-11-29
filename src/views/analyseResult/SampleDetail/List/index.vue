@@ -15,7 +15,7 @@
         width="55"
       />
       <el-table-column
-        label="样本名称"
+        label="样本编号"
         width="100"
       >
         <template slot-scope="scope">

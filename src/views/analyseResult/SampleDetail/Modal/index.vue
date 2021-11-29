@@ -180,6 +180,7 @@ export default {
         }
       })
       printDoc.querySelector(`#sampleId`).textContent = sampleId
+      let NDFlag = false
       geneInfos.forEach(info => {
         const parentDom = printDoc.querySelector('#resultTable tbody')
         const insertTarget = printDoc.querySelector('#resultPlaceholder')
@@ -202,6 +203,9 @@ export default {
         parentDom.insertBefore(trNode, insertTarget)
       })
       printDoc.querySelector(`#clazz`).textContent = clazz
+      if (geneInfos[0].geneName === 'ND') {
+        printDoc.querySelector('#notice').textContent = '注：“ND”说明未检测到突变信息'
+      }
     },
     saveInfo() {
       eventBus.$emit('saveBaseInfo', this)

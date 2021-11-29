@@ -1,10 +1,10 @@
 import axios from 'axios'
 import Config from '@/config'
 import { getToken } from './auth'
-import qs from 'qs';
+import qs from 'qs'
 
 const service = axios.create({
-  baseURL: process['env']['BASE_API'],
+  baseURL: process['env']['NODE_ENV'] === 'production' ? window.config.BASE_API : process['env']['BASE_API'],
   timeout: Config.timeout
 })
 
