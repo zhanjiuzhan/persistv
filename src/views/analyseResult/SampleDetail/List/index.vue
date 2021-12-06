@@ -15,17 +15,16 @@
         width="55"
       />
       <el-table-column
-        label="样本编号"
-        width="100"
+        label="样本名称"
+        prop="sampleId"
+      />
+      <el-table-column
+        label="受检者编号"
       >
         <template slot-scope="scope">
           <span>{{ scope.row.sampleName ? scope.row.sampleName : "-" }}</span>
         </template>
       </el-table-column>
-      <el-table-column
-        prop="sampleId"
-        label="受检者编号"
-      />
       <el-table-column
         prop="clazz"
         label="检测结果"

@@ -1,7 +1,6 @@
 <template>
   <el-dialog
     v-loading="loading"
-    :title="dialogTitle"
     :visible.sync="visible"
     :append-to-body="true"
     :close-on-click-modal="false"

@@ -1,6 +1,5 @@
 <template>
   <el-dialog
-    :title="dialogTitle"
     :visible.sync="visible"
     :append-to-body="true"
     :close-on-click-modal="false"
@@ -59,6 +58,7 @@ export default {
         ],
         clazz: '',
         baseInfo: {
+          reportName: 'BRCA1/BRCA2',
           name: '',
           gender: '',
           age: '',
@@ -86,15 +86,25 @@ export default {
   },
 
   methods: {
-    init(id) {
+    init(id, sampleName) {
       this.loading = true
       return getAnalyseInfo(id)
         .then(res => {
-          if (!res.geneInfos) {
-            res.geneInfos = []
+          res['sampleName'] = sampleName
+          if (!res.geneInfos || res.geneInfos.length === 0) {
+            res.geneInfos = [
+              {
+                geneName: 'ND',
+                transcript: 'ND',
+                hgvsC: 'ND',
+                hgvsP: 'ND',
+                clazz: 'ND'
+              }
+            ]
           }
           if (!res.baseInfo) {
             res.baseInfo = {
+              reportName: 'BRCA1/BRCA2',
               name: '',
               gender: '',
               age: '',
@@ -127,7 +137,7 @@ export default {
       this.visible = true
       this.editable = editable
       this.loading = true
-      this.init(rowData.id).then(() => {
+      this.init(rowData.id, rowData.sampleId).then(() => {
         if (!editable) {
           const iframe = document.createElement('iframe')
           document.body.appendChild(iframe)
@@ -158,7 +168,7 @@ export default {
         const imageUrl = canvas.toDataURL('image/png')
         const pdf = new JsPDF('p', 'pt', this.a4Size)
         const [width, height] = this.a4Size
-        pdf.addImage(imageUrl, 'PNG', 0, 0, width, height)
+        pdf.addImage(imageUrl, 'PNG', 40, 40, width - 80, height - 80)
         pdf.save(`${this.detectionInfo.sampleId}__${parseTime(new Date(), '_')}.pdf`)
         document.body.removeChild(iframe)
       })
@@ -180,7 +190,6 @@ export default {
         }
       })
       printDoc.querySelector(`#sampleId`).textContent = sampleId
-      let NDFlag = false
       geneInfos.forEach(info => {
         const parentDom = printDoc.querySelector('#resultTable tbody')
         const insertTarget = printDoc.querySelector('#resultPlaceholder')
@@ -203,9 +212,6 @@ export default {
         parentDom.insertBefore(trNode, insertTarget)
       })
       printDoc.querySelector(`#clazz`).textContent = clazz
-      if (geneInfos[0].geneName === 'ND') {
-        printDoc.querySelector('#notice').textContent = '注：“ND”说明未检测到突变信息'
-      }
     },
     saveInfo() {
       eventBus.$emit('saveBaseInfo', this)

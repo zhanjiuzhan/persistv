@@ -2,16 +2,17 @@ import axios from 'axios'
 import Config from '@/config'
 import { getToken } from './auth'
 import qs from 'qs'
+import { Message } from 'element-ui'
+import store from '@/store'
 
 const service = axios.create({
   baseURL: process['env']['NODE_ENV'] === 'production' ? window.config.BASE_API : process['env']['BASE_API'],
   timeout: Config.timeout
 })
 
-// todo: 需要将异常统一处理，以提示框的形式弹出，不能reject，让组件去catch。
-
 service.interceptors.request.use(
   config => {
+    store.dispatch('checkCurrentTime', store.getters.whiteList.includes(config.url))
     if (getToken()) {
       config.headers['Authorization'] = `Bearer ${getToken()}`
     }
@@ -40,30 +41,30 @@ service.interceptors.response.use(
         return resData
       }
     } else if (status === 400) {
-      console.log('Bad Request')
+      Message('Bad Request')
     } else if (status === 401) {
-      console.log('Unauthorized')
+      Message('Unauthorized')
     } else if (status === 403) {
-      console.log('Forbidden')
+      Message('Forbidden')
     } else if (status === 404) {
-      console.log('Not Found')
+      Message('Not Found')
     } else if (status === 405) {
-      console.log('Method Not Allowed')
+      Message('Method Not Allowed')
     } else if (status === 408) {
-      console.log('Request Time-out')
+      Message('Request Time-out')
     } else if (status === 500) {
-      console.log('Internal Server Error')
+      Message('Internal Server Error')
     } else if (status === 501) {
-      console.log('Not Implemented')
+      Message('Not Implemented')
     } else if (status === 502) {
-      console.log('Bad Gateway')
+      Message('Bad Gateway')
     } else if (status === 503) {
-      console.log('Service Unavailable')
+      Message('Service Unavailable')
     }
     return Promise.reject(resData)
   },
   error => {
     return Promise.reject(error)
   }
-);
+)
 export default service

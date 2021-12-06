@@ -37,12 +37,12 @@
     }
 
     .signFooter {
-      margin-top: 20px;
+      margin-top: 60px;
       font-size: 18px;
     }
 
     .signFooter .signPosition {
-      margin-top: 10px;
+      margin-top: 20px;
       display: flex;
       justify-content: space-between;
     }
@@ -50,7 +50,7 @@
 </head>
 <body>
 <div class="resultContent">
-  <h2 class="title">人类<label class="subtitle"> BRCA1/BRCA2 </label>基因突变检测报告单</h2>
+  <h2 class="title">人类<label class="subtitle" id="reportName"></label> 基因突变检测报告单</h2>
   <div class="content">
     <h4>
       受检者信息
@@ -116,7 +116,7 @@
         <td colspan="2" id="clazz"></td>
       </tr>
     </table>
-    <label id="notice"></label>
+    <label id="notice" style="margin-left: 2px">注：“ND”说明未检测到突变信息。</label>
   </div>
   <div class="signFooter">
     <div class="description">

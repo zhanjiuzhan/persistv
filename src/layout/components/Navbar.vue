@@ -91,7 +91,7 @@ export default {
             message: '激活异常',
             type: 'error'
           })
-          this.$store.dispatch('user/logout').then(() => {
+          this.$store.dispatch('logout').then(() => {
             location.replace('/login')
           })
         } else {
@@ -110,7 +110,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$store.dispatch('user/logout').then(() => {
+        this.$store.dispatch('logout').then(() => {
           location.replace('/login')
         })
       })

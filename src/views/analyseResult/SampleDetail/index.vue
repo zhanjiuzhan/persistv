@@ -3,7 +3,7 @@
     <el-scrollbar class="scrollbar-wrapper">
       <div class="persist-toolbar">
         <div class="persist-query">
-          <el-input v-model="sampleId" placeholder="请输入查询的受验者编号" class="query-input">
+          <el-input v-model="sampleId" placeholder="请输入查询的样本名称" class="query-input">
             <i slot="suffix" class="el-icon-circle-close" @click="clearQuery()" />
           </el-input>
           <el-button size="small" icon="el-icon-search" type="primary" @click="search">搜素</el-button>
@@ -42,6 +42,10 @@ export default {
     return {
       sampleId: ''
     }
+  },
+
+  mounted() {
+    this.$store.dispatch('updateWhiteList', ['/sys/gene/exportReport'])
   },
 
   methods: {

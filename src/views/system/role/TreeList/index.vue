@@ -120,7 +120,7 @@ export default {
         const roleId = this.selectRole.id
         this.loading = true
         setRoleMenu({ menuIds, roleId }).then(res => {
-          this.$store.dispatch('user/updateLoadMenus', true)
+          this.$store.dispatch('updateLoadMenus', true)
           this.loading = false
           this.$message({
             type: 'success',

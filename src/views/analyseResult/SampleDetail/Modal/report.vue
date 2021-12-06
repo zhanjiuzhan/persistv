@@ -1,6 +1,21 @@
 <template>
   <div>
     <div class="resultContent">
+      <el-row id="titleInfo">
+        <el-col :span="3">
+          <label>标题</label>
+        </el-col>
+        <el-col :span="8">
+          <el-select class="editReportInfo" v-model="detectionInfo.baseInfo.reportName">
+            <el-option
+              v-for="item in titleList"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+        </el-col>
+      </el-row>
       <!-- 受验者信息--->
       <div id="subjectInfo">
         <h4>{{ subjectInfoTitle }}</h4>
@@ -158,18 +173,20 @@ export default {
     detectionInfo: {
       type: Object,
       default: () => ({
+        sampleName: '',
         sampleId: '',
         geneInfos: [
           {
-            geneName: '',
-            transcript: '',
-            hgvsC: '',
-            hgvsP: '',
-            clazz: ''
+            geneName: 'ND',
+            transcript: 'ND',
+            hgvsC: 'ND',
+            hgvsP: 'ND',
+            clazz: 'ND'
           }
         ],
         clazz: '',
         baseInfo: {
+          reportName: 'BRCA1/BRCA2',
           name: '',
           gender: '',
           age: '',
@@ -194,7 +211,11 @@ export default {
       loading: false,
       subjectInfoTitle: '受验者信息',
       sampleInfoTitle: '样本信息',
-      geneDetectionResultTitle: '基因检测结果'
+      geneDetectionResultTitle: '基因检测结果',
+      titleList: [
+        { value: 'BRCA1/BRCA2/PALB2', label: '人类BRCA1/BRCA2/PALB2 基因突变检测报告单' },
+        { value: 'BRCA1/BRCA2', label: '人类BRCA1/BRCA2 基因突变检测报告单' }
+      ]
     }
   },
 
@@ -221,7 +242,6 @@ export default {
         pdf.addImage(imageUrl, 'PNG', 0, 0, width, height)
         const blob = pdf.output('blob')
         document.body.removeChild(iframe)
-        debugger
         const fileName = this.detectionInfo.sampleId + '.pdf'
         const file = new File([blob], fileName)
         const formData = new FormData()
@@ -235,7 +255,7 @@ export default {
         this.detectionInfo.baseInfo = formData
         return this.detectionInfo
       }).then(res => {
-        return saveBaseInfo(res.sampleId, res.baseInfo)
+        return saveBaseInfo(res.sampleName, res.baseInfo)
       }).then(() => {
         this.$message({
           message: '保存成功',
@@ -283,12 +303,14 @@ export default {
   }
 }
 
-.editReportInfoRow {
+.editReportInfoRow, #titleInfo {
   margin: 5px 0;
   display: flex;
   align-items: baseline;
 
   .editReportInfo {
+    width: 100%;
+
     /deep/ .el-input__inner {
       border-color: #2c2c2c!important;
     }

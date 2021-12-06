@@ -159,3 +159,7 @@ export function downloadFile(obj, name, suffix) {
 export function convertBase642picture(code) {
   return 'data:image/jpeg;base64,' + code
 }
+
+export function exportPDFFromHtml(innerHtml, { size }) {
+
+}

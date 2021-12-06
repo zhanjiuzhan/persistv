@@ -163,7 +163,7 @@ export default {
               type: 'success',
               message: '密码设置成功'
             })
-            this.$store.dispatch('user/logout').then(() => {
+            this.$store.dispatch('logout').then(() => {
               location.replace('/login')
             })
           }).catch(error => {

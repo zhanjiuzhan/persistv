@@ -4,6 +4,7 @@ import Config from '@/config'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import { getToken } from '@/utils/auth'
+import { Message } from 'element-ui'
 
 NProgress.configure({ showSpinner: false })
 
@@ -15,7 +16,7 @@ router.beforeEach((to, from, next) => {
 
   if (getToken()) {
     if (to.path === '/login') {
-      next({ path: '/' })
+      next()
     } else {
       const { changePasswordFlag } = JSON.parse(sessionStorage.getItem('userInfo'))
       if (changePasswordFlag === 'Y' && to.path === '/user/center') {
@@ -30,18 +31,27 @@ router.beforeEach((to, from, next) => {
         if (store.getters.addRouters.length === 0) {
           store.dispatch('generateRouters').then(() => {
             router.addRoutes(store.getters.addRouters)
-            next({ ...to, replace: true })
+            next({ replace: true })
           }).catch(error => {
-            console.log(error.message)
-            NProgress.done()
+            Message({
+              message: error.message,
+              type: 'error'
+            })
+            next(`/login?redirect=${to.path}`)
           })
         } else {
           if (store.getters.loadMenus) {
-            store.dispatch('user/updateLoadMenus', false).then(() => {
+            store.dispatch('updateLoadMenus', false).then(() => {
               store.dispatch('generateRouters').then(() => {
                 router.addRoutes(store.getters.addRouters)
-                next({ ...to, replace: true })
+                next({ replace: true })
               })
+            }).catch(error => {
+              Message({
+                message: error.message,
+                type: 'error'
+              })
+              next(`/login?redirect=${to.path}`)
             })
           } else {
             next()
@@ -56,18 +66,6 @@ router.beforeEach((to, from, next) => {
       next(`/login?redirect=${to.path}`)
     }
   }
-  setTimeout(() => {
-    if (location.pathname === '/login') return
-    router.app.notify('页面会话超时请重新登录', '提示', {
-      showCancelButton: false,
-      confirmButtonText: '确定',
-      type: 'warning'
-    }).then(() => {
-      store.dispatch('user/logout').then(() => {
-        location.reload();
-      })
-    })
-  }, store.getters.logoutInterval * 1000 * 60)
 })
 
 router.afterEach(() => {

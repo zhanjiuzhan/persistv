@@ -115,6 +115,7 @@ export default {
   },
 
   created () {
+    this.$store.dispatch('updateWhiteList', ['/sys/security-license/activate', '/sys/oauth/publicKey', '/sys/captcha', '/sys/security-license/uniqueCode'])
     getActivate().then(res => {
       if (!res) {
         eventBus.$emit('showLicenseInfo', false)
@@ -174,7 +175,7 @@ export default {
             code,
             uuid: this.uuid
           }
-          this.$store.dispatch('user/login', userInfo).then(() => {
+          this.$store.dispatch('login', userInfo).then(() => {
             // todo: 添加加载动画结束标志
             this.$notify({
               title: '登录成功',
