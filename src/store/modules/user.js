@@ -96,7 +96,7 @@ const actions = {
         dispatch('logout').then(() => {
           location.reload()
         })
-      }, getters.logoutInterval * 1000 * 30)
+      }, getters.logoutInterval * 1000 * 60)
       commit('UPDATE_CURRENT_TIME', currentTimer)
     }
   },

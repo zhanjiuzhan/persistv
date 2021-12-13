@@ -25,13 +25,22 @@
       word-break: break-all;
       white-space: break-spaces;
       font-size: 14px;
+      border-spacing: 0;
       border-collapse: collapse;
+    }
+
+    .resultContent table tr {
+      border-left: 2px solid #2c2c2c;
+    }
+
+    .resultContent table tr:nth-child(1) {
+      border-top: 2px solid #2c2c2c;
     }
 
     .resultContent table td, th {
       height: 40px;
-      border: 1px solid #2c2c2c;
-      border-collapse: collapse;
+      border-right: 2px solid #2c2c2c;
+      border-bottom: 2px solid #2c2c2c;
       min-width: 60px;
       max-width: 80px;
     }
@@ -116,7 +125,7 @@
         <td colspan="2" id="clazz"></td>
       </tr>
     </table>
-    <label id="notice" style="margin-left: 2px">注：“ND”说明未检测到突变信息。</label>
+    <div id="notice" style="margin-left: 2px; width: 100%">注：“ND”说明未检测到突变信息。</div>
   </div>
   <div class="signFooter">
     <div class="description">

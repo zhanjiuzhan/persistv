@@ -9,7 +9,7 @@
           <el-button size="small" icon="el-icon-search" type="primary" @click="search">搜素</el-button>
         </div>
         <div class="tools">
-          <el-button type="primary" size="small" icon="el-icon-download" @click="exportBatch">批量导出</el-button>
+          <el-button :disabled="disabled" type="primary" size="small" icon="el-icon-download" @click="exportBatch">批量导出</el-button>
         </div>
       </div>
       <div class="table-container">
@@ -40,12 +40,19 @@ export default {
 
   data() {
     return {
-      sampleId: ''
+      sampleId: '',
+      disabled: true
     }
   },
 
   mounted() {
     this.$store.dispatch('updateWhiteList', ['/sys/gene/exportReport'])
+    eventBus.$off('changeBtn')
+    eventBus.$on('changeBtn', this.changeBtn)
+  },
+
+  destroyed() {
+    eventBus.$off('changeBtn')
   },
 
   methods: {
@@ -64,6 +71,9 @@ export default {
     },
     exportBatch() {
       eventBus.$emit('exportBatch')
+    },
+    changeBtn(status) {
+      this.disabled = status
     }
   }
 }

@@ -5,7 +5,7 @@ export default {
   data() {
     return {
       loading: false,
-      size: 5,
+      size: 10,
       total: 0,
       current: 1,
       query: {},

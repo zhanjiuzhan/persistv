@@ -53,11 +53,12 @@ export default {
   },
 
   mounted() {
+    eventBus.$off('showQualityControl')
     eventBus.$on('showQualityControl', this.open)
   },
 
   destroyed() {
-    eventBus.$off('showQualityControl', this.open)
+    eventBus.$off('showQualityControl')
   },
 
   methods: {

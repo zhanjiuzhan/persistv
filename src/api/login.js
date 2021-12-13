@@ -9,5 +9,6 @@ export function validCode () {
 }
 
 export function refreshToken (data) {
-  return request.post('/sys/oauth/refresh', data)
+  const headers = { 'Content-Type': 'application/x-www-form-urlencoded' }
+  return request.post('/sys/oauth/refresh', data, { headers })
 }

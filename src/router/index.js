@@ -31,7 +31,7 @@ router.beforeEach((to, from, next) => {
         if (store.getters.addRouters.length === 0) {
           store.dispatch('generateRouters').then(() => {
             router.addRoutes(store.getters.addRouters)
-            next({ replace: true })
+            next({ ...to, replace: true })
           }).catch(error => {
             Message({
               message: error.message,

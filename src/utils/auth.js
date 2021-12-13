@@ -25,7 +25,7 @@ export function setRefreshToken(refreshToken) {
 }
 
 export function getRefreshToken() {
-  refreshTokenSessionStorage.getItem(REFRESH_TOKEN)
+  return refreshTokenSessionStorage.getItem(REFRESH_TOKEN)
 }
 
 export function removeRefreshToken() {

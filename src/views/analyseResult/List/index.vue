@@ -14,7 +14,7 @@
         <template slot-scope="scope">
           <router-link
             v-if="scope.row.status=== 2"
-            :to="{name: 'sampleDetailList', params: {testName: scope.row.name }}"
+            :to="{name: 'SampleDetail', params: {testName: scope.row.name }}"
             class="testLink">
             {{ scope.row.name }}
           </router-link>
@@ -26,10 +26,11 @@
       <el-table-column
         label="分析状态"
       >
+
         <template slot-scope="scope">
           <div v-if="scope.row.status === 1" class="text-success">正在分析</div>
           <div v-else-if="scope.row.status === 2" class="text-info">分析完成</div>
-          <div v-else-if="scope.row.status === -1" class="text-failure">分析出错</div>
+          <div v-else-if="scope.row.status === -1" class="text-failure">分析异常</div>
           <div v-else-if="scope.row.status === 0" class="text-warning">未分析</div>
         </template>
       </el-table-column>
@@ -88,6 +89,8 @@ export default {
     this.$nextTick(() => {
       this.init()
     })
+    eventBus.$off('reloadList')
+    eventBus.$off('query')
     eventBus.$on('reloadList', this.init)
     eventBus.$on('query', this.search)
   },
@@ -109,7 +112,7 @@ export default {
     },
     search(query) {
       this.query = query
-    },
+    }
   }
 }
 </script>

@@ -6,6 +6,8 @@ const state = {
 const mutations = {
   ADD_VISITED_VIEW: (state, view) => {
     if (state.visitedViews.some(v => v.path === view.path)) return
+    const index =state.visitedViews.findIndex(item => item.name === view.name)
+    if (index !== -1) state.visitedViews.splice(index, 1)
     state.visitedViews.push(
       Object.assign({}, view, {
         title: view.meta.title || 'no-name'
@@ -16,6 +18,14 @@ const mutations = {
     if (state.cachedViews.includes(view.name)) return
     if (!view.meta.noCache) {
       state.cachedViews.push(view.name)
+    }
+  },
+  DEL_CACHED_VIEW: (state, view) => {
+    for (const [i, v] of state.cachedViews.entries()) {
+      if (v.path === view.path) {
+        state.cachedViews.splice(i, 1)
+        break
+      }
     }
   },
   DEL_VISITED_VIEW: (state, view) => {

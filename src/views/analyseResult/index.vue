@@ -6,6 +6,12 @@
           <el-input v-model="experimentName" placeholder="请输入查询的实验名称" class="query-input">
             <i slot="suffix" class="el-icon-circle-close" @click="clearQuery()" />
           </el-input>
+          <el-select v-model="experimentStatus" class="query-input" :clearable="true">
+            <el-option label="未分析" value="0"/>
+            <el-option label="正在分析" value="1"/>
+            <el-option label="分析完成" value="2"/>
+            <el-option label="分析异常" value="-1"/>
+          </el-select>
           <el-button size="small" icon="el-icon-search" type="primary" @click="search">搜素</el-button>
         </div>
       </div>
@@ -40,7 +46,8 @@ export default {
   data() {
     return {
       loading: false,
-      experimentName: ''
+      experimentName: '',
+      experimentStatus: ''
     }
   },
 
@@ -53,7 +60,14 @@ export default {
       eventBus.$emit('previewData')
     },
     search() {
-      eventBus.$emit('query', { name: this.experimentName })
+      const queryData = {}
+      if (this.experimentName) {
+        queryData['name'] = this.experimentName
+      }
+      if (this.experimentStatus !== undefined) {
+        queryData['status'] = this.experimentStatus
+      }
+      eventBus.$emit('query', queryData)
     },
     analyse(row) {
       this.loading = true

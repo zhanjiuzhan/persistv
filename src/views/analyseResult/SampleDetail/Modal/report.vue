@@ -1,22 +1,27 @@
 <template>
   <div>
     <div class="resultContent">
+      <!--      <el-row id="titleInfo">-->
+      <!--        <el-col :span="3">-->
+      <!--          <label>标题</label>-->
+      <!--        </el-col>-->
+      <!--        <el-col :span="8">-->
+      <!--          <el-select class="editReportInfo" v-model="detectionInfo.baseInfo.reportName">-->
+      <!--            <el-option-->
+      <!--              v-for="item in titleList"-->
+      <!--              :key="item.value"-->
+      <!--              :label="item.label"-->
+      <!--              :value="item.value">-->
+      <!--            </el-option>-->
+      <!--          </el-select>-->
+      <!--        </el-col>-->
+      <!--      </el-row>-->
+      <!-- 受验者信息--->
       <el-row id="titleInfo">
-        <el-col :span="3">
-          <label>标题</label>
-        </el-col>
-        <el-col :span="8">
-          <el-select class="editReportInfo" v-model="detectionInfo.baseInfo.reportName">
-            <el-option
-              v-for="item in titleList"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value">
-            </el-option>
-          </el-select>
+        <el-col>
+          <h4>人类 BRCA1/BRCA2 基因突变检测报告单</h4>
         </el-col>
       </el-row>
-      <!-- 受验者信息--->
       <div id="subjectInfo">
         <h4>{{ subjectInfoTitle }}</h4>
         <table>
@@ -207,7 +212,7 @@ export default {
 
   data() {
     return {
-      a4Size: [595.28, 841.89],
+      a4Size: [595.28 * 4 / 3, 841.89 * 4 / 3],
       loading: false,
       subjectInfoTitle: '受验者信息',
       sampleInfoTitle: '样本信息',
@@ -220,14 +225,167 @@ export default {
   },
 
   created() {
+    eventBus.$off('saveBaseInfo')
     eventBus.$on('saveBaseInfo', this.saveInfo)
   },
 
   destroyed() {
-    eventBus.$off('saveBaseInfo', this.saveInfo)
+    eventBus.$off('saveBaseInfo')
   },
 
   methods: {
+    producePagination(contentElement) {
+      const marginTop = 20
+      const marginBottom = 20
+      let offsetStart = marginTop
+      const pageHeight = 1123 - marginTop - marginBottom
+      const rowHeight = 43
+      const varRowList = contentElement.querySelectorAll('.row-flag')
+      const bottomTextRowHeight = 25
+
+      const pageContent = [{
+        contentElements: [
+          {
+            element: contentElement.querySelector('.title'),
+            offset: offsetStart += 10,
+            height: 32
+          },
+          {
+            element: contentElement.querySelectorAll('.content h4')[0],
+            offset: offsetStart += 42,
+            height: 20
+          },
+          {
+            element: contentElement.querySelectorAll('.content table')[0],
+            offset: offsetStart += 40,
+            height: 173
+          },
+          {
+            element: contentElement.querySelectorAll('.content h4')[1],
+            offset: offsetStart += 193,
+            height: 20
+          },
+          {
+            element: contentElement.querySelectorAll('.content table')[1],
+            offset: offsetStart += 40,
+            height: 105
+          },
+          {
+            element: contentElement.querySelectorAll('.content h4')[2],
+            offset: offsetStart += 125,
+            height: 20
+          },
+          {
+            element: contentElement.querySelectorAll('#resultTable tr')[0],
+            offset: offsetStart += 40,
+            height: rowHeight
+          }
+        ]
+      }]
+
+      let height = offsetStart
+      let page = 0
+      for (let rowIndex = 0; rowIndex < varRowList.length; rowIndex++) {
+        height += rowHeight
+        if (pageHeight - height >= rowHeight) {
+          pageContent[page].contentElements.push({
+            element: varRowList[rowIndex],
+            offset: height,
+            height: rowHeight
+          })
+        } else {
+          page++
+          height = marginTop
+          const element = varRowList[rowIndex]
+          element.style.borderTop = '2px solid #2c2c2c'
+          pageContent[page] = {
+            contentElements: [
+              {
+                element: element,
+                offset: height,
+                height: rowHeight,
+                page: true
+              }
+            ]
+          }
+        }
+      }
+
+      if (pageHeight - height >= rowHeight + 20) {
+        pageContent[page].contentElements.push({
+          element: contentElement.querySelector('#resultTable tr:last-child'),
+          offset: height += rowHeight,
+          height: rowHeight
+        })
+      } else {
+        page++
+        height = marginTop
+        pageContent[page] = {
+          contentElements: [
+            {
+              element: contentElement.querySelector('#resultTable tr:last-child'),
+              offset: height,
+              height: rowHeight,
+              page: true
+            }
+          ]
+        }
+      }
+
+      if (pageHeight - height >= 20) {
+        pageContent[page].contentElements.push({
+          element: contentElement.querySelector('#notice'),
+          offset: height += rowHeight,
+          height: 20
+        })
+      } else {
+        page++
+        height = marginTop
+        pageContent[page] = {
+          contentElements: [
+            {
+              element: contentElement.querySelector('#notice'),
+              offset: height,
+              height: 20,
+              page: true
+            }
+          ]
+        }
+      }
+
+      if (pageHeight - height >= bottomTextRowHeight * 3) {
+        pageContent[page].contentElements.push({
+          element: contentElement.querySelector('.description'),
+          offset: pageHeight + marginTop - bottomTextRowHeight * 3 - 30,
+          height: bottomTextRowHeight
+        })
+        pageContent[page].contentElements.push({
+          element: contentElement.querySelector('.signPosition'),
+          offset: pageHeight + marginTop - bottomTextRowHeight - 30,
+          height: bottomTextRowHeight,
+          end: true
+        })
+      } else if (pageHeight - height >= bottomTextRowHeight) {
+        page++
+        height = marginTop
+        pageContent[page] = {
+          contentElements: [
+            {
+              element: contentElement.querySelector('.description'),
+              offset: height,
+              height: bottomTextRowHeight,
+              page: true
+            }
+          ]
+        }
+        pageContent[page].contentElements.push({
+          element: contentElement.querySelector('.signPosition'),
+          offset: height += bottomTextRowHeight * 2,
+          height: bottomTextRowHeight
+        })
+      }
+      return pageContent
+    },
     saveInfo(target) {
       target.loading = true
       const iframe = document.createElement('iframe')
@@ -235,14 +393,34 @@ export default {
       const win = iframe.contentWindow
       win.document.body.innerHTML = templateSrc
       this.fillData(win.document, this.detectionInfo)
-      html2canvas(win.document.body).then(canvas => {
-        const imageUrl = canvas.toDataURL('image/png')
-        const pdf = new JsPDF('p', 'pt', this.a4Size)
-        const [width, height] = this.a4Size
-        pdf.addImage(imageUrl, 'PNG', 0, 0, width, height)
-        const blob = pdf.output('blob')
+      const pdf = new JsPDF('p', 'px', this.a4Size)
+      const width = 680
+      const offsetLeft = (this.a4Size[0] - width) / 2
+      const elementFragments = this.producePagination(win.document.body)
+      const promiseList = []
+      let pageIndex = 1
+      const totalPage = elementFragments.length
+      pdf.text(`${pageIndex} / ${totalPage}`, this.a4Size[0] / 2, this.a4Size[1] - 10)
+      elementFragments.forEach(fragment => {
+        fragment.contentElements.forEach(content => {
+          promiseList.push(new Promise((resolve) => {
+            html2canvas(content.element).then(canvas => {
+              const imageUrl = canvas.toDataURL('image/png')
+              if (content.page) {
+                pdf.addPage()
+                pageIndex++
+                pdf.text(`${pageIndex} / ${totalPage}`, this.a4Size[0] / 2, this.a4Size[1] - 10)
+              }
+              pdf.addImage(imageUrl, 'PNG', offsetLeft, content.offset, width, content.height)
+              resolve()
+            })
+          }))
+        })
+      })
+      Promise.all(promiseList).then(() => {
         document.body.removeChild(iframe)
         const fileName = this.detectionInfo.sampleId + '.pdf'
+        const blob = pdf.output('blob')
         const file = new File([blob], fileName)
         const formData = new FormData()
         formData.append('reportFile', file)
@@ -255,7 +433,7 @@ export default {
         this.detectionInfo.baseInfo = formData
         return this.detectionInfo
       }).then(res => {
-        return saveBaseInfo(res.sampleName, res.baseInfo)
+        return saveBaseInfo(res.sampleId, res.baseInfo)
       }).then(() => {
         this.$message({
           message: '保存成功',
