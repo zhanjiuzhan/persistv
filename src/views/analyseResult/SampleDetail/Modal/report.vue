@@ -140,7 +140,7 @@
         <label>检测人</label>
       </el-col>
       <el-col :span="9">
-        <el-input v-model="detectionInfo.baseInfo.inspector" type="text" class="editReportInfo" placeholder="请输入检测人" maxlength="5" show-word-limit/>
+        <el-input v-model="detectionInfo.baseInfo.inspector" type="text" class="editReportInfo" placeholder="请输入检测人" maxlength="10" show-word-limit/>
       </el-col>
     </el-row>
     <el-row :gutter="8" class="editReportInfoRow">
@@ -148,13 +148,13 @@
         <label>报告人</label>
       </el-col>
       <el-col :span="9">
-        <el-input v-model="detectionInfo.baseInfo.reporter" type="text" class="editReportInfo" placeholder="请输入报告人" maxlength="5" show-word-limit/>
+        <el-input v-model="detectionInfo.baseInfo.reporter" type="text" class="editReportInfo" placeholder="请输入报告人" maxlength="10" show-word-limit/>
       </el-col>
       <el-col :span="3">
         <label>审核人</label>
       </el-col>
       <el-col :span="9">
-        <el-input v-model="detectionInfo.baseInfo.reviewer" type="text" class="editReportInfo" placeholder="请输入审核人" maxlength="5" show-word-limit/>
+        <el-input v-model="detectionInfo.baseInfo.reviewer" type="text" class="editReportInfo" placeholder="请输入审核人" maxlength="10" show-word-limit/>
       </el-col>
     </el-row>
   </div>
@@ -353,19 +353,19 @@ export default {
         }
       }
 
-      if (pageHeight - height >= bottomTextRowHeight * 3) {
+      if (pageHeight - height >= bottomTextRowHeight * 4) {
         pageContent[page].contentElements.push({
           element: contentElement.querySelector('.description'),
-          offset: pageHeight + marginTop - bottomTextRowHeight * 3 - 30,
+          offset: pageHeight + marginTop - bottomTextRowHeight * 4 - 30,
           height: bottomTextRowHeight
         })
         pageContent[page].contentElements.push({
           element: contentElement.querySelector('.signPosition'),
-          offset: pageHeight + marginTop - bottomTextRowHeight - 30,
-          height: bottomTextRowHeight,
+          offset: pageHeight + marginTop - bottomTextRowHeight * 2 - 30,
+          height: bottomTextRowHeight * 2,
           end: true
         })
-      } else if (pageHeight - height >= bottomTextRowHeight) {
+      } else if (pageHeight - height >= bottomTextRowHeight * 2) {
         page++
         height = marginTop
         pageContent[page] = {
@@ -381,7 +381,7 @@ export default {
         pageContent[page].contentElements.push({
           element: contentElement.querySelector('.signPosition'),
           offset: height += bottomTextRowHeight * 2,
-          height: bottomTextRowHeight
+          height: bottomTextRowHeight * 2
         })
       }
       return pageContent
@@ -404,7 +404,9 @@ export default {
       elementFragments.forEach(fragment => {
         fragment.contentElements.forEach(content => {
           promiseList.push(new Promise((resolve) => {
-            html2canvas(content.element).then(canvas => {
+            html2canvas(content.element, {
+              scale: window.devicePixelRatio * 2
+            }).then(canvas => {
               const imageUrl = canvas.toDataURL('image/png')
               if (content.page) {
                 pdf.addPage()
@@ -433,7 +435,7 @@ export default {
         this.detectionInfo.baseInfo = formData
         return this.detectionInfo
       }).then(res => {
-        return saveBaseInfo(res.sampleId, res.baseInfo)
+        return saveBaseInfo(res.sampleName, res.baseInfo)
       }).then(() => {
         this.$message({
           message: '保存成功',

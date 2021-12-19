@@ -99,17 +99,17 @@ export default {
     this.$nextTick(() => {
       this.init()
     })
-    eventBus.$off('reloadList')
-    eventBus.$off('query')
+    eventBus.$off('reloadSampleList')
+    eventBus.$off('querySample')
     eventBus.$off('exportBatch')
-    eventBus.$on('reloadList', this.init)
-    eventBus.$on('query', this.search)
+    eventBus.$on('reloadSampleList', this.init)
+    eventBus.$on('querySample', this.search)
     eventBus.$on('exportBatch', this.export)
   },
 
   destroyed() {
-    eventBus.$off('reloadList')
-    eventBus.$off('query')
+    eventBus.$off('reloadSampleList')
+    eventBus.$off('querySample')
     eventBus.$off('exportBatch')
   },
 
@@ -143,7 +143,7 @@ export default {
     },
     changeSelect(selection) {
       this.selectIds = selection.map(_ => _.sampleName)
-      eventBus.$emit('changeBtn', this.selectIds.length === 0)
+      eventBus.$emit('changeBtn', this._uid, this.selectIds.length === 0)
     }
   }
 }

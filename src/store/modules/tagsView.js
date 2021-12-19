@@ -6,8 +6,8 @@ const state = {
 const mutations = {
   ADD_VISITED_VIEW: (state, view) => {
     if (state.visitedViews.some(v => v.path === view.path)) return
-    const index =state.visitedViews.findIndex(item => item.name === view.name)
-    if (index !== -1) state.visitedViews.splice(index, 1)
+    // const index = state.visitedViews.findIndex(item => item.name === view.name)
+    // if (index !== -1) state.visitedViews.splice(index, 1)
     state.visitedViews.push(
       Object.assign({}, view, {
         title: view.meta.title || 'no-name'

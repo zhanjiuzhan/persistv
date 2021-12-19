@@ -24,16 +24,16 @@
           <div v-else-if="scope.row.status===1" class="text-success">异常</div>
         </template>
       </el-table-column>
-      <el-table-column
-        label="业务类型"
-      >
-        <template slot-scope="scope">
-          <div v-if="scope.row.businessType===0">其他</div>
-          <div v-else-if="scope.row.businessType===1">新增</div>
-          <div v-else-if="scope.row.businessType===2">修改</div>
-          <div v-else-if="scope.row.businessType===3">删除</div>
-        </template>
-      </el-table-column>
+      <!--      <el-table-column-->
+      <!--        label="业务类型"-->
+      <!--      >-->
+      <!--        <template slot-scope="scope">-->
+      <!--          <div v-if="scope.row.businessType===0">其他</div>-->
+      <!--          <div v-else-if="scope.row.businessType===1">新增</div>-->
+      <!--          <div v-else-if="scope.row.businessType===2">修改</div>-->
+      <!--          <div v-else-if="scope.row.businessType===3">删除</div>-->
+      <!--        </template>-->
+      <!--      </el-table-column>-->
       <el-table-column
         prop="title"
         label="操作内容"

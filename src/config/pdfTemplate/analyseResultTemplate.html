@@ -52,14 +52,20 @@
 
     .signFooter .signPosition {
       margin-top: 20px;
+    }
+    .signFooter .signPosition .row {
       display: flex;
-      justify-content: space-between;
+    }
+    .signFooter .signPosition .item {
+      width: 50%;
+      display: block;
     }
   </style>
 </head>
 <body>
 <div class="resultContent">
-  <h2 class="title">人类<label class="subtitle" id="reportName"></label> 基因突变检测报告单</h2>
+<!--  <h2 class="title">人类<label class="subtitle" id="reportName" style="display:none"></label> 基因突变检测报告单</h2>-->
+  <h2 class="title">人类<label class="subtitle">BRCA1/BRCA2</label> 基因突变检测报告单</h2>
   <div class="content">
     <h4>
       受检者信息
@@ -134,23 +140,26 @@
       </label>
     </div>
     <div class="signPosition">
-      <span class="item">
-        <label>报告日期：</label>
-        <label id="reportDate"/>
-      </span>
-      <span class="item">
-        <label>检测人：</label>
-        <label id="inspector"/>
-      </span>
-      <span class="item">
-        <label>报告人：</label>
-        <label id="reporter"/>
-      </span>
-      <span class="item">
-        <label>审核人：</label>
-        <label id="reviewer"/>
-      </span>
-      <span class="item"/>
+      <div class="row">
+        <span class="item">
+          <label>报告日期：</label>
+          <label id="reportDate"/>
+        </span>
+        <span class="item">
+          <label>检测人：</label>
+          <label id="inspector"/>
+       </span>
+      </div>
+      <div class="row">
+        <span class="item">
+          <label>报告人：</label>
+          <label id="reporter"/>
+        </span>
+        <span class="item">
+          <label>审核人：</label>
+          <label id="reviewer"/>
+        </span>
+      </div>
     </div>
   </div>
 </div>

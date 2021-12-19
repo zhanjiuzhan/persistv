@@ -13,7 +13,7 @@
         </div>
       </div>
       <div class="table-container">
-        <List>
+        <List ref="list">
           <template slot-scope="scope">
             <el-button size="small" icon="el-icon-view" type="primary" @click="previewHandler(scope.row)">预览</el-button>
             <el-button size="small" icon="el-icon-edit" type="primary" @click="previewHandler(scope.row, true)">编辑</el-button>
@@ -47,7 +47,6 @@ export default {
 
   mounted() {
     this.$store.dispatch('updateWhiteList', ['/sys/gene/exportReport'])
-    eventBus.$off('changeBtn')
     eventBus.$on('changeBtn', this.changeBtn)
   },
 
@@ -58,13 +57,15 @@ export default {
   methods: {
     clearQuery() {
       this.sampleId = ''
-      eventBus.$emit('reloadList')
+      eventBus.$emit('reloadSampleList')
     },
     previewHandler(rowData, editable = false) {
       eventBus.$emit('previewData', rowData, editable)
     },
     search() {
-      eventBus.$emit('query', { sampleId: this.sampleId, experimentName: this.$route.params.testName })
+      if (this.sampleId) {
+        eventBus.$emit('querySample', { sampleId: this.sampleId, experimentName: this.$route.params.testName })
+      }
     },
     previewQualityControl(rowData) {
       eventBus.$emit('showQualityControl', rowData)
@@ -72,7 +73,9 @@ export default {
     exportBatch() {
       eventBus.$emit('exportBatch')
     },
-    changeBtn(status) {
+    changeBtn(id, status) {
+      const { list } = this.$refs
+      if (list._uid === id)
       this.disabled = status
     }
   }

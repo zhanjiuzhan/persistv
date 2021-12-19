@@ -89,15 +89,15 @@ export default {
     this.$nextTick(() => {
       this.init()
     })
-    eventBus.$off('reloadList')
-    eventBus.$off('query')
-    eventBus.$on('reloadList', this.init)
-    eventBus.$on('query', this.search)
+    eventBus.$off('reloadExperimentList')
+    eventBus.$off('queryExperiment')
+    eventBus.$on('reloadExperimentList', this.init)
+    eventBus.$on('queryExperiment', this.search)
   },
 
   destroyed() {
-    eventBus.$off('reloadList', this.init)
-    eventBus.$off('query', this.search)
+    eventBus.$off('reloadExperimentList', this.init)
+    eventBus.$off('queryExperiment', this.search)
   },
 
   methods: {

@@ -145,7 +145,9 @@ export default {
           const win = iframe.contentWindow
           win.document.body.innerHTML = templateSrc
           this.fillData(win.document, this.detectionInfo)
-          return html2canvas(win.document.body).then(canvas => {
+          return html2canvas(win.document.body, {
+            scale: window.devicePixelRatio * 2
+          }).then(canvas => {
             this.imageUrl = canvas.toDataURL('image/png')
             document.body.removeChild(iframe)
           })
@@ -177,7 +179,9 @@ export default {
       elementFragments.forEach(fragment => {
         fragment.contentElements.forEach(content => {
           promiseList.push(new Promise((resolve) => {
-            html2canvas(content.element).then(canvas => {
+            html2canvas(content.element, {
+              scale: window.devicePixelRatio * 1.2
+            }).then(canvas => {
               const imageUrl = canvas.toDataURL('image/png')
               if (content.page) {
                 pdf.addPage()
@@ -209,7 +213,8 @@ export default {
       const { baseInfo, geneInfos, sampleId, clazz } = data
       Object.keys(baseInfo).forEach(key => {
         if (baseInfo[key] && baseInfo[key] !== 'null') {
-          printDoc.querySelector(`#${key}`).textContent = baseInfo[key]
+          const target = printDoc.querySelector(`#${key}`)
+          target && (target.textContent = baseInfo[key])
         }
       })
       printDoc.querySelector(`#sampleId`).textContent = sampleId
@@ -356,19 +361,19 @@ export default {
         }
       }
 
-      if (pageHeight - height >= bottomTextRowHeight * 3) {
+      if (pageHeight - height >= bottomTextRowHeight * 4) {
         pageContent[page].contentElements.push({
           element: contentElement.querySelector('.description'),
-          offset: pageHeight + marginTop - bottomTextRowHeight * 3 - 30,
+          offset: pageHeight + marginTop - bottomTextRowHeight * 4 - 30,
           height: bottomTextRowHeight
         })
         pageContent[page].contentElements.push({
           element: contentElement.querySelector('.signPosition'),
-          offset: pageHeight + marginTop - bottomTextRowHeight - 30,
-          height: bottomTextRowHeight,
+          offset: pageHeight + marginTop - bottomTextRowHeight * 2 - 30,
+          height: bottomTextRowHeight * 2,
           end: true
         })
-      } else if (pageHeight - height >= bottomTextRowHeight) {
+      } else if (pageHeight - height >= bottomTextRowHeight * 2) {
         page++
         height = marginTop
         pageContent[page] = {
@@ -384,7 +389,7 @@ export default {
         pageContent[page].contentElements.push({
           element: contentElement.querySelector('.signPosition'),
           offset: height += bottomTextRowHeight * 2,
-          height: bottomTextRowHeight,
+          height: bottomTextRowHeight * 2
         })
       }
       return pageContent

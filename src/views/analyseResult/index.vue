@@ -6,7 +6,7 @@
           <el-input v-model="experimentName" placeholder="请输入查询的实验名称" class="query-input">
             <i slot="suffix" class="el-icon-circle-close" @click="clearQuery()" />
           </el-input>
-          <el-select v-model="experimentStatus" class="query-input" :clearable="true">
+          <el-select v-model="experimentStatus" :clearable="true" class="query-input">
             <el-option label="未分析" value="0"/>
             <el-option label="正在分析" value="1"/>
             <el-option label="分析完成" value="2"/>
@@ -54,10 +54,7 @@ export default {
   methods: {
     clearQuery() {
       this.experimentName = ''
-      eventBus.$emit('reloadList')
-    },
-    previewHandler(rowData) {
-      eventBus.$emit('previewData')
+      eventBus.$emit('reloadExperimentList')
     },
     search() {
       const queryData = {}
@@ -67,13 +64,13 @@ export default {
       if (this.experimentStatus !== undefined) {
         queryData['status'] = this.experimentStatus
       }
-      eventBus.$emit('query', queryData)
+      eventBus.$emit('queryExperiment', queryData)
     },
     analyse(row) {
       this.loading = true
       executeAnalyse(row.name)
         .then(() => {
-          eventBus.$emit('reloadList')
+          eventBus.$emit('reloadExperimentList')
         })
         .catch(error => {
           this.$message({
