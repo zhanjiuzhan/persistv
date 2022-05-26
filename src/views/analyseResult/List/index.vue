@@ -30,6 +30,7 @@
         <template slot-scope="scope">
           <div v-if="scope.row.status === 1" class="text-success">正在分析</div>
           <div v-else-if="scope.row.status === 2" class="text-info">分析完成</div>
+          <div v-else-if="scope.row.status === 3" class="text-primary">等待分析</div>
           <div v-else-if="scope.row.status === -1" class="text-failure">分析异常</div>
           <div v-else-if="scope.row.status === 0" class="text-warning">未分析</div>
         </template>

@@ -132,7 +132,7 @@ export default {
         sampleIds: this.selectIds.join(',')
       }
       const filename = this.$route.params.testName
-      exportReportBatch(params).then(res => {
+      exportReportBatch(this.$route.params.testName, params).then(res => {
         downloadFile(res, filename, 'zip')
       }).catch((error) => {
         this.$message({
@@ -142,7 +142,7 @@ export default {
       })
     },
     changeSelect(selection) {
-      this.selectIds = selection.map(_ => _.sampleName)
+      this.selectIds = selection.map(_ => _.sampleId)
       eventBus.$emit('changeBtn', this._uid, this.selectIds.length === 0)
     }
   }

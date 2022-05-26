@@ -68,6 +68,18 @@ export default {
   watch: {
     filterMenuName(val) {
       this.$refs.tree.filter(val)
+    },
+    treeData(val) {
+      const filterData = (data) => {
+        const { childrenNode } = data
+        data.childrenNode = childrenNode.filter(child => {
+          if (child.childrenNode) filterData(child)
+          return child.path !== 'menu'
+        })
+      }
+      val.forEach(item => {
+        filterData(item)
+      })
     }
   },
 

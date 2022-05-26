@@ -4,11 +4,6 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-      <template v-if="device!=='mobile'">
-        <el-tooltip :content="textFullScreen" effect="dark" placement="bottom">
-          <screenfull class="screenfull right-menu-item" />
-        </el-tooltip>
-      </template>
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
           <img :src="Avatar" class="user-avatar">

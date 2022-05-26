@@ -13,7 +13,7 @@ import { Message } from 'element-ui'
 const state = {
   user: {},
   roles: [],
-  loadMenus: false,
+  loadMenus: true,
   currentTimer: null,
   whiteList: []
 }

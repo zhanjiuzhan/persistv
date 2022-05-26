@@ -4,7 +4,7 @@
     :append-to-body="true"
     :close-on-click-modal="false"
     :destroy-on-close="false"
-    width="50%"
+    width="800px"
     class="persist-dialog"
   >
     <el-scrollbar v-loading.lock="loading" class="scrollbar-wrapper">
@@ -29,7 +29,7 @@ import templateSrc from '@/config/pdfTemplate/analyseResultTemplate.html'
 import { parseTime } from '@/utils'
 import JsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
-import { getAnalyseInfo } from '../../../../api/gene'
+import { getAnalyseInfo } from '@/api/gene'
 
 export default {
   name: 'Modal',
@@ -87,7 +87,7 @@ export default {
   },
 
   methods: {
-    init(id, sampleName) {
+    init(id, sampleId, sampleName) {
       this.loading = true
       return getAnalyseInfo(id)
         .then(res => {
@@ -138,7 +138,7 @@ export default {
       this.visible = true
       this.editable = editable
       this.loading = true
-      this.init(rowData.id, rowData.sampleId).then(() => {
+      this.init(rowData.id, rowData.sampleId, rowData.sampleName).then(() => {
         if (!editable) {
           const iframe = document.createElement('iframe')
           document.body.appendChild(iframe)
@@ -168,7 +168,7 @@ export default {
       const win = iframe.contentWindow
       win.document.body.innerHTML = templateSrc
       this.fillData(win.document, this.detectionInfo)
-      const pdf = new JsPDF('p', 'px', this.a4Size)
+      const pdf = new JsPDF('p', 'px', this.a4Size, true)
       const width = 680
       const offsetLeft = (this.a4Size[0] - width) / 2
       const elementFragments = this.producePagination(win.document.body)
@@ -195,6 +195,7 @@ export default {
         })
       })
       Promise.all(promiseList).then(() => {
+        // const fileName = `${this.detectionInfo.sampleId}__${parseTime(new Date(), '_')}`
         pdf.save(`${this.detectionInfo.sampleId}__${parseTime(new Date(), '_')}.pdf`)
         this.loading = false
         document.body.removeChild(iframe)
@@ -210,14 +211,14 @@ export default {
       document.body.removeChild(iframe)
     },
     fillData(printDoc, data) {
-      const { baseInfo, geneInfos, sampleId, clazz } = data
+      const { baseInfo, geneInfos, sampleName, clazz } = data
       Object.keys(baseInfo).forEach(key => {
         if (baseInfo[key] && baseInfo[key] !== 'null') {
           const target = printDoc.querySelector(`#${key}`)
           target && (target.textContent = baseInfo[key])
         }
       })
-      printDoc.querySelector(`#sampleId`).textContent = sampleId
+      printDoc.querySelector(`#sampleName`).textContent = sampleName
       geneInfos.forEach(info => {
         const parentDom = printDoc.querySelector('#resultTable tbody')
         const insertTarget = printDoc.querySelector('#resultPlaceholder')
@@ -373,7 +374,7 @@ export default {
           height: bottomTextRowHeight * 2,
           end: true
         })
-      } else if (pageHeight - height >= bottomTextRowHeight * 2) {
+      } else {
         page++
         height = marginTop
         pageContent[page] = {
@@ -403,9 +404,10 @@ export default {
 
 <style lang="scss" scoped>
 .scrollbar-wrapper {
-  height: calc(100vh - 400px);
+  height: calc(100vh - 300px);
 
   .previewContainer {
+    overflow-x: hidden;
     overflow-y: auto;
     height: auto;
     display: flex;

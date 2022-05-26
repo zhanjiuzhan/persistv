@@ -18,8 +18,8 @@
       <!--      </el-row>-->
       <!-- 受验者信息--->
       <el-row id="titleInfo">
-        <el-col>
-          <h4>人类 BRCA1/BRCA2 基因突变检测报告单</h4>
+        <el-col style="justify-content: center; display: flex">
+          <h2 class="title">人类<label class="subtitle">BRCA1/BRCA2</label> 基因突变检测报告单</h2>
         </el-col>
       </el-row>
       <div id="subjectInfo">
@@ -27,7 +27,7 @@
         <table>
           <tr>
             <th>受验者编号</th>
-            <td>{{ detectionInfo.sampleId }}</td>
+            <td>{{ detectionInfo.sampleName }}</td>
             <th>姓名</th>
             <td>
               <el-input v-model="detectionInfo.baseInfo.name" class="editInfo"/>
@@ -166,6 +166,7 @@ import eventBus from '@/utils/eventBus'
 import templateSrc from '@/config/pdfTemplate/analyseResultTemplate.html'
 import html2canvas from 'html2canvas'
 import JsPDF from 'jspdf'
+import JsZIP from 'jszip'
 
 export default {
   name: 'Report',
@@ -365,7 +366,7 @@ export default {
           height: bottomTextRowHeight * 2,
           end: true
         })
-      } else if (pageHeight - height >= bottomTextRowHeight * 2) {
+      } else {
         page++
         height = marginTop
         pageContent[page] = {
@@ -423,33 +424,44 @@ export default {
         document.body.removeChild(iframe)
         const fileName = this.detectionInfo.sampleId + '.pdf'
         const blob = pdf.output('blob')
-        const file = new File([blob], fileName)
-        const formData = new FormData()
-        formData.append('reportFile', file)
-        const baseInfo = this.detectionInfo.baseInfo
-        Object.keys(this.detectionInfo.baseInfo).map(key => {
-          if (baseInfo[key] && baseInfo[key] !== 'null') {
-            formData.append(key, baseInfo[key])
+        this.compressPDF(fileName, blob).then(zipFile => {
+          const formData = new FormData()
+          const file = new File([zipFile], this.detectionInfo.sampleId + '.zip')
+          formData.append('reportFile', file)
+          const baseInfo = this.detectionInfo.baseInfo
+          Object.keys(this.detectionInfo.baseInfo).map(key => {
+            if (baseInfo[key] && baseInfo[key] !== 'null') {
+              formData.append(key, baseInfo[key])
+            }
+          })
+          this.detectionInfo.baseInfo = formData
+          saveBaseInfo(this.$route.params.testName, this.detectionInfo.sampleId, this.detectionInfo.baseInfo).then(() => {
+            this.$message({
+              message: '保存成功',
+              type: 'success'
+            })
+          }).catch(error => {
+            this.$message({
+              message: error.message,
+              type: 'error'
+            })
+          }).finally(() => {
+            target.loading = false
+            target.visible = false
+          })
+        })
+      })
+    },
+    compressPDF (name, blob) {
+      const jsZIP = new JsZIP()
+      return jsZIP.file(name, blob)
+        .generateAsync({
+          type: 'blob',
+          compression: 'DEFLATE',
+          compressionOptions: {
+            level: 5
           }
         })
-        this.detectionInfo.baseInfo = formData
-        return this.detectionInfo
-      }).then(res => {
-        return saveBaseInfo(res.sampleName, res.baseInfo)
-      }).then(() => {
-        this.$message({
-          message: '保存成功',
-          type: 'success'
-        })
-      }).catch(error => {
-        this.$message({
-          message: error.message,
-          type: 'error'
-        })
-      }).finally(() => {
-        target.loading = false
-        target.visible = false
-      })
     }
   }
 }
@@ -487,6 +499,11 @@ export default {
   margin: 5px 0;
   display: flex;
   align-items: baseline;
+  color: #000000;
+
+  .subtitle {
+    font-style: italic;
+  }
 
   .editReportInfo {
     width: 100%;

@@ -60,7 +60,7 @@ export default {
         query['startTime'] = parseTime(this.timeRange[0])
         query['endTime'] = parseTime(this.timeRange[1])
       }
-      eventBus.$emit('query', query)
+      eventBus.$emit('querySystemAudit', query)
     },
 
     clearQueryOperatorName() {

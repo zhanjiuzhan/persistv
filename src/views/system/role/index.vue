@@ -140,10 +140,7 @@ export default {
               this.loading = false
             }).catch(error => {
               this.loading = false
-              this.$alert({
-                type: 'error',
-                message: error.message
-              })
+              this.$alert(error.message)
             })
           })
         }
@@ -158,10 +155,7 @@ export default {
             })
           }).catch(error => {
             this.loading = false
-            this.$alert({
-              type: 'error',
-              message: error.message
-            })
+            this.$alert(error.message)
           })
         }
       })

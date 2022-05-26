@@ -111,7 +111,7 @@ export default {
         maxValue: 30
       },
       logoutTimeRange: {
-        minValue: 15,
+        minValue: 1,
         maxValue: 60
       },
       errorCountRange: {
@@ -124,52 +124,24 @@ export default {
         min: 1,
         max: 31
       },
-      changeCycleOption: [
-        {
-          label: '日',
-          value: 'day',
-          min: 1,
-          max: 31
-        },
-        {
-          label: '月',
-          value: 'month',
-          min: 1,
-          max: 12
-        },
-        {
-          label: '年',
-          value: 'year',
-          min: 1,
-          max: 5
-        }
-      ],
+      changeCycleOption: {
+        label: '日',
+        value: 'day',
+        min: 1,
+        max: 31
+      },
       reuseCycleRange: {
         label: '日',
         value: 'day',
         min: 1,
         max: 31
       },
-      reuseCycleOption: [
-        {
-          label: '日',
-          value: 'day',
-          min: 1,
-          max: 31
-        },
-        {
-          label: '月',
-          value: 'month',
-          min: 1,
-          max: 12
-        },
-        {
-          label: '年',
-          value: 'year',
-          min: 1,
-          max: 5
-        }
-      ],
+      reuseCycleOption: {
+        label: '日',
+        value: 'day',
+        min: 1,
+        max: 31
+      },
       maintainForm: {
         id: '',
         minLength: 0,

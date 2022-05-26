@@ -82,10 +82,7 @@ export default {
         }).catch(error => {
           this.visible = false
           this.loading = false
-          this.$alert({
-            type: 'error',
-            message: error.message
-          })
+          this.$alert(error.message)
         })
       } else {
         setRole(this.formData).then(res => {

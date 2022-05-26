@@ -132,18 +132,12 @@ export default {
           }).catch(error => {
             this.visible = false
             this.loading = false
-            this.$alert({
-              type: 'error',
-              message: error.message
-            })
+            this.$alert(error.message)
           })
         }).catch(error => {
           this.visible = false
           this.loading = false
-          this.$alert({
-            type: 'error',
-            message: error.message
-          })
+          this.$alert(error.message)
         })
       } else {
         addUser(this.formData).then(res => {

@@ -85,12 +85,12 @@ export default {
       this.init()
     })
     eventBus.$on('reloadList', this.init)
-    eventBus.$on('query', this.search)
+    eventBus.$on('querySystemAudit', this.search)
   },
 
   destroyed() {
     eventBus.$off('reloadList', this.init)
-    eventBus.$off('query', this.search)
+    eventBus.$off('querySystemAudit', this.search)
   },
 
   methods: {

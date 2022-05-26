@@ -6,10 +6,11 @@
           <el-input v-model="experimentName" placeholder="请输入查询的实验名称" class="query-input">
             <i slot="suffix" class="el-icon-circle-close" @click="clearQuery()" />
           </el-input>
-          <el-select v-model="experimentStatus" :clearable="true" class="query-input">
+          <el-select v-model="experimentStatus" :clearable="true" class="query-input" style="width: 300px">
             <el-option label="未分析" value="0"/>
             <el-option label="正在分析" value="1"/>
             <el-option label="分析完成" value="2"/>
+            <el-option label="等待分析" value="3"/>
             <el-option label="分析异常" value="-1"/>
           </el-select>
           <el-button size="small" icon="el-icon-search" type="primary" @click="search">搜素</el-button>
@@ -19,7 +20,7 @@
         <List>
           <template slot-scope="scope">
             <el-button
-              :disabled="scope.row.status === 1 || scope.row.status === 2"
+              :disabled="scope.row.status === 1 || scope.row.status === 2 || scope.row.status === 3"
               size="small"
               icon="el-icon-pie-chart"
               type="primary"
@@ -87,4 +88,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.persist-toolbar .persist-query {
+  width: 580px;
+}
 </style>

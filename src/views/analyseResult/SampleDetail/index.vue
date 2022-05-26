@@ -75,8 +75,7 @@ export default {
     },
     changeBtn(id, status) {
       const { list } = this.$refs
-      if (list._uid === id)
-      this.disabled = status
+      if (list._uid === id) this.disabled = status
     }
   }
 }

@@ -42,7 +42,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss">
   .login {
     display: flex;
-    justify-content: end;
+    justify-content: flex-end;
     align-items: center;
     height: 100%;
     width: 100%;
